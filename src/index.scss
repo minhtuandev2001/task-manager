@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .button-default {
+    @apply flex items-center justify-center gap-2 w-full h-12 rounded-md mb-3 cursor-pointer;
+  }
+}
