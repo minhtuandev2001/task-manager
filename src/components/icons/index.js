@@ -1,4 +1,19 @@
 import IconEyeOpen from "./IconEyeOpen"
 import IconEyeClose from "./IconEyeClose"
+import IconBell from "./IconBell"
+import IconLogo from "./IconLogo"
+import IconMessage from "./IconMessage"
+import IconProject from "./IconProject"
+import IconMetting from "./IconMetting"
+import IconSendMail from "./IconSendMail"
+import IconTask from "./IconTask"
+import IconSun from "./IconSun"
+import IconLogout from "./IconLogout"
+import IconMoon from "./IconMoon"
+import IconCalender from "./IconCalender"
+import IconDelete from "./IconDelete"
+import IconEdit from "./IconEdit"
+import IconStarOutline from "./IconStarOutline"
+import IconStarFill from "./IconStarFill"
 
-export { IconEyeOpen, IconEyeClose }
+export { IconEyeOpen, IconEyeClose, IconBell, IconLogo, IconMessage, IconProject, IconMetting, IconSendMail, IconTask, IconSun, IconLogout, IconMoon, IconCalender, IconDelete, IconEdit, IconStarOutline, IconStarFill }
