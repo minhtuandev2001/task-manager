@@ -68,3 +68,52 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+  <!-- const [timeProject, setTimeProject] = useState({
+    timeStart: new Date().getHours() + ':' + (new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes()),
+    timeEnd: new Date().getHours() + ':' + (new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes()),
+  })
+  const [errorTime, setErrorTime] = useState(""); -->
+<!--
+            <div className="">
+              <p className='mb-3 text-base font-medium'>Time</p>
+              <div className="flex items-center gap-1">
+                <div htmlFor='timeStart' className='flex items-center border border-graycustom h-10 rounded-md px-2 justify-center cursor-pointer'>
+                  <input
+                    onChange={handleTimeProject}
+                    defaultValue={timeProject.timeStart}
+                    type="time" id="timeStart" name="timeStart" className='text-sm font-medium text-[#787486] tracking-wider' />
+                </div>
+                <span>-</span>
+                <div className='flex items-center border border-graycustom h-10 rounded-md px-2 justify-center cursor-pointer'>
+                  <input
+                    onChange={handleTimeProject}
+                    defaultValue={timeProject.timeEnd}
+                    type="time" id="timeEnd" name="timeEnd" className='text-sm font-medium text-[#787486] tracking-wider' />
+                </div>
+              </div>
+              {errorTime && <span className='text-xs italic font-medium text-red-500'>*{errorTime}</span>}
+            </div> -->
+
+<!-- // chon gio
+  const handleTimeProject = (e) => {
+    setErrorTime("")
+    if (e.target.name === "timeStart") {
+      let timeStartNew = new Date(`2024-05-03T${e.target.value}Z`);
+      let timeEnd = new Date(`2024-05-03T${timeProject.timeEnd}Z`);
+      if (timeEnd - timeStartNew < 0) { // thời gian bắt đầu không được lớn hơn thời gian kết thúc
+        setErrorTime("Start time must be before end time")
+      } else {
+        setTimeProject(preTime => ({ ...preTime, [e.target.name]: e.target.value }))
+      }
+    } else {
+      let timeEndNew = new Date(`2024-05-03T${e.target.value}Z`);
+      let timeStart = new Date(`2024-05-03T${timeProject.timeStart}Z`);
+      if (timeEndNew - timeStart < 0) { // thời gian bắt đầu không được lớn hơn thời gian kết thúc
+        setErrorTime("Start time must be before end time")
+      } else {
+        setTimeProject(preTime => ({ ...preTime, [e.target.name]: e.target.value }))
+      }
+    }
+  }
+  // ket thuc chon gio -->

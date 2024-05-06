@@ -3,13 +3,13 @@ import { IconCalender } from '../icons'
 import Portal from '../portal/Portal'
 import { DateRange } from 'react-date-range'
 
-const InputRangeDate = forwardRef(({ onClick = () => { }, coords, showPickerDate, setShowPickerDate, stateDate, setStateDate, handleSelectDate }, inputDateRef) => {
+const InputRangeDate = forwardRef(({ onClick = () => { }, coords, showPickerDate, setShowPickerDate, stateDate, handleSelectDate }, inputDateRef) => {
   return (
     <>
       <div
         ref={inputDateRef}
         onClick={onClick}
-        className='flex items-center border border-[#787486] h-10 rounded-md justify-between px-[10px] cursor-pointer'>
+        className='flex items-center border border-graycustom h-10 rounded-md justify-between px-[10px] cursor-pointer'>
         <span className='text-sm font-medium text-[#787486] tracking-wider'>{
           (stateDate[0].startDate.getFullYear() === stateDate[0].endDate.getFullYear()) ?
             // cung nam
@@ -37,7 +37,6 @@ const InputRangeDate = forwardRef(({ onClick = () => { }, coords, showPickerDate
         <div className="w-auto shadow-md max-w-[332px] rounded-md overflow-hidden">
           <DateRange
             editableDateInputs={true}
-            // onChange={item => setStateDate([item.selection])}
             onChange={handleSelectDate}
             moveRangeOnFirstSelection={false}
             ranges={stateDate}

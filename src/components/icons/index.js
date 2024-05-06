@@ -16,5 +16,6 @@ import IconEdit from "./IconEdit"
 import IconStarOutline from "./IconStarOutline"
 import IconStarFill from "./IconStarFill"
 import IconCancel from "./IconCancel"
+import IconThink from "./IconThink"
 
-export { IconEyeOpen, IconEyeClose, IconBell, IconLogo, IconMessage, IconProject, IconMetting, IconSendMail, IconTask, IconSun, IconLogout, IconMoon, IconCalender, IconDelete, IconEdit, IconStarOutline, IconStarFill, IconCancel }
+export { IconEyeOpen, IconEyeClose, IconBell, IconLogo, IconMessage, IconProject, IconMetting, IconSendMail, IconTask, IconSun, IconLogout, IconMoon, IconCalender, IconDelete, IconEdit, IconStarOutline, IconStarFill, IconCancel, IconThink }
