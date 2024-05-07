@@ -25,7 +25,7 @@ const userFake = [
     email: "tuan4@gmail.com"
   },
 ]
-const ModalAddUser = ({ nameItemList, showSearchPortal, setShowSearchPortal, userListAdd, handleAddUser, handleRmoveUser }) => {
+const ModalAddUser = ({ nameItemList, showSearchPortal, setShowSearchPortal, userListAdd, handleAddUser, handleRemoveUser }) => {
 
   return (
     <>
@@ -36,15 +36,15 @@ const ModalAddUser = ({ nameItemList, showSearchPortal, setShowSearchPortal, use
         onClose={() => setShowSearchPortal(false)}
         classOverlay="bg-opacity-20"
       >
-        <div className='bg-white p-6 shadow-md rounded-md'>
-          <div className='flex justify-between items-center'>
+        <div className='p-6 bg-white rounded-md shadow-md'>
+          <div className='flex items-center justify-between'>
             <span className='text-base font-medium'>Add user</span>
-            <Button onClick={() => setShowSearchPortal(false)}><span className='text-blue-500 text-base font-medium'>Cancel</span></Button>
+            <Button onClick={() => setShowSearchPortal(false)}><span className='text-base font-medium text-blue-500'>Cancel</span></Button>
           </div>
           <Input
             type='text'
             name="search"
-            className='w-full h-10 p-3 border rounded-md border-graycustom bg-input focus:border-bluecustom mt-3'
+            className='w-full h-10 p-3 mt-3 border rounded-md border-graycustom bg-input focus:border-bluecustom'
             placeholder="search..."
           ></Input>
           <div className="flex flex-wrap gap-2 mt-3">
@@ -53,7 +53,7 @@ const ModalAddUser = ({ nameItemList, showSearchPortal, setShowSearchPortal, use
                 <div key={item.id} className="flex items-center gap-2 h-[30px] bg-graycustom bg-opacity-20 p-1 px-2 rounded-md">
                   <span className='text-sm font-medium'>{item.email}</span>
                   <IconCancel
-                    onClick={() => handleRmoveUser(nameItemList, item.id)}
+                    onClick={() => handleRemoveUser(nameItemList, item.id)}
                     className='w-[15px] cursor-pointer'></IconCancel>
                 </div>
               )

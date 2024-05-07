@@ -3,7 +3,7 @@ import { IconCancel } from '../icons';
 import Button from '../button/Button';
 import ModalAddUser from './ModalAddUser';
 
-const AddUser = ({ nameItemList, userListAdd, handleAddUser, handleRmoveUser }) => {
+const AddUser = ({ nameItemList, userListAdd, handleAddUser, handleRemoveUser }) => {
   const [showSearchPortal, setShowSearchPortal] = useState(false);
   return (
     <div className="">
@@ -14,7 +14,7 @@ const AddUser = ({ nameItemList, userListAdd, handleAddUser, handleRmoveUser }) 
             <div key={item.id} className="flex items-center gap-2 h-[30px] bg-graycustom bg-opacity-20 p-1 px-2 rounded-md">
               <span className='text-sm font-medium'>{item.email}</span>
               <IconCancel
-                onClick={() => handleRmoveUser(nameItemList, item.id)}
+                onClick={() => handleRemoveUser(nameItemList, item.id)}
                 className='w-[15px] cursor-pointer'></IconCancel>
             </div>
           )
@@ -23,7 +23,7 @@ const AddUser = ({ nameItemList, userListAdd, handleAddUser, handleRmoveUser }) 
           onClick={() => setShowSearchPortal(true)}
           className="button-default w-auto bg-button h-auto px-4 py-[6px] text-white font-medium">+ add</Button>
       </div>
-      <ModalAddUser nameItemList={nameItemList} showSearchPortal={showSearchPortal} setShowSearchPortal={setShowSearchPortal} userListAdd={userListAdd} handleAddUser={handleAddUser} handleRmoveUser={handleRmoveUser}></ModalAddUser>
+      <ModalAddUser nameItemList={nameItemList} showSearchPortal={showSearchPortal} setShowSearchPortal={setShowSearchPortal} userListAdd={userListAdd} handleAddUser={handleAddUser} handleRemoveUser={handleRemoveUser}></ModalAddUser>
     </div>
   );
 }

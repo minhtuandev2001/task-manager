@@ -57,7 +57,7 @@ export default function CardProject() {
     })
   }
 
-  const handleRmoveUser = (nameItemList, id) => {
+  const handleRemoveUser = (nameItemList, id) => {
     setUserListAdd(preData => ({ ...preData, [nameItemList]: preData[nameItemList].filter((item) => item.id !== id) }))
   }
   // ket thuc them client, leader, member vào du an
@@ -122,19 +122,19 @@ export default function CardProject() {
           <Button
             disabled={isStatusRequest}
             onClick={() => handleStatusProject(statusProject)}
-            className='button-default w-auto bg-button bg-opacity-30 text-[#3754DB] h-auto px-4 py-2 rounded-full font-medium self-start'>On going
+            className='button-default w-auto bg-button bg-opacity-30 text-sm text-[#3754DB] h-auto px-4 py-[6px] rounded-full font-medium self-start mb-0'>On going
           </Button>)}
         {statusProject === "pause" && (
           <Button
             disabled={isStatusRequest}
             onClick={() => handleStatusProject(statusProject)}
-            className='button-default w-auto bg-[#ED3159] bg-opacity-30 text-[#ED3159] h-auto px-4 py-2 rounded-full font-medium self-start'>Pause
+            className='button-default w-auto bg-[#ED3159] bg-opacity-30 text-sm text-[#ED3159] h-auto px-4 py-[6px] rounded-full font-medium self-start mb-0'>Pause
           </Button>)}
         {statusProject === "done" && (
           <Button
             disabled={isStatusRequest}
             onClick={() => handleStatusProject(statusProject)}
-            className='button-default w-auto bg-[#00C271] bg-opacity-30 text-[#00C271] h-auto px-4 py-2 rounded-full font-medium self-start'>Done
+            className='button-default w-auto bg-[#00C271] bg-opacity-30 text-sm text-[#00C271] h-auto px-4 py-[6px] rounded-full font-medium self-start mb-0'>Done
           </Button>)}
         <div className='flex items-center gap-3'>
           <IconCalender></IconCalender>
@@ -201,7 +201,7 @@ export default function CardProject() {
             </div>
             {toggleUpdate ? (
               <Button
-                onClick={handleCancel}
+                onClick={() => setShowAlertCancelUpdate(true)}
               ><span className='text-base font-semibold text-blue-500'>Cancel</span></Button>)
               : (<Button
                 onClick={handleRemoveProject}
@@ -211,19 +211,19 @@ export default function CardProject() {
             <Button
               disabled={isStatusRequest}
               onClick={() => handleStatusProject(statusProject)}
-              className='button-default w-auto bg-button bg-opacity-30 text-[#3754DB] h-auto px-4 py-2 rounded-full font-medium self-start'>On going
+              className='button-default w-auto bg-button bg-opacity-30  text-sm text-[#3754DB] h-auto px-4 py-[6px] rounded-full font-medium self-start'>On going
             </Button>)}
           {statusProject === "pause" && (
             <Button
               disabled={isStatusRequest}
               onClick={() => handleStatusProject(statusProject)}
-              className='button-default w-auto bg-[#ED3159] bg-opacity-30 text-[#ED3159] h-auto px-4 py-2 rounded-full font-medium self-start'>Pause
+              className='button-default w-auto bg-[#ED3159] bg-opacity-30 text-sm text-[#ED3159] h-auto px-4 py-[6px] rounded-full font-medium self-start'>Pause
             </Button>)}
           {statusProject === "done" && (
             <Button
               disabled={isStatusRequest}
               onClick={() => handleStatusProject(statusProject)}
-              className='button-default w-auto bg-[#00C271] bg-opacity-30 text-[#00C271] h-auto px-4 py-2 rounded-full font-medium self-start'>Done
+              className='button-default w-auto bg-[#00C271] bg-opacity-30 text-sm text-[#00C271] h-auto px-4 py-[6px] rounded-full font-medium self-start'>Done
             </Button>)}
           <div className='grid grid-cols-2 gap-8 mb-3'>
             <div className="">
@@ -242,9 +242,9 @@ export default function CardProject() {
               ></Textarea>)
               : (<p className='text-sm text-[#717279]'>{descriptionProject}</p>)}
           </div>
-          <AddUser nameItemList="client" userListAdd={userListAdd} handleAddUser={handleAddUser} handleRmoveUser={handleRmoveUser}></AddUser>
-          <AddUser nameItemList="leader" userListAdd={userListAdd} handleAddUser={handleAddUser} handleRmoveUser={handleRmoveUser}></AddUser>
-          <AddUser nameItemList="member" userListAdd={userListAdd} handleAddUser={handleAddUser} handleRmoveUser={handleRmoveUser}></AddUser>
+          <AddUser nameItemList="client" userListAdd={userListAdd} handleAddUser={handleAddUser} handleRemoveUser={handleRemoveUser}></AddUser>
+          <AddUser nameItemList="leader" userListAdd={userListAdd} handleAddUser={handleAddUser} handleRemoveUser={handleRemoveUser}></AddUser>
+          <AddUser nameItemList="member" userListAdd={userListAdd} handleAddUser={handleAddUser} handleRemoveUser={handleRemoveUser}></AddUser>
           {toggleUpdate ?
             (<Button
               onClick={handleUpdateProject}

@@ -6,4 +6,12 @@
   .button-default {
     @apply flex items-center justify-center gap-2 w-full h-12 rounded-md mb-3 cursor-pointer;
   }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
 }

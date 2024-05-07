@@ -7,6 +7,7 @@ import EnterOpt from './pages/login/EnterOpt';
 import NewPassword from './pages/login/NewPassword';
 import Layout from './components/layout/Layout';
 import Project from './pages/project/Project';
+import Task from './pages/task/Task';
 
 function App() {
   const ProtectedRoute = ({ children }) => {
@@ -25,6 +26,9 @@ function App() {
         <Route path='/new-password' element={<NewPassword></NewPassword>}></Route>
         <Route path='/' element={<ProtectedRoute><Layout></Layout></ProtectedRoute>}>
           <Route path='/' element={<Project></Project>}></Route>
+          {/* projectId == "" lấy tất cả */}
+          {/* /task/projectId?statusProject=going&search=name */}
+          <Route path='/task' element={<Task></Task>}></Route>
         </Route>
       </Routes>
     </div>
