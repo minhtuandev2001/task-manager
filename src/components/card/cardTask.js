@@ -205,7 +205,7 @@ const CardTask = () => {
   // kết thúc thêm, xóa , sửa task item
   return (
     <>
-      <div className="flex flex-col gap-3 p-4 py-3 rounded-md shadow-md card-project">
+      <div className="flex flex-col gap-3 p-4 py-3 rounded-md shadow-md card-project mb-3">
         <div className='flex gap-2'>
           <h2 className='text-base font-semibold line-clamp-1'>{nameTask}</h2>
           <button type='button'

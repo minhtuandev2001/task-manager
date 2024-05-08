@@ -37,3 +37,31 @@ body {
     scrollbar-width: 0;
   }
 }
+
+.bg-going {
+  background-color: #2382ff67;
+}
+.text-going {
+  color: #2384ff;
+}
+.bg-pause {
+  background-color: #ed315a5d;
+}
+.text-pause {
+  color: #ed3159;
+}
+.bg-done {
+  background-color: #00c27157;
+}
+.text-done {
+  color: #00c271;
+}
+.bg-low {
+  background-color: #717279;
+}
+.bg-medium {
+  background-color: #ffa41b;
+}
+.bg-high {
+  background-color: #ed3159;
+}

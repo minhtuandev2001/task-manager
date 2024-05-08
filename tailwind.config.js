@@ -6,7 +6,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        graycustom: "#A8ABBD"
+        "graycustom": "#A8ABBD",
       },
       backgroundColor: {
         "input": "#F6F7F9",

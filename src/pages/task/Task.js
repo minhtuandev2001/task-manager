@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import CardTask from '../../components/card/cardTask';
 import Button from '../../components/button/Button';
 import { v4 as uuidv4 } from 'uuid';
@@ -27,7 +27,7 @@ const Task = () => {
   ]);
   const [descriptionTask, setDescriptionTask] = useState("");
   const [statusTask, setStatusTask] = useState("going");
-  const [severity, setSeverity] = useState("high");
+  const [severity, setSeverity] = useState("medium");
   const [userListAdd, setUserListAdd] = useState({
     client: [],
     leader: [],
@@ -42,6 +42,13 @@ const Task = () => {
   })
   const [errorTime, setErrorTime] = useState("");
   const [taskItem, setTaskItem] = useState([]);
+
+  const [showModalFilterProject, setShowModalFilterProject] = useState(false);
+  const buttonFilterRef = useRef(null)
+  const [coordsModalFilter, setCoordsModalFilter] = useState({
+    left: 0,
+    top: 0,
+  })
 
   // chon ngay thang
   const handleSelectDate = (ranges) => {
@@ -220,6 +227,23 @@ const Task = () => {
     setTaskItem(prev => prev.filter((item, index) => item.id !== id))
   }
   // kết thúc thêm, xóa , sửa task item
+
+  // xử lý filter project
+  const clickButtonFilter = () => {
+    console.log("check ", buttonFilterRef.current.getBoundingClientRect())
+    setCoordsModalFilter(buttonFilterRef.current.getBoundingClientRect())
+    setShowModalFilterProject(true)
+  }
+  useEffect(() => {
+    const handleOffFilter = () => {
+      setShowModalFilterProject(false)
+    }
+    window.addEventListener("resize", handleOffFilter)
+    return () => {
+      window.removeEventListener("resize", handleOffFilter)
+    }
+  }, [])
+  // kết thúc xử lý filter project
   return (
     <>
       <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)]'>
@@ -247,8 +271,11 @@ const Task = () => {
               className='button-default bg-[#F6F7F9] w-10 h-10 text-white rounded-md font-medium mb-0'><IconList></IconList></Button>
             <Button
               className='button-default bg-[#F6F7F9] w-10 h-10 text-white rounded-md font-medium mb-0'><IconCol></IconCol></Button>
-            <Button
-              className='button-default bg-[#F6F7F9] w-10 h-10 text-white rounded-md font-medium mb-0'><IconFilter></IconFilter></Button>
+            <button
+              type='button'
+              ref={buttonFilterRef}
+              onClick={clickButtonFilter}
+              className='button-default bg-[#F6F7F9] w-10 h-10 text-white rounded-md font-medium mb-0'><IconFilter></IconFilter></button>
           </div>
         </div>
         <div className='flex items-center justify-end gap-2 mt-3'>
@@ -256,13 +283,47 @@ const Task = () => {
             placehoder="Search..."
             className="w-full max-w-[252px] h-10 p-3 border rounded-md border-graycustom bg-input focus:border-bluecustom"
           ></Input>
-          <Button
-            onClick={() => setShowModalTask(true)}
-            className="button-default h-11 bg-button max-w-[130px] text-white font-medium mb-0"
-          ><span>+ Create Task</span></Button>
         </div>
-        <div className="grid gap-4 project-content sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          <CardTask></CardTask>
+        <div className="grid gap-4 project-content sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 mt-3">
+          <div className='w-full'>
+            <div className='flex justify-between items-center mb-6'>
+              <div className='flex items-center gap-4'>
+                <div className='w-4 h-4 rounded-md bg-[#2384FF]'></div>
+                <span className='font-medium text-base text-[#717279]'>On going</span>
+              </div>
+              <button
+                onClick={() => setShowModalTask(true)}
+                type="button" className='text-[#2384FF] font-medium'>+ new</button>
+            </div>
+            {/* list */}
+            <CardTask></CardTask>
+            <CardTask></CardTask>
+            <CardTask></CardTask>
+          </div>
+          <div className='w-full'>
+            <div className='flex justify-between items-center mb-6'>
+              <div className='flex items-center gap-4'>
+                <div className='w-4 h-4 rounded-md bg-[#E80000]'></div>
+                <span className='font-medium text-base text-[#717279]'>Paused</span>
+              </div>
+            </div>
+            {/* list */}
+            <CardTask></CardTask>
+            <CardTask></CardTask>
+            <CardTask></CardTask>
+          </div>
+          <div className='w-full'>
+            <div className='flex justify-between items-center mb-6'>
+              <div className='flex items-center gap-4'>
+                <div className='w-4 h-4 rounded-md bg-[#00C271]'></div>
+                <span className='font-medium text-base text-[#717279]'>Done</span>
+              </div>
+            </div>
+            {/* list */}
+            <CardTask></CardTask>
+            <CardTask></CardTask>
+            <CardTask></CardTask>
+          </div>
         </div>
       </div>
       <Portal
@@ -305,7 +366,7 @@ const Task = () => {
                 <Button
                   key={item.id}
                   onClick={() => handleStatusTask(item.id)}
-                  className={`button-default w-auto bg-[${item.color}] bg-opacity-30 text-sm text-[${item.color}] h-auto px-4 py-[6px] rounded-full font-medium self-start`}>{item.title}
+                  className={`button-default w-auto bg-${item.id} text-sm text-${item.id} h-auto px-4 py-[6px] rounded-full font-medium self-start`}>{item.title}
                 </Button>)
             })}
             {severtyList.map((item, index) => {
@@ -314,7 +375,7 @@ const Task = () => {
                 <Button
                   key={item.id}
                   onClick={() => handleSevertyTask(item.id)}
-                  className={`button-default w-auto bg-[${item.color}] bg-opacity-90 text-sm text-white h-auto px-4 py-[6px] rounded-full font-medium self-start`}>{item.title}
+                  className={`button-default w-auto bg-${item.id} text-sm text-white h-auto px-4 py-[6px] rounded-full font-medium self-start`}>{item.title}
                 </Button>)
             })}
           </div>
@@ -441,6 +502,30 @@ const Task = () => {
           </div>
         </div>
       </Alert>
+      <Portal
+        visible={showModalFilterProject}
+        containerClassName="fixed inset-0 z-[999] flex items-center justify-center"
+        contentClassName="w-full h-full"
+        onClose={() => setShowModalFilterProject(false)}
+      >
+        <div className='relative px-6 py-3 bg-white rounded-md shadow-md w-[430px] -translate-x-full mt-2'
+          style={{
+            left: coordsModalFilter.left + coordsModalFilter.width,
+            top: coordsModalFilter.top + coordsModalFilter.height
+          }}
+        >
+          <Label className="text-base font-medium" >Filter Project</Label>
+          <Input
+            placeholder="Enter name project"
+            className="w-full h-10 p-3 my-3 border rounded-md border-graycustom bg-input focus:border-bluecustom"></Input>
+          <div className='flex flex-col items-start gap-1 h-full overflow-y-scroll no-scrollbar max-h-[300px]'>
+            <Button className="flex items-center w-full px-2 transition-all rounded-md hover:bg-gray-100 min-h-10 max-h-10">
+              <span className='text-sm font-medium line-clamp-1'>Create a Design System for Enum Workspace.
+              </span>
+            </Button>
+          </div>
+        </div>
+      </Portal>
     </>
   );
 }
