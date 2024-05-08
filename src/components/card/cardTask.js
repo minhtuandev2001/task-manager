@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import IconStarFill from '../icons/IconStarFill';
 import IconStarOutline from '../icons/IconStarOutline';
 import Button from '../button/Button';
@@ -10,35 +11,12 @@ import InputRangeDate from '../input/InputRangeDate';
 import Textarea from '../input/Textarea';
 import AddUser from '../modal/AddUser';
 import Alert from '../alert/Alert';
-import Input from '../input/Input';
 import Label from '../label/Label';
 import ThumbnailFile from '../thumbnail/ThumbnailFile';
+import DropdownChooseProject from '../dropdown/DropdownChooseProject';
 
-const task = [
-  {
-    id: 0,
-    content: "Create a Design System 1",
-    checked: false
-  },
-  {
-    id: 1,
-    content: "Create a Design System 2",
-    checked: true
-  },
-  {
-    id: 2,
-    content: "Create a Design System 3",
-    checked: false
-  },
-]
 const CardTask = () => {
   const [showModalTask, setShowModalTask] = useState(false);
-  const [showPickerDate, setShowPickerDate] = useState(false);
-  const inputDateRef = useRef(null);
-  const [coords, setCoords] = useState({
-    top: 0,
-    left: 0,
-  });
   const [stateDate, setStateDate] = useState([
     {
       startDate: new Date(),
@@ -65,16 +43,14 @@ const CardTask = () => {
     timeEnd: new Date().getHours() + ':' + (new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes()),
   })
   const [errorTime, setErrorTime] = useState("");
+  const [taskItem, setTaskItem] = useState([]);
 
   // chon ngay thang
-  const clickDatePicker = (e) => {
-    setCoords(inputDateRef.current.getBoundingClientRect());
-    setShowPickerDate(true)
-  }
   const handleSelectDate = (ranges) => {
     setStateDate([ranges.selection])
   }
   // ket thuc chon ngay thang
+
   // chon gio
   const handleTimeTask = (e) => {
     setErrorTime("")
@@ -121,7 +97,7 @@ const CardTask = () => {
   }
   // kết thúc xử lý thay đổi trạng thái task
 
-  // them client, leader, member vào du an
+  // them member vào du an
   const handleAddUser = (nameItemList, data) => {
     setUserListAdd(preData => {
       let userExist = preData[nameItemList].some((item) => item.id === data.id)
@@ -132,8 +108,11 @@ const CardTask = () => {
   const handleRemoveUser = (nameItemList, id) => {
     setUserListAdd(preData => ({ ...preData, [nameItemList]: preData[nameItemList].filter((item) => item.id !== id) }))
   }
-  // ket thuc them client, leader, member vào du an
-  const handleUpdateTask = () => { }
+  // ket thuc them member vào du an
+
+  const handleUpdateTask = () => {
+    console.log("check ", taskItem)
+  }
   const handleRemoveTask = () => {
     console.log("check delete",)
   }
@@ -201,6 +180,29 @@ const CardTask = () => {
     setFilesUpload(dt.files)
   }
   // kết thúc tiền xử lý việc Upload file driver
+
+  // thêm, xóa , sửa task item
+  const addTaskItem = () => {
+    setTaskItem(prevTask => [...prevTask, {
+      id: uuidv4(),
+      content: "Task",
+      checked: false,
+    }])
+  }
+  const handleChangeContentTask = (e, index) => {
+    let newTaskItem = taskItem;
+    newTaskItem[index].content = e.target.value;
+    setTaskItem(newTaskItem)
+  }
+  const handleChangeCheckTask = (e, index) => {
+    let newTaskItem = taskItem;
+    newTaskItem[index].checked = e.target.checked;
+    setTaskItem(newTaskItem)
+  }
+  const removeTaskItem = (id) => {
+    setTaskItem(prev => prev.filter((item, index) => item.id !== id))
+  }
+  // kết thúc thêm, xóa , sửa task item
   return (
     <>
       <div className="flex flex-col gap-3 p-4 py-3 rounded-md shadow-md card-project">
@@ -340,19 +342,19 @@ const CardTask = () => {
           <div className='grid grid-cols-2 gap-4 mb-3'>
             <div className="">
               <p className='mb-3 text-base font-medium'>Due Date</p>
-              <InputRangeDate ref={inputDateRef} onClick={clickDatePicker} coords={coords} showPickerDate={showPickerDate} setShowPickerDate={setShowPickerDate} stateDate={stateDate} handleSelectDate={handleSelectDate}></InputRangeDate>
+              <InputRangeDate stateDate={stateDate} handleSelectDate={handleSelectDate}></InputRangeDate>
             </div>
             <div className="">
               <p className='mb-3 text-base font-medium'>Time</p>
               <div className="flex items-center gap-1">
-                <div htmlFor='timeStart' className='flex items-center border border-graycustom h-10 rounded-md px-2 justify-center cursor-pointer'>
+                <div htmlFor='timeStart' className='flex items-center justify-center h-10 px-2 border rounded-md cursor-pointer border-graycustom'>
                   <input
                     onChange={handleTimeTask}
                     defaultValue={timeTask.timeStart}
                     type="time" id="timeStart" name="timeStart" className='text-sm font-medium text-[#787486] tracking-wider' />
                 </div>
                 <span>-</span>
-                <div className='flex items-center border border-graycustom h-10 rounded-md px-2 justify-center cursor-pointer'>
+                <div className='flex items-center justify-center h-10 px-2 border rounded-md cursor-pointer border-graycustom'>
                   <input
                     onChange={handleTimeTask}
                     defaultValue={timeTask.timeEnd}
@@ -374,40 +376,41 @@ const CardTask = () => {
               : (<p className='text-sm text-[#717279]'>{descriptionTask}</p>)}
           </div>
           <AddUser nameItemList="member" userListAdd={userListAdd} handleAddUser={handleAddUser} handleRemoveUser={handleRemoveUser}></AddUser>
-          <div className='flex gap-3 items-center mt-3'>
+          <div className='flex items-center gap-3 mt-3'>
             <p className='mb-3 text-base font-medium'>Task</p>
             <Button
+              onClick={addTaskItem}
               className="button-default w-auto bg-button h-auto px-4 py-[6px] text-white font-medium">+ add</Button>
           </div>
           <div className='flex flex-col gap-2'>
-            {task.length > 0 && task.map((item) => {
+            {taskItem.length > 0 && taskItem.map((item, index) => {
               return (
-                <div key={item.id} className='flex gap-4 items-center'>
-                  <Input type='checkbox' checked={true} onChange={() => { }}></Input>
-                  <Label className="text-sm">{item.content}</Label>
-                  <Button className='w-4'>
+                <div key={item.id} className='flex items-center justify-between w-full gap-4'>
+                  <input type="checkbox" defaultChecked={item.checked} onChange={(e) => handleChangeCheckTask(e, index)} />
+                  <input
+                    onChange={(e) => handleChangeContentTask(e, index)}
+                    type="text"
+                    className="flex-1 px-2 py-1 text-sm border rounded-md border-graycustom"
+                    defaultValue={item.content}
+                  />
+                  <Button onClick={() => removeTaskItem(item.id)} className='w-4'>
                     <IconCancel></IconCancel>
                   </Button>
                 </div>
               )
             })}
           </div>
-          <Button className="w-full">
-            <div className='flex justify-between items-center border border-graycustom p-3 rounded-md mt-3'>
-              <p>Choose Project</p>
-              <IconChevronDown></IconChevronDown>
-            </div>
-          </Button>
+          <DropdownChooseProject></DropdownChooseProject>
           <div className="flex items-center gap-4 mt-3">
-            <Label htmlFor='image' className='w-10 h-10 flex justify-center items-center bg-graycustom bg-opacity-10 rounded-md'><IconImage></IconImage></Label>
-            <Label className="font-medium text-sm">Add Image</Label>
+            <Label htmlFor='image' className='flex items-center justify-center w-10 h-10 rounded-md bg-graycustom bg-opacity-10'><IconImage></IconImage></Label>
+            <Label className="text-sm font-medium">Add Image</Label>
           </div>
 
-          <div className='my-2 flex gap-3 flex-wrap'>
+          <div className='flex flex-wrap gap-3 my-2'>
             {imagesUpload !== null && Array(imagesUpload.length).fill(null).map((item, index) => {
               return (
                 <div key={index} className='relative w-[100px] h-[100px]'>
-                  <img className='w-full h-full object-cover' src={URL.createObjectURL(imagesUpload[index])} alt="" />
+                  <img className='object-cover w-full h-full' src={URL.createObjectURL(imagesUpload[index])} alt="" />
                   <Button
                     onClick={() => handleRemoveImageUpload(index)}
                     className="w-5 absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 bg-gray-300 p-[2px] h-5 rounded-full flex justify-center items-center"><IconCancel></IconCancel></Button>
@@ -420,24 +423,24 @@ const CardTask = () => {
             onChange={handleUploadImage}
             type="file" id="image" accept="image/png, image/jpeg" multiple />
           <div className="flex items-center gap-4 mt-3">
-            <Label htmlFor='files' className='w-10 h-10 flex justify-center items-center bg-graycustom bg-opacity-10 rounded-md'><IconFile></IconFile></Label>
-            <Label className="font-medium text-sm">Add File</Label>
+            <Label htmlFor='files' className='flex items-center justify-center w-10 h-10 rounded-md bg-graycustom bg-opacity-10'><IconFile></IconFile></Label>
+            <Label className="text-sm font-medium">Add File</Label>
           </div>
           <input
             hidden
             onChange={handleUploadFile}
             type="file" id="files" multiple />
-          <div className='mt-3 flex flex-wrap gap-2'>
+          <div className='flex flex-wrap gap-2 mt-3'>
             {filesUpload !== null && Array(filesUpload.length).fill(null).map((item, index) => {
               return (
                 <div key={index} className='w-[calc(50%-8px)] flex items-center gap-2 rounded-md p-2 bg-gray-200'>
                   <div className='min-w-[22px] min-h-[29px]'>
                     <ThumbnailFile fileExtension={filesUpload[index].name.split(".")[1]}></ThumbnailFile>
                   </div>
-                  <span className='line-clamp-1 font-medium text-sm flex-1'>{filesUpload[index].name}</span>
+                  <span className='flex-1 text-sm font-medium line-clamp-1'>{filesUpload[index].name}</span>
                   <Button
                     onClick={() => handleRemoveFilesUpload(index)}
-                    className="w-full h-full max-w-4 max-h-4 flex items-center justify-center"><IconCancel></IconCancel></Button>
+                    className="flex items-center justify-center w-full h-full max-w-4 max-h-4"><IconCancel></IconCancel></Button>
                 </div>
               )
             })}

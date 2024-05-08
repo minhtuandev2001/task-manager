@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import Button from '../button/Button'
 import { IconCalender, IconDelete, IconEdit, IconStarFill, IconStarOutline, IconThink } from '../icons'
 import AddUser from '../modal/AddUser'
@@ -10,13 +10,6 @@ import { motion } from "framer-motion"
 
 export default function CardProject() {
   const [showProject, setShowProject] = useState(false);
-
-  const [showPickerDate, setShowPickerDate] = useState(false);
-  const inputDateRef = useRef(null);
-  const [coords, setCoords] = useState({
-    top: 0,
-    left: 0,
-  });
   const [stateDate, setStateDate] = useState([
     {
       startDate: new Date(),
@@ -40,10 +33,6 @@ export default function CardProject() {
   const [starProject, setStarProject] = useState(false);
 
   // chon ngay thang
-  const clickDatePicker = (e) => {
-    setCoords(inputDateRef.current.getBoundingClientRect());
-    setShowPickerDate(true)
-  }
   const handleSelectDate = (ranges) => {
     setStateDate([ranges.selection])
   }
@@ -228,7 +217,7 @@ export default function CardProject() {
           <div className='grid grid-cols-2 gap-8 mb-3'>
             <div className="">
               <p className='mb-3 text-base font-medium'>Due Date</p>
-              <InputRangeDate ref={inputDateRef} onClick={clickDatePicker} coords={coords} showPickerDate={showPickerDate} setShowPickerDate={setShowPickerDate} stateDate={stateDate} handleSelectDate={handleSelectDate}></InputRangeDate>
+              <InputRangeDate stateDate={stateDate} handleSelectDate={handleSelectDate}></InputRangeDate>
             </div>
           </div>
           <div className="mb-3">

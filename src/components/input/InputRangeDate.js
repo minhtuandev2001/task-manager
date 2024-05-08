@@ -1,14 +1,24 @@
-import React, { forwardRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { IconCalender } from '../icons'
 import Portal from '../portal/Portal'
 import { DateRange } from 'react-date-range'
 
-const InputRangeDate = forwardRef(({ onClick = () => { }, coords, showPickerDate, setShowPickerDate, stateDate, handleSelectDate }, inputDateRef) => {
+const InputRangeDate = ({ stateDate, handleSelectDate }) => {
+  const inputDateRef = useRef(null);
+  const [showPickerDate, setShowPickerDate] = useState(false);
+  const [coords, setCoords] = useState({
+    top: 0,
+    left: 0,
+  });
+  const clickDatePicker = (e) => {
+    setCoords(inputDateRef.current.getBoundingClientRect());
+    setShowPickerDate(true)
+  }
   return (
     <>
       <div
         ref={inputDateRef}
-        onClick={onClick}
+        onClick={clickDatePicker}
         className='flex items-center border border-graycustom h-10 rounded-md justify-between px-[10px] cursor-pointer'>
         <span className='text-sm font-medium text-[#787486] tracking-wider'>{
           (stateDate[0].startDate.getFullYear() === stateDate[0].endDate.getFullYear()) ?
@@ -43,8 +53,7 @@ const InputRangeDate = forwardRef(({ onClick = () => { }, coords, showPickerDate
           />
         </div>
       </Portal>
-
     </>
   )
-})
+}
 export default InputRangeDate;

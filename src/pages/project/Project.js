@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import Input from '../../components/input/Input'
 import Button from '../../components/button/Button'
 import CardProject from '../../components/card/CardProject'
@@ -18,12 +18,6 @@ export default function Project() {
   const [showModalCreateProject, setShowModalCreateProject] = useState(false);
   const [nameProject, setNameProject] = useState("");
   const [descriptionProject, setDescriptionProject] = useState("")
-  const [showPickerDate, setShowPickerDate] = useState(false);
-  const inputDateRef = useRef(null);
-  const [coords, setCoords] = useState({
-    top: 0,
-    left: 0,
-  });
   const [stateDate, setStateDate] = useState([
     {
       startDate: new Date(),
@@ -38,10 +32,6 @@ export default function Project() {
   })
   const [showAlertCancelCreate, setShowAlertCancelCreate] = useState(false)
   // chon ngay thang
-  const clickDatePicker = (e) => {
-    setCoords(inputDateRef.current.getBoundingClientRect());
-    setShowPickerDate(true)
-  }
   const handleSelectDate = (ranges) => {
     setStateDate([ranges.selection])
   }
@@ -146,7 +136,7 @@ export default function Project() {
           <div className='grid grid-cols-2 gap-8 mb-3'>
             <div className="">
               <p className='mb-3 text-base font-medium'>Due Date</p>
-              <InputRangeDate ref={inputDateRef} onClick={clickDatePicker} coords={coords} showPickerDate={showPickerDate} setShowPickerDate={setShowPickerDate} stateDate={stateDate} handleSelectDate={handleSelectDate}></InputRangeDate>
+              <InputRangeDate stateDate={stateDate} handleSelectDate={handleSelectDate}></InputRangeDate>
             </div>
           </div>
           <div className="mb-3">
