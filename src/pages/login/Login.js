@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Filed from '../../components/filed/Filed'
 import Label from '../../components/label/Label'
 import Input from '../../components/input/Input'
@@ -10,8 +10,10 @@ import { useFormik } from "formik"
 import * as Yup from "yup"
 import { IconEyeClose, IconEyeOpen } from '../../components/icons'
 import { motion } from "framer-motion";
+import { AuthContext } from "../../context/authContext"
 
 export default function Login() {
+  const { login } = useContext(AuthContext)
   const formikLogin = useFormik({
     initialValues: {
       email: "",
@@ -23,6 +25,7 @@ export default function Login() {
     }),
     onSubmit: (values) => {
       console.log("check ", values)
+      login(values)
     }
   })
   const [togglePassword, setTogglePassword] = useState(true);
@@ -71,7 +74,9 @@ export default function Login() {
         {formikLogin.touched.password && formikLogin.errors.password && <span
           className='text-xs italic font-medium text-red-500'>* {formikLogin.errors.password}</span>}
         <NavLink className="inline-block my-2 text-sm font-medium text-blue-600 float-end" to="/forgot-password">Forgot password ?</NavLink>
-        <Button className='text-base font-bold text-white cursor-pointer button-default bg-button'>Login</Button>
+        <Button
+          type="submit"
+          className='text-base font-bold text-white cursor-pointer button-default bg-button'>Login</Button>
         <Button className='border button-default border-graycustom'>
           <img className='object-cover w-7 h-7' src={iconGoogle} alt="" />
           <span className='text-xs font-medium'>Register with google</span>
