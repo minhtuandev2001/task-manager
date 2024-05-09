@@ -13,7 +13,7 @@ import Label from '../../components/label/Label';
 import Alert from '../../components/alert/Alert';
 import Textarea from '../../components/input/Textarea';
 import ThumbnailFile from '../../components/thumbnail/ThumbnailFile';
-import { severtyList, statusTaskList } from '../../constans/status';
+import { severtyList, statusList } from '../../constans/status';
 
 const Task = () => {
   const [showModalTask, setShowModalTask] = useState(false);
@@ -284,9 +284,9 @@ const Task = () => {
             className="w-full max-w-[252px] h-10 p-3 border rounded-md border-graycustom bg-input focus:border-bluecustom"
           ></Input>
         </div>
-        <div className="grid gap-4 project-content sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 mt-3">
+        <div className="grid gap-4 mt-3 project-content sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           <div className='w-full'>
-            <div className='flex justify-between items-center mb-6'>
+            <div className='flex items-center justify-between mb-6'>
               <div className='flex items-center gap-4'>
                 <div className='w-4 h-4 rounded-md bg-[#2384FF]'></div>
                 <span className='font-medium text-base text-[#717279]'>On going</span>
@@ -301,7 +301,7 @@ const Task = () => {
             <CardTask></CardTask>
           </div>
           <div className='w-full'>
-            <div className='flex justify-between items-center mb-6'>
+            <div className='flex items-center justify-between mb-6'>
               <div className='flex items-center gap-4'>
                 <div className='w-4 h-4 rounded-md bg-[#E80000]'></div>
                 <span className='font-medium text-base text-[#717279]'>Paused</span>
@@ -313,7 +313,7 @@ const Task = () => {
             <CardTask></CardTask>
           </div>
           <div className='w-full'>
-            <div className='flex justify-between items-center mb-6'>
+            <div className='flex items-center justify-between mb-6'>
               <div className='flex items-center gap-4'>
                 <div className='w-4 h-4 rounded-md bg-[#00C271]'></div>
                 <span className='font-medium text-base text-[#717279]'>Done</span>
@@ -360,7 +360,7 @@ const Task = () => {
             ><span className='text-base font-semibold text-blue-500'>Cancel</span></Button>
           </div>
           <div className='flex gap-2'>
-            {statusTaskList.map((item, index) => {
+            {statusList.map((item, index) => {
               return (
                 statusTask === item.id &&
                 <Button

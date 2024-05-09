@@ -17,12 +17,10 @@ function AuthoProvider(props) {
       password: password
     })
       .then((res) => {
-        console.log("check ", res)
         setCurrentUser(res.data.data);
         toast.success("Login Success")
         navigate("/project")
       }).catch((err) => {
-        console.log("check ", err.response)
         toast.error(err.response.data.messages)
       })
   }
@@ -30,7 +28,7 @@ function AuthoProvider(props) {
     localStorage.setItem("user", JSON.stringify(currentUser))
   }, [currentUser])
 
-  return <AuthContext.Provider value={{ currentUser, login }} {...props}></AuthContext.Provider>
+  return <AuthContext.Provider value={{ currentUser, setCurrentUser, login }} {...props}></AuthContext.Provider>
 }
 
 export { AuthContext, AuthoProvider };

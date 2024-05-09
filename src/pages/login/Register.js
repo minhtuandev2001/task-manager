@@ -1,32 +1,45 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Filed from '../../components/filed/Filed'
 import Input from '../../components/input/Input'
 import Label from '../../components/label/Label'
 import Button from '../../components/button/Button'
 import backgroundForm from "../../asset/images/backgroudForm.jpg"
 import iconGoogle from "../../asset/images/Google.png"
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { useFormik } from "formik"
 import * as Yup from "yup";
 import { IconEyeClose, IconEyeOpen } from '../../components/icons'
 import { motion } from "framer-motion"
-
+import axios from 'axios'
+import { URL } from '../../constans/url'
+import { toast } from 'react-toastify'
+import { AuthContext } from "../../context/authContext"
 export default function Register() {
+  const { setCurrentUser } = useContext(AuthContext)
+  const navigate = useNavigate()
   const formikRegister = useFormik({
     initialValues: {
       username: "",
       email: "",
       password: "",
-      passwordcf: "",
+      passwordCf: "",
     },
     validationSchema: Yup.object({
       username: Yup.string().min(4).max(40).required(),
       email: Yup.string().email().required(),
       password: Yup.string().min(8).required(),
-      passwordcf: Yup.string().oneOf([Yup.ref("password"), null], "Password must match").required()
+      passwordCf: Yup.string().oneOf([Yup.ref("password"), null], "Password must match").required()
     }),
     onSubmit: (values) => {
-      console.log("check ", values)
+      axios.post(`${URL}/user/register`, values)
+        .then((res) => {
+          setCurrentUser(res.data.data);
+          toast.success("Register Success")
+          navigate("/project")
+        })
+        .catch((err) => {
+          toast.error(err.response.data.messages)
+        })
     }
   })
   const [togglePassword, setTogglePassword] = useState(true);
@@ -39,6 +52,7 @@ export default function Register() {
       }}
     >
       <motion.form
+        onSubmit={formikRegister.handleSubmit}
         animate={{ y: [70, 0], opacity: [0, 1] }}
         transition={{ duration: 1 }}
         className='bg-white w-full max-w-[454px] p-7 px-8 rounded-md'>
@@ -92,13 +106,13 @@ export default function Register() {
           className='text-xs italic font-medium text-red-500'
         >{formikRegister.errors.password}</span>}
         <Filed className="flex flex-col w-full gap-2 mt-3 mb-2 filed">
-          <Label htmlFor='passwordcf' className="font-medium">Confirm Password</Label>
+          <Label htmlFor='passwordCf' className="font-medium">Confirm Password</Label>
           <Input
-            name="passwordcf"
+            name="passwordCf"
             type={togglePasswordCf ? "password" : "text"}
             className='w-full h-12 p-3 border rounded-md border-graycustom bg-input focus:border-bluecustom'
             placeholder=""
-            {...formikRegister.getFieldProps('passwordcf')}
+            {...formikRegister.getFieldProps('passwordCf')}
           >
             {togglePasswordCf ? <IconEyeClose
               className='absolute -translate-y-1/2 cursor-pointer right-3 top-1/2'
@@ -110,10 +124,12 @@ export default function Register() {
               ></IconEyeOpen>}
           </Input>
         </Filed>
-        {formikRegister.touched.passwordcf && formikRegister.errors.passwordcf && <span
+        {formikRegister.touched.passwordCf && formikRegister.errors.passwordCf && <span
           className='text-xs italic font-medium text-red-500'
-        >{formikRegister.errors.passwordcf}</span>}
-        <Button className='mt-4 text-base font-bold text-white cursor-pointer button-default bg-button'>Sign Up</Button>
+        >{formikRegister.errors.passwordCf}</span>}
+        <Button
+          type="submit"
+          className='mt-4 text-base font-bold text-white cursor-pointer button-default bg-button'>Sign Up</Button>
         <Button className='border button-default border-graycustom'>
           <img className='object-cover w-7 h-7' src={iconGoogle} alt="" />
           <span className='text-xs font-medium'>Login with google</span>

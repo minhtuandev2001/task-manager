@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import { v4 as uuidv4 } from 'uuid';
 import Input from '../../components/input/Input'
 import Button from '../../components/button/Button'
 import CardProject from '../../components/card/CardProject'
@@ -12,16 +13,22 @@ import Textarea from '../../components/input/Textarea';
 import AddUser from '../../components/modal/AddUser';
 import Alert from '../../components/alert/Alert';
 import { IconThink } from '../../components/icons';
+import axios from 'axios';
+import { URL } from '../../constans/url';
+import { statusList } from '../../constans/status';
+import { AuthContext } from "../../context/authContext"
+import { toast } from 'react-toastify';
 
 export default function Project() {
+  const { currentUser } = useContext(AuthContext)
   const [showModalJoinProject, setShowModalJoinProject] = useState(false);
   const [showModalCreateProject, setShowModalCreateProject] = useState(false);
   const [nameProject, setNameProject] = useState("");
   const [descriptionProject, setDescriptionProject] = useState("")
   const [stateDate, setStateDate] = useState([
     {
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: new Date("10/06/2024"),
+      endDate: new Date("11/06/2024"),
       key: 'selection'
     }
   ]);
@@ -31,6 +38,8 @@ export default function Project() {
     member: [],
   })
   const [showAlertCancelCreate, setShowAlertCancelCreate] = useState(false)
+  const [statusProject, setStatusProject] = useState("going");
+
   // chon ngay thang
   const handleSelectDate = (ranges) => {
     setStateDate([ranges.selection])
@@ -39,14 +48,15 @@ export default function Project() {
 
   // them client, leader, member vào du an
   const handleAddUser = (nameItemList, data) => {
+    console.log("check ", data)
     setUserListAdd(preData => {
-      let userExist = preData[nameItemList].some((item) => item.id === data.id)
+      let userExist = preData[nameItemList].some((item) => item._id === data._id)
       return { ...preData, [nameItemList]: userExist ? preData[nameItemList] : [...preData[nameItemList], data] }
     })
   }
 
-  const handleRmoveUser = (nameItemList, id) => {
-    setUserListAdd(preData => ({ ...preData, [nameItemList]: preData[nameItemList].filter((item) => item.id !== id) }))
+  const handleRemoveUser = (nameItemList, id) => {
+    setUserListAdd(preData => ({ ...preData, [nameItemList]: preData[nameItemList].filter((item) => item._id !== id) }))
   }
   // ket thuc them client, leader, member vào du an
 
@@ -56,7 +66,53 @@ export default function Project() {
     setShowModalCreateProject(false)
   }
   // kết thúc xử lý dừng tạo project
-  const handleCreateProject = () => { }
+
+  // xử lý trạng thái project
+  const handleStatusProject = (status) => {
+    switch (status) {
+      case "going":
+        // chuyển sáng pause
+        setStatusProject("pause") // cập nhật ngay
+        break;
+      case "pause":
+        // chuyển sáng done
+        setStatusProject("done")
+        break;
+      case "done":
+        // chuyển sáng going
+        setStatusProject("going")
+        break;
+      default:
+        break;
+    }
+  }
+  // kết thúc xử lý trạng thái project
+
+  const handleCreateProject = () => {
+    let timeStart = (stateDate[0].startDate.getMonth() + 1) + "/" + stateDate[0].startDate.getDate() + "/" + stateDate[0].startDate.getFullYear()
+    let timeEnd = (stateDate[0].endDate.getMonth() + 1) + "/" + stateDate[0].endDate.getDate() + "/" + stateDate[0].endDate.getFullYear()
+
+    axios.post(`${URL}/project/create`, {
+      title: nameProject,
+      status: statusProject,
+      date: {
+        timeStart: timeStart,
+        timeEnd: timeEnd,
+      },
+      description: descriptionProject,
+      client: userListAdd.client,
+      leader: userListAdd.leader,
+      member: userListAdd.member,
+      keyProject: uuidv4(),
+      createdBy: { id: currentUser.id }
+    }).then((res) => {
+      // lấy dữ liệu được trả về và thêm vào list danh sách project
+      // nếu cùng 1 project thì thêm vào không thì thôi
+      toast.success("Create project success")
+    }).catch((err) => {
+      toast.error(err.response.data.messages)
+    })
+  }
   return (
     <>
       <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)]'>
@@ -125,14 +181,15 @@ export default function Project() {
               onClick={() => setShowAlertCancelCreate(true)}
             ><span className='text-base font-semibold text-blue-500'>Cancel</span></Button>
           </div>
-          <Button
-            className='button-default w-auto bg-button bg-opacity-30 text-[#3754DB] h-auto px-4 py-2 rounded-full font-medium self-start'>On going
-          </Button>
-          {/* <Button
-              disabled={isStatusRequest}
-              onClick={() => handleStatusProject(statusProject)}
-              className='button-default w-auto bg-[#00C271] bg-opacity-30 text-[#00C271] h-auto px-4 py-2 rounded-full font-medium self-start'>Done
-            </Button>) */}
+          {statusList.map((item, index) => {
+            return (
+              statusProject === item.id &&
+              <Button
+                key={item.id}
+                onClick={() => handleStatusProject(item.id)}
+                className={`button-default w-auto bg-${item.id} text-sm text-${item.id} h-auto px-4 py-[6px] rounded-full font-medium self-start`}>{item.title}
+              </Button>)
+          })}
           <div className='grid grid-cols-2 gap-8 mb-3'>
             <div className="">
               <p className='mb-3 text-base font-medium'>Due Date</p>
@@ -148,9 +205,9 @@ export default function Project() {
               setValue={setDescriptionProject}
             ></Textarea>
           </div>
-          <AddUser nameItemList="client" userListAdd={userListAdd} handleAddUser={handleAddUser} handleRmoveUser={handleRmoveUser}></AddUser>
-          <AddUser nameItemList="leader" userListAdd={userListAdd} handleAddUser={handleAddUser} handleRmoveUser={handleRmoveUser}></AddUser>
-          <AddUser nameItemList="member" userListAdd={userListAdd} handleAddUser={handleAddUser} handleRmoveUser={handleRmoveUser}></AddUser>
+          <AddUser nameItemList="client" userListAdd={userListAdd} handleAddUser={handleAddUser} handleRemoveUser={handleRemoveUser}></AddUser>
+          <AddUser nameItemList="leader" userListAdd={userListAdd} handleAddUser={handleAddUser} handleRemoveUser={handleRemoveUser}></AddUser>
+          <AddUser nameItemList="member" userListAdd={userListAdd} handleAddUser={handleAddUser} handleRemoveUser={handleRemoveUser}></AddUser>
           <Button
             onClick={handleCreateProject}
             className="mt-5 mb-0 font-medium text-white button-default bg-button">Create Project</Button>

@@ -1,32 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Portal from '../portal/Portal';
 import Button from '../button/Button';
 import Input from '../input/Input';
 import { IconCancel } from '../icons';
-const userFake = [
-  {
-    id: 0,
-    email: "tuan@gmail.com"
-  },
-  {
-    id: 1,
-    email: "tuan1@gmail.com"
-  },
-  {
-    id: 2,
-    email: "tuan2@gmail.com"
-  },
-  {
-    id: 3,
-    email: "tuan3@gmail.com"
-  },
-  {
-    id: 4,
-    email: "tuan4@gmail.com"
-  },
-]
-const ModalAddUser = ({ nameItemList, showSearchPortal, setShowSearchPortal, userListAdd, handleAddUser, handleRemoveUser }) => {
+import axios from 'axios';
+import { URL } from '../../constans/url';
+import lodash from "lodash";
 
+const ModalAddUser = ({ nameItemList, showSearchPortal, setShowSearchPortal, userListAdd, handleAddUser, handleRemoveUser }) => {
+  const [search, setSearch] = useState("");
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    const getUser = async () => {
+      const response = await axios.get(`${URL}/user?keyword=${search}`)
+      setUsers(response.data.data)
+      console.log("check ", response)
+    }
+    getUser()
+  }, [search])
+  const handleChangeInput = lodash.debounce((e) => {
+    console.log("check ", e.target.value)
+    setSearch(e.target.value)
+  }, 500)
   return (
     <>
       <Portal
@@ -42,6 +37,7 @@ const ModalAddUser = ({ nameItemList, showSearchPortal, setShowSearchPortal, use
             <Button onClick={() => setShowSearchPortal(false)}><span className='text-base font-medium text-blue-500'>Cancel</span></Button>
           </div>
           <Input
+            onChange={handleChangeInput}
             type='text'
             name="search"
             className='w-full h-10 p-3 mt-3 border rounded-md border-graycustom bg-input focus:border-bluecustom'
@@ -50,10 +46,10 @@ const ModalAddUser = ({ nameItemList, showSearchPortal, setShowSearchPortal, use
           <div className="flex flex-wrap gap-2 mt-3">
             {userListAdd[nameItemList].length > 0 && userListAdd[nameItemList].map((item, index) => {
               return (
-                <div key={item.id} className="flex items-center gap-2 h-[30px] bg-graycustom bg-opacity-20 p-1 px-2 rounded-md">
+                <div key={item._id} className="flex items-center gap-2 h-[30px] bg-graycustom bg-opacity-20 p-1 px-2 rounded-md">
                   <span className='text-sm font-medium'>{item.email}</span>
                   <IconCancel
-                    onClick={() => handleRemoveUser(nameItemList, item.id)}
+                    onClick={() => handleRemoveUser(nameItemList, item._id)}
                     className='w-[15px] cursor-pointer'></IconCancel>
                 </div>
               )
@@ -62,9 +58,9 @@ const ModalAddUser = ({ nameItemList, showSearchPortal, setShowSearchPortal, use
           <div className='mt-3'>
             <p className='mb-3 text-base font-medium'>Result</p>
             <div className="flex flex-wrap gap-2 mt-3">
-              {userFake.length > 0 && userFake.map((item, index) => {
+              {users.length > 0 && users.map((item, index) => {
                 return (
-                  <div key={item.id}
+                  <div key={item._id}
                     onClick={() => handleAddUser(nameItemList, item)}
                     className="inline-block h-[30px] gap-2 bg-graycustom bg-opacity-20 p-1 px-2 rounded-md cursor-pointer">
                     <span className='text-sm font-medium'>{item.email}</span>

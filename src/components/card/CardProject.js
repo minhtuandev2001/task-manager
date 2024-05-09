@@ -62,6 +62,7 @@ export default function CardProject() {
     setToggleUpdate(false)
     // thời gian cho phép thay đổi ngay cả khi chưa cho update nhưng khi tắt modal thì thời gian sẽ trở lại (logic ở chỗ onClose modal)
   }
+  // xử lý trạng thái project
   const handleStatusProject = (status) => {
     setIsStatusRequest(true)
     switch (status) {
@@ -83,6 +84,7 @@ export default function CardProject() {
         break;
     }
   }
+  // kết thúc xử lý trạng thái project
   const handleDoneProject = () => {
     console.log("check done",)
   }

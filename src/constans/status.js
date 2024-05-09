@@ -1,4 +1,4 @@
-export const statusTaskList = [
+export const statusList = [
   {
     id: "going",
     title: "On going",
