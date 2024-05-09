@@ -7,7 +7,7 @@ const action = [
   {
     id: 0,
     title: "My Project",
-    to: "/",
+    to: "/project",
     icon: <IconProject />,
     iconActive: <IconProject selected={true} />,
   },

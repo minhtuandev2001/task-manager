@@ -11,15 +11,15 @@ import Project from './pages/project/Project';
 import Task from './pages/task/Task';
 import { AuthContext } from "./context/authContext"
 
-function App() {
-  const { currentUser } = useContext(AuthContext);
 
-  const ProtectedRoute = ({ children }) => {
-    if (!currentUser) {
-      return <Navigate to="/login" />
-    }
-    return children
+const ProtectedRoute = ({ children }) => {
+  const { currentUser } = useContext(AuthContext);
+  if (!currentUser) {
+    return <Navigate to="/login" />
   }
+  return children
+}
+function App() {
   return (
     <div>
       <Routes>
