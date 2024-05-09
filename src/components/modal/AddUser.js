@@ -3,10 +3,10 @@ import { IconCancel } from '../icons';
 import Button from '../button/Button';
 import ModalAddUser from './ModalAddUser';
 
-const AddUser = ({ nameItemList, userListAdd, handleAddUser, handleRemoveUser }) => {
+const AddUser = ({ nameItemList, userListAdd, handleAddUser, handleRemoveUser, toggleUpdate }) => {
   const [showSearchPortal, setShowSearchPortal] = useState(false);
   return (
-    <div className="">
+    <div className="mb-2">
       <p className='mb-3 text-base font-medium'>{nameItemList.charAt(0).toUpperCase() + nameItemList.slice(1)}</p>
       <div className="flex flex-wrap gap-2">
         {userListAdd[nameItemList].length > 0 && userListAdd[nameItemList].map((item, index) => {
@@ -19,9 +19,11 @@ const AddUser = ({ nameItemList, userListAdd, handleAddUser, handleRemoveUser })
             </div>
           )
         })}
-        <Button
-          onClick={() => setShowSearchPortal(true)}
-          className="button-default w-auto bg-button h-auto px-4 py-[6px] text-white font-medium">+ add</Button>
+        {toggleUpdate &&
+          <Button
+            onClick={() => setShowSearchPortal(true)}
+            className="button-default w-auto bg-button h-auto px-4 py-[6px] text-white font-medium mb-0">+ add</Button>
+        }
       </div>
       {showSearchPortal &&
         <ModalAddUser nameItemList={nameItemList} showSearchPortal={showSearchPortal} setShowSearchPortal={setShowSearchPortal} userListAdd={userListAdd} handleAddUser={handleAddUser} handleRemoveUser={handleRemoveUser}></ModalAddUser>

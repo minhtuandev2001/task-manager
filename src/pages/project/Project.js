@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import Input from '../../components/input/Input'
 import Button from '../../components/button/Button'
@@ -18,6 +18,8 @@ import { URL } from '../../constans/url';
 import { statusList } from '../../constans/status';
 import { AuthContext } from "../../context/authContext"
 import { toast } from 'react-toastify';
+import lodash from "lodash"
+import noResultImage from "../../asset/images/noResult.png"
 
 export default function Project() {
   const { currentUser } = useContext(AuthContext)
@@ -39,6 +41,9 @@ export default function Project() {
   })
   const [showAlertCancelCreate, setShowAlertCancelCreate] = useState(false)
   const [statusProject, setStatusProject] = useState("going");
+  const [projectList, setProjectList] = useState([])
+  const [searchProject, setSearchProject] = useState("")
+  const [loading, setLoading] = useState(false)
 
   // chon ngay thang
   const handleSelectDate = (ranges) => {
@@ -50,13 +55,13 @@ export default function Project() {
   const handleAddUser = (nameItemList, data) => {
     console.log("check ", data)
     setUserListAdd(preData => {
-      let userExist = preData[nameItemList].some((item) => item._id === data._id)
+      let userExist = preData[nameItemList].some((item) => item.id === data.id)
       return { ...preData, [nameItemList]: userExist ? preData[nameItemList] : [...preData[nameItemList], data] }
     })
   }
 
   const handleRemoveUser = (nameItemList, id) => {
-    setUserListAdd(preData => ({ ...preData, [nameItemList]: preData[nameItemList].filter((item) => item._id !== id) }))
+    setUserListAdd(preData => ({ ...preData, [nameItemList]: preData[nameItemList].filter((item) => item.id !== id) }))
   }
   // ket thuc them client, leader, member vào du an
 
@@ -105,6 +110,10 @@ export default function Project() {
       member: userListAdd.member,
       keyProject: uuidv4(),
       createdBy: { id: currentUser.id }
+    }, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.token}`
+      }
     }).then((res) => {
       // lấy dữ liệu được trả về và thêm vào list danh sách project
       // nếu cùng 1 project thì thêm vào không thì thôi
@@ -113,11 +122,35 @@ export default function Project() {
       toast.error(err.response.data.messages)
     })
   }
+  useEffect(() => {
+    const getProject = () => {
+      setLoading(true)
+      axios.get(`${URL}/project?keyword=${searchProject}`, {
+        headers: {
+          'Authorization': `Bearer ${currentUser.token}`
+        }
+      }).then((res) => {
+        console.log("check ", res.data.data)
+        setProjectList(res.data.data);
+        setLoading(false)
+      }).catch((err) => {
+        toast.error(err.response.data.messages)
+        setLoading(false)
+      })
+    }
+    getProject()
+  }, [searchProject])
+
+  const handleSearchProject = lodash.debounce((e) => {
+    console.log("check ", e.target.value)
+    setSearchProject(e.target.value)
+  }, 500)
   return (
     <>
       <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)]'>
         <div className="flex justify-end gap-2 box-search">
           <Input
+            onChange={handleSearchProject}
             type='text'
             name='search'
             className='w-full h-11 p-3 max-w-[246px] border rounded-md border-graycustom bg-input focus:border-bluecustom'
@@ -132,9 +165,13 @@ export default function Project() {
             className="button-default h-11 bg-button max-w-[110px] text-white font-medium"
           ><span>Join</span></Button>
         </div>
+        {loading && <div className='w-10 h-10 border-4 border-blue-500 rounded-full border-r-4 border-r-transparent animate-spin mx-auto my-2'></div>}
         <div className="grid gap-4 project-content sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          <CardProject></CardProject>
+          {projectList.length > 0 && projectList.map((item, index) => <CardProject key={item._id} data={item}></CardProject>)}
         </div>
+        {projectList.length === 0 && <div className='flex justify-center items-center w-full min-h-[600px] '>
+          <img src={noResultImage} alt="" />
+        </div>}
       </div>
       <Portal
         visible={showModalJoinProject}
@@ -170,12 +207,15 @@ export default function Project() {
           className='w-full p-6 bg-white rounded-md'>
           <div className='flex items-start justify-between w-full mb-2'>
             <div className='flex items-center flex-1 gap-2'>
-              <input type="text"
-                onChange={(e) => setNameProject(e.target.value)}
-                className='w-full max-w-[380px] p-2 text-base font-semibold border rounded-md border-graycustom'
-                placeholder='Enter your name project'
-                value={nameProject}
-              />
+              <div className='flex flex-col w-full'>
+                <input type="text"
+                  onChange={(e) => setNameProject(e.target.value)}
+                  className='w-full max-w-[380px] p-2 text-base font-semibold border rounded-md border-graycustom'
+                  placeholder='Enter your name project'
+                  value={nameProject}
+                />
+                {nameProject.length <= 0 && <span className='text-xs italic text-red-500 font-medium'>* You must provide a title</span>}
+              </div>
             </div>
             <Button
               onClick={() => setShowAlertCancelCreate(true)}

@@ -8,29 +8,28 @@ import Textarea from '../input/Textarea'
 import Alert from '../alert/Alert'
 import { motion } from "framer-motion"
 
-export default function CardProject() {
+export default function CardProject({ data }) {
   const [showProject, setShowProject] = useState(false);
   const [stateDate, setStateDate] = useState([
     {
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: new Date(data.date.timeStart),
+      endDate: new Date(data.date.timeEnd),
       key: 'selection'
     }
   ]);
 
   const [userListAdd, setUserListAdd] = useState({
-    client: [],
-    leader: [],
-    member: [],
+    client: data.client,
+    leader: data.leader,
+    member: data.member,
   })
-
   const [toggleUpdate, setToggleUpdate] = useState(false);
-  const [nameProject, setNameProject] = useState("Create a Design System for Enum Workspace.");
-  const [descriptionProject, setDescriptionProject] = useState("Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto veritatis et aspernatur ducimus temporibus repellat eos possimus esse ea, error, in, quidem debitis enim alias nemo eum quam voluptate fugiat sequi quae consequuntur quo voluptates sapiente! Veritatis blanditiis dicta sunt, impedit atque dolorem accusantium nemo quas corporis harum magnam adipisci!")
-  const [statusProject, setStatusProject] = useState("going");
+  const [nameProject, setNameProject] = useState(data.title);
+  const [descriptionProject, setDescriptionProject] = useState(data.description)
+  const [statusProject, setStatusProject] = useState(data.status);
   const [isStatusRequest, setIsStatusRequest] = useState(false);
   const [showAlertCancelUpdate, setShowAlertCancelUpdate] = useState(false)
-  const [starProject, setStarProject] = useState(false);
+  const [starProject, setStarProject] = useState(data.star);
 
   // chon ngay thang
   const handleSelectDate = (ranges) => {
@@ -58,6 +57,22 @@ export default function CardProject() {
   }
   const handleCancel = () => {
     setShowAlertCancelUpdate(false)
+    setStateDate([
+      {
+        startDate: new Date(data.date.timeStart),
+        endDate: new Date(data.date.timeEnd),
+        key: 'selection'
+      }
+    ])
+    setUserListAdd({
+      client: data.client,
+      leader: data.leader,
+      member: data.member,
+    })
+    setNameProject(data.title)
+    setDescriptionProject(data.description)
+    setStatusProject(data.status)
+    setStarProject(data.star)
     setShowProject(false)
     setToggleUpdate(false)
     // thời gian cho phép thay đổi ngay cả khi chưa cho update nhưng khi tắt modal thì thời gian sẽ trở lại (logic ở chỗ onClose modal)
@@ -92,13 +107,13 @@ export default function CardProject() {
     console.log("check delete",)
   }
   const handleStarProject = (isStar) => {
-    setStarProject(!starProject)
+    setStarProject(starProject === 0 ? 1 : 0)
     // call api , lỗi thì trở về state ban đầu
   }
   return (
     <>
       <div className="flex flex-col gap-3 p-6 rounded-md shadow-md cursor-pointer card-project">
-        <div className='flex gap-2'>
+        <div className='flex gap-2 justify-between'>
           <h2 className='text-base font-semibold line-clamp-1'>{nameProject}</h2>
           <button type='button'
             onClick={() => handleStarProject(true ? 1 : 0)}>
@@ -231,11 +246,11 @@ export default function CardProject() {
                 value={descriptionProject}
                 setValue={setDescriptionProject}
               ></Textarea>)
-              : (<p className='text-sm text-[#717279]'>{descriptionProject}</p>)}
+              : (<p className='text-sm text-[#717279]bg-red-200'>{descriptionProject}</p>)}
           </div>
-          <AddUser nameItemList="client" userListAdd={userListAdd} handleAddUser={handleAddUser} handleRemoveUser={handleRemoveUser}></AddUser>
-          <AddUser nameItemList="leader" userListAdd={userListAdd} handleAddUser={handleAddUser} handleRemoveUser={handleRemoveUser}></AddUser>
-          <AddUser nameItemList="member" userListAdd={userListAdd} handleAddUser={handleAddUser} handleRemoveUser={handleRemoveUser}></AddUser>
+          <AddUser nameItemList="client" userListAdd={userListAdd} handleAddUser={handleAddUser} toggleUpdate={toggleUpdate} handleRemoveUser={handleRemoveUser}></AddUser>
+          <AddUser nameItemList="leader" userListAdd={userListAdd} handleAddUser={handleAddUser} toggleUpdate={toggleUpdate} handleRemoveUser={handleRemoveUser}></AddUser>
+          <AddUser nameItemList="member" userListAdd={userListAdd} handleAddUser={handleAddUser} toggleUpdate={toggleUpdate} handleRemoveUser={handleRemoveUser}></AddUser>
           {toggleUpdate ?
             (<Button
               onClick={handleUpdateProject}

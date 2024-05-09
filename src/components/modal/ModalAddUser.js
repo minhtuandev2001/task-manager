@@ -46,10 +46,10 @@ const ModalAddUser = ({ nameItemList, showSearchPortal, setShowSearchPortal, use
           <div className="flex flex-wrap gap-2 mt-3">
             {userListAdd[nameItemList].length > 0 && userListAdd[nameItemList].map((item, index) => {
               return (
-                <div key={item._id} className="flex items-center gap-2 h-[30px] bg-graycustom bg-opacity-20 p-1 px-2 rounded-md">
+                <div key={item.id} className="flex items-center gap-2 h-[30px] bg-graycustom bg-opacity-20 p-1 px-2 rounded-md">
                   <span className='text-sm font-medium'>{item.email}</span>
                   <IconCancel
-                    onClick={() => handleRemoveUser(nameItemList, item._id)}
+                    onClick={() => handleRemoveUser(nameItemList, item.id)}
                     className='w-[15px] cursor-pointer'></IconCancel>
                 </div>
               )
@@ -61,7 +61,7 @@ const ModalAddUser = ({ nameItemList, showSearchPortal, setShowSearchPortal, use
               {users.length > 0 && users.map((item, index) => {
                 return (
                   <div key={item._id}
-                    onClick={() => handleAddUser(nameItemList, item)}
+                    onClick={() => handleAddUser(nameItemList, { id: item._id, email: item.email })}
                     className="inline-block h-[30px] gap-2 bg-graycustom bg-opacity-20 p-1 px-2 rounded-md cursor-pointer">
                     <span className='text-sm font-medium'>{item.email}</span>
                   </div>)
