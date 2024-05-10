@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import Button from '../button/Button'
-import { IconCalender, IconDelete, IconEdit, IconStarFill, IconStarOutline, IconThink } from '../icons'
+import { IconCalender, IconDelete, IconEdit, IconStarFill, IconStarOutline, IconThink, IconWarning } from '../icons'
 import AddUser from '../modal/AddUser'
 import InputRangeDate from '../input/InputRangeDate'
 import Portal from '../portal/Portal'
@@ -12,7 +12,8 @@ import axios from 'axios'
 import { AuthContext } from "../../context/authContext"
 import { BASE_URL } from "../../constans/url"
 import { statusList } from '../../constans/status'
-export default function CardProject({ data }) {
+
+export default function CardProject({ data, handleRemoveProject }) {
   const { currentUser } = useContext(AuthContext)
   const [showProject, setShowProject] = useState(false);
   const [stateDate, setStateDate] = useState([
@@ -34,7 +35,7 @@ export default function CardProject({ data }) {
   const [statusProject, setStatusProject] = useState(data.status);
   const [showAlertCancelUpdate, setShowAlertCancelUpdate] = useState(false)
   const [starProject, setStarProject] = useState(data.star);
-
+  const [showAlertWarningDelete, setShowAlertWarningDelete] = useState(false)
   // chon ngay thang
   const handleSelectDate = (ranges) => {
     setStateDate([ranges.selection])
@@ -154,9 +155,6 @@ export default function CardProject({ data }) {
       toast.error(err.response.data.messages)
     })
   }
-  const handleRemoveProject = () => {
-    console.log("check delete",)
-  }
   const handleStarProject = () => {
     let newStar = starProject === 0 ? 1 : 0;
     // call api , lỗi thì trở về state ban đầu
@@ -223,7 +221,7 @@ export default function CardProject({ data }) {
             onClick={handleDoneProject}
             className='button-default bg-[#00C271] text-white rounded-md font-medium mb-0'>Done</Button>
           <Button
-            onClick={handleRemoveProject}
+            onClick={() => setShowAlertWarningDelete(true)}
             className='button-default bg-[#FFF0F0] w-full max-w-12 h-12 text-white rounded-md font-medium mb-0'><IconDelete></IconDelete></Button>
           <Button
             onClick={() => setShowProject(true)}
@@ -283,7 +281,7 @@ export default function CardProject({ data }) {
                 onClick={() => setShowAlertCancelUpdate(true)}
               ><span className='text-base font-semibold text-blue-500'>Cancel</span></Button>)
               : (<Button
-                onClick={handleRemoveProject}
+                onClick={() => setShowAlertWarningDelete(true)}
               ><span className='text-[#E80000] text-base font-medium'>Delete</span></Button>)}
           </div>
           {statusList.map((item, index) => {
@@ -339,6 +337,20 @@ export default function CardProject({ data }) {
           <div className='flex items-center justify-between w-full mt-3'>
             <Button onClick={handleUpdateProject} className="px-4 py-2 font-medium text-white rounded-md bg-button">Save</Button>
             <Button onClick={handleCancel} className="px-4 py-2 font-medium text-[#E80000] rounded-md bg-gray-300 bg-opacity-50">Cancel</Button>
+          </div>
+        </div>
+      </Alert>
+      <Alert
+        showAlert={showAlertWarningDelete}
+      >
+        <div
+          transition={{ type: "spring", duration: 0.15 }}
+          className='flex flex-col items-center w-full h-full gap-3 p-6 bg-white rounded-md'>
+          <IconWarning className='block w-12 h-12'></IconWarning>
+          <p className='text-base font-semibold text-center'>Do you want to delete the project?</p>
+          <div className='flex items-center justify-between w-full mt-3'>
+            <Button onClick={() => handleRemoveProject(data._id)} className="px-4 py-2 font-medium text-white rounded-md bg-button">continue</Button>
+            <Button onClick={() => setShowAlertWarningDelete(false)} className="px-4 py-2 font-medium text-[#E80000] rounded-md bg-gray-300 bg-opacity-50">Cancel</Button>
           </div>
         </div>
       </Alert>

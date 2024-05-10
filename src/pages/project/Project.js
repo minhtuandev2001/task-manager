@@ -148,6 +148,19 @@ export default function Project() {
   const handleSearchProject = lodash.debounce((e) => {
     setSearchProject(e.target.value)
   }, 500)
+
+  const handleRemoveProject = (id) => {
+    axios.delete(`${BASE_URL}/project/delete/${id}`, {
+      headers: {
+        "Authorization": `Bearer ${currentUser.token}`
+      }
+    }).then((res) => {
+      setProjectList(preve => preve.filter((item) => item._id !== id))
+      toast.success("Deleted project success")
+    }).catch((err) => {
+      toast.error(err.response.data.messages)
+    })
+  }
   return (
     <>
       <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)]'>
@@ -170,7 +183,7 @@ export default function Project() {
         </div>
         {loading && <div className='w-10 h-10 mx-auto my-2 border-4 border-r-4 border-blue-500 rounded-full border-r-transparent animate-spin'></div>}
         <div className="grid gap-4 project-content sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          {projectList.length > 0 && projectList.map((item, index) => <CardProject key={item._id} data={item}></CardProject>)}
+          {projectList.length > 0 && projectList.map((item, index) => <CardProject key={item._id} data={item} handleRemoveProject={handleRemoveProject}></CardProject>)}
         </div>
         {projectList.length === 0 && <div className='flex justify-center items-center w-full min-h-[600px] '>
           <img src={noResultImage} alt="" />
