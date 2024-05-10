@@ -59,7 +59,7 @@ export default function CardProject({ data }) {
     let timeStart = (stateDate[0].startDate.getMonth() + 1) + "/" + stateDate[0].startDate.getDate() + "/" + stateDate[0].startDate.getFullYear()
     let timeEnd = (stateDate[0].endDate.getMonth() + 1) + "/" + stateDate[0].endDate.getDate() + "/" + stateDate[0].endDate.getFullYear()
     try {
-      const response = await axios.patch(`${BASE_URL}/project/update/${data._id}`, {
+      await axios.patch(`${BASE_URL}/project/update/${data._id}`, {
         title: nameProject,
         star: starProject,
         status: statusProject,
@@ -92,22 +92,31 @@ export default function CardProject({ data }) {
   }
 
   const handleResetData = () => {
-    setStateDate([
-      {
-        startDate: new Date(data.date.timeStart),
-        endDate: new Date(data.date.timeEnd),
-        key: 'selection'
+    axios.get(`${BASE_URL}/project/detail/${data._id}`, {
+      headers: {
+        "Authorization": `Bearer ${currentUser.token}`
       }
-    ])
-    setUserListAdd({
-      client: data.client,
-      leader: data.leader,
-      member: data.member,
+    }).then((res) => {
+      let data = res.data.data
+      setStateDate([
+        {
+          startDate: new Date(data.date.timeStart),
+          endDate: new Date(data.date.timeEnd),
+          key: 'selection'
+        }
+      ])
+      setUserListAdd({
+        client: data.client,
+        leader: data.leader,
+        member: data.member,
+      })
+      setNameProject(data.title)
+      setDescriptionProject(data.description)
+      setStatusProject(data.status)
+      setStarProject(data.star)
+    }).catch((err) => {
+      toast.error(err.response.data.messages)
     })
-    setNameProject(data.title)
-    setDescriptionProject(data.description)
-    setStatusProject(data.status)
-    setStarProject(data.star)
   }
 
   // xử lý trạng thái project
@@ -131,7 +140,19 @@ export default function CardProject({ data }) {
   }
   // kết thúc xử lý trạng thái project
   const handleDoneProject = () => {
-    console.log("check done",)
+    axios.patch(`${BASE_URL}/project/done-project/${data._id}`, {
+      status: "done"
+    }, {
+      headers: {
+        "Authorization": `Bearer ${currentUser.token}`
+      }
+    }).then((res) => {
+      toast.success("Done project success")
+      setStatusProject("done")
+    }).catch((err) => {
+      setStatusProject(data.status)
+      toast.error(err.response.data.messages)
+    })
   }
   const handleRemoveProject = () => {
     console.log("check delete",)
@@ -270,7 +291,7 @@ export default function CardProject({ data }) {
               statusProject === item.id &&
               <Button
                 key={item.id}
-                onClick={() => handleStatusProject(item.id)}
+                onClick={() => toggleUpdate ? handleStatusProject(item.id) : {}}
                 className={`button-default w-auto bg-${item.id} text-sm text-${item.id} h-auto px-4 py-[6px] rounded-full font-medium self-start`}>{item.title}
               </Button>)
           })}
