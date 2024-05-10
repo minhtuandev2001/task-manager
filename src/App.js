@@ -28,7 +28,7 @@ function App() {
         <Route path='/forgot-password' element={<ForgotPassword></ForgotPassword>}></Route>
         <Route path='/enter-opt' element={<EnterOpt></EnterOpt>}></Route>
         <Route path='/new-password' element={<NewPassword></NewPassword>}></Route>
-        <Route path='/' element={<ProtectedRoute><Layout></Layout></ProtectedRoute>}>
+        <Route element={<ProtectedRoute><Layout></Layout></ProtectedRoute>}>
           <Route path='/project' element={<Project></Project>}></Route>
           {/* projectId == "" lấy tất cả */}
           {/* /task/projectId?statusProject=going&search=name */}

@@ -146,7 +146,6 @@ export default function Project() {
   }, [searchProject])
 
   const handleSearchProject = lodash.debounce((e) => {
-    console.log("check ", e.target.value)
     setSearchProject(e.target.value)
   }, 500)
   return (

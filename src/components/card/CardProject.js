@@ -136,9 +136,21 @@ export default function CardProject({ data }) {
   const handleRemoveProject = () => {
     console.log("check delete",)
   }
-  const handleStarProject = (isStar) => {
-    setStarProject(starProject === 0 ? 1 : 0)
+  const handleStarProject = () => {
+    let newStar = starProject === 0 ? 1 : 0;
     // call api , lỗi thì trở về state ban đầu
+    axios.patch(`${BASE_URL}/project/change-star/${data._id}`, {
+      star: newStar,
+    }, {
+      headers: {
+        "Authorization": `Bearer ${currentUser.token}`
+      }
+    }).then((res) => {
+      toast.success(`${newStar === 0 ? "Unstar" : "Star"} project success`)
+      setStarProject(newStar)
+    }).catch((err) => {
+      toast.error(err.response.data.messages)
+    })
   }
   return (
     <>
@@ -147,8 +159,8 @@ export default function CardProject({ data }) {
           <h2 className='text-base font-semibold line-clamp-1'>{nameProject}</h2>
           <button type='button'
             className='w-full max-w-[20px]'
-            onClick={() => handleStarProject(true ? 1 : 0)}>
-            {true ?
+            onClick={handleStarProject}>
+            {starProject !== 0 ?
               <IconStarFill></IconStarFill>
               :
               <IconStarOutline></IconStarOutline>
@@ -185,7 +197,7 @@ export default function CardProject({ data }) {
         <div className="text-sm font-normal text-[#717279]">
           <p className='line-clamp-3'>{descriptionProject}</p>
         </div>
-        <div className='flex gap-4'>
+        <div className='flex gap-4 mt-auto'>
           <Button
             onClick={handleDoneProject}
             className='button-default bg-[#00C271] text-white rounded-md font-medium mb-0'>Done</Button>
@@ -226,9 +238,24 @@ export default function CardProject({ data }) {
               ) : (
                 <h2 className='text-base font-semibold line-clamp-3 w-full max-w-[380px]'>{nameProject}</h2>
               )}
-              <button type='button'>
-                <IconStarFill></IconStarFill>
-              </button>
+              {toggleUpdate ? (
+                <button type='button'
+                  className='w-full max-w-[20px]'
+                  onClick={handleStarProject}>
+                  {starProject !== 0 ?
+                    <IconStarFill></IconStarFill>
+                    :
+                    <IconStarOutline></IconStarOutline>
+                  }
+                </button>) :
+                (<button type='button'
+                  className='w-full max-w-[20px]'>
+                  {starProject !== 0 ?
+                    <IconStarFill></IconStarFill>
+                    :
+                    <IconStarOutline></IconStarOutline>
+                  }
+                </button>)}
             </div>
             {toggleUpdate ? (
               <Button
@@ -263,6 +290,10 @@ export default function CardProject({ data }) {
                 setValue={setDescriptionProject}
               ></Textarea>)
               : (<p className='text-sm text-[#717279]bg-red-200'>{descriptionProject}</p>)}
+          </div>
+          <div className="mb-3">
+            <p className='mb-2 text-base font-medium'>Key Project</p>
+            <p className='text-sm font-medium text-blue-500'>{data.keyProject}</p>
           </div>
           <AddUser nameItemList="client" userListAdd={userListAdd} handleAddUser={handleAddUser} toggleUpdate={toggleUpdate} handleRemoveUser={handleRemoveUser}></AddUser>
           <AddUser nameItemList="leader" userListAdd={userListAdd} handleAddUser={handleAddUser} toggleUpdate={toggleUpdate} handleRemoveUser={handleRemoveUser}></AddUser>
