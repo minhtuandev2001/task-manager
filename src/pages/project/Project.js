@@ -14,7 +14,7 @@ import AddUser from '../../components/modal/AddUser';
 import Alert from '../../components/alert/Alert';
 import { IconThink } from '../../components/icons';
 import axios from 'axios';
-import { URL } from '../../constans/url';
+import { BASE_URL } from '../../constans/url';
 import { statusList } from '../../constans/status';
 import { AuthContext } from "../../context/authContext"
 import { toast } from 'react-toastify';
@@ -97,7 +97,7 @@ export default function Project() {
     let timeStart = (stateDate[0].startDate.getMonth() + 1) + "/" + stateDate[0].startDate.getDate() + "/" + stateDate[0].startDate.getFullYear()
     let timeEnd = (stateDate[0].endDate.getMonth() + 1) + "/" + stateDate[0].endDate.getDate() + "/" + stateDate[0].endDate.getFullYear()
 
-    axios.post(`${URL}/project/create`, {
+    axios.post(`${BASE_URL}/project/create`, {
       title: nameProject,
       status: statusProject,
       date: {
@@ -125,7 +125,7 @@ export default function Project() {
   useEffect(() => {
     const getProject = () => {
       setLoading(true)
-      axios.get(`${URL}/project?keyword=${searchProject}`, {
+      axios.get(`${BASE_URL}/project?keyword=${searchProject}`, {
         headers: {
           'Authorization': `Bearer ${currentUser.token}`
         }
@@ -165,7 +165,7 @@ export default function Project() {
             className="button-default h-11 bg-button max-w-[110px] text-white font-medium"
           ><span>Join</span></Button>
         </div>
-        {loading && <div className='w-10 h-10 border-4 border-blue-500 rounded-full border-r-4 border-r-transparent animate-spin mx-auto my-2'></div>}
+        {loading && <div className='w-10 h-10 mx-auto my-2 border-4 border-r-4 border-blue-500 rounded-full border-r-transparent animate-spin'></div>}
         <div className="grid gap-4 project-content sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {projectList.length > 0 && projectList.map((item, index) => <CardProject key={item._id} data={item}></CardProject>)}
         </div>
@@ -214,7 +214,7 @@ export default function Project() {
                   placeholder='Enter your name project'
                   value={nameProject}
                 />
-                {nameProject.length <= 0 && <span className='text-xs italic text-red-500 font-medium'>* You must provide a title</span>}
+                {nameProject.length <= 0 && <span className='text-xs italic font-medium text-red-500'>* You must provide a title</span>}
               </div>
             </div>
             <Button

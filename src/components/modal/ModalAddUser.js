@@ -4,7 +4,7 @@ import Button from '../button/Button';
 import Input from '../input/Input';
 import { IconCancel } from '../icons';
 import axios from 'axios';
-import { URL } from '../../constans/url';
+import { BASE_URL } from '../../constans/url';
 import lodash from "lodash";
 
 const ModalAddUser = ({ nameItemList, showSearchPortal, setShowSearchPortal, userListAdd, handleAddUser, handleRemoveUser }) => {
@@ -12,7 +12,7 @@ const ModalAddUser = ({ nameItemList, showSearchPortal, setShowSearchPortal, use
   const [users, setUsers] = useState([]);
   useEffect(() => {
     const getUser = async () => {
-      const response = await axios.get(`${URL}/user?keyword=${search}`)
+      const response = await axios.get(`${BASE_URL}/user?keyword=${search}`)
       setUsers(response.data.data)
       console.log("check ", response)
     }

@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { createContext, useEffect, useState } from "react";
-import { URL } from "../constans/url";
+import { BASE_URL } from "../constans/url";
 import { toast } from "react-toastify";
 import { useNavigate } from 'react-router-dom';
 
@@ -12,7 +12,7 @@ function AuthoProvider(props) {
 
   const login = ({ email, password }) => {
     // await axios.get("http://localhost:4000")
-    axios.post(`http://localhost:4000/user/login`, {
+    axios.post(`${BASE_URL}/user/login`, {
       email: email,
       password: password
     })

@@ -11,7 +11,7 @@ import * as Yup from "yup";
 import { IconEyeClose, IconEyeOpen } from '../../components/icons'
 import { motion } from "framer-motion"
 import axios from 'axios'
-import { URL } from '../../constans/url'
+import { BASE_URL } from '../../constans/url'
 import { toast } from 'react-toastify'
 import { AuthContext } from "../../context/authContext"
 export default function Register() {
@@ -31,7 +31,7 @@ export default function Register() {
       passwordCf: Yup.string().oneOf([Yup.ref("password"), null], "Password must match").required()
     }),
     onSubmit: (values) => {
-      axios.post(`${URL}/user/register`, values)
+      axios.post(`${BASE_URL}/user/register`, values)
         .then((res) => {
           setCurrentUser(res.data.data);
           toast.success("Register Success")

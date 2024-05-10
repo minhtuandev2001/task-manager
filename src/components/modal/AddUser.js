@@ -3,7 +3,7 @@ import { IconCancel } from '../icons';
 import Button from '../button/Button';
 import ModalAddUser from './ModalAddUser';
 
-const AddUser = ({ nameItemList, userListAdd, handleAddUser, handleRemoveUser, toggleUpdate }) => {
+const AddUser = ({ nameItemList, userListAdd, handleAddUser, handleRemoveUser, toggleUpdate = true }) => {
   const [showSearchPortal, setShowSearchPortal] = useState(false);
   return (
     <div className="mb-2">
@@ -11,10 +11,10 @@ const AddUser = ({ nameItemList, userListAdd, handleAddUser, handleRemoveUser, t
       <div className="flex flex-wrap gap-2">
         {userListAdd[nameItemList].length > 0 && userListAdd[nameItemList].map((item, index) => {
           return (
-            <div key={item._id} className="flex items-center gap-2 h-[30px] bg-graycustom bg-opacity-20 p-1 px-2 rounded-md">
+            <div key={item.id} className="flex items-center gap-2 h-[30px] bg-graycustom bg-opacity-20 p-1 px-2 rounded-md">
               <span className='text-sm font-medium'>{item.email}</span>
               <IconCancel
-                onClick={() => handleRemoveUser(nameItemList, item._id)}
+                onClick={() => handleRemoveUser(nameItemList, item.id)}
                 className='w-[15px] cursor-pointer'></IconCancel>
             </div>
           )

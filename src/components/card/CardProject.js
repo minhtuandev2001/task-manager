@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Button from '../button/Button'
 import { IconCalender, IconDelete, IconEdit, IconStarFill, IconStarOutline, IconThink } from '../icons'
 import AddUser from '../modal/AddUser'
@@ -7,8 +7,12 @@ import Portal from '../portal/Portal'
 import Textarea from '../input/Textarea'
 import Alert from '../alert/Alert'
 import { motion } from "framer-motion"
-
+import { toast } from 'react-toastify';
+import axios from 'axios'
+import { AuthContext } from "../../context/authContext"
+import { BASE_URL } from "../../constans/url"
 export default function CardProject({ data }) {
+  const { currentUser } = useContext(AuthContext)
   const [showProject, setShowProject] = useState(false);
   const [stateDate, setStateDate] = useState([
     {
@@ -50,8 +54,32 @@ export default function CardProject({ data }) {
   }
   // ket thuc them client, leader, member vào du an
 
-  const handleUpdateProject = () => {
+  const handleUpdateProject = async () => {
     setShowAlertCancelUpdate(false)
+    let timeStart = (stateDate[0].startDate.getMonth() + 1) + "/" + stateDate[0].startDate.getDate() + "/" + stateDate[0].startDate.getFullYear()
+    let timeEnd = (stateDate[0].endDate.getMonth() + 1) + "/" + stateDate[0].endDate.getDate() + "/" + stateDate[0].endDate.getFullYear()
+    try {
+      const response = await axios.patch(`${BASE_URL}/project/update/${data._id}`, {
+        title: nameProject,
+        star: starProject,
+        status: statusProject,
+        date: {
+          timeStart: timeStart,
+          timeEnd: timeEnd
+        },
+        description: descriptionProject,
+        client: userListAdd.client,
+        leader: userListAdd.leader,
+        member: userListAdd.member,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${currentUser.token}`
+        }
+      })
+      toast.success("Update project success")
+    } catch (err) {
+      toast.error(err.response.data.messages)
+    }
     // cập nhật project xong thì bắt đầu mới chuyển về lại chế độ xem
     setToggleUpdate(false)
   }
@@ -113,7 +141,7 @@ export default function CardProject({ data }) {
   return (
     <>
       <div className="flex flex-col gap-3 p-6 rounded-md shadow-md cursor-pointer card-project">
-        <div className='flex gap-2 justify-between'>
+        <div className='flex justify-between gap-2'>
           <h2 className='text-base font-semibold line-clamp-1'>{nameProject}</h2>
           <button type='button'
             onClick={() => handleStarProject(true ? 1 : 0)}>
