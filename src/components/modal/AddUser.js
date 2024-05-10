@@ -13,9 +13,10 @@ const AddUser = ({ nameItemList, userListAdd, handleAddUser, handleRemoveUser, t
           return (
             <div key={item.id} className="flex items-center gap-2 h-[30px] bg-graycustom bg-opacity-20 p-1 px-2 rounded-md">
               <span className='text-sm font-medium'>{item.email}</span>
-              <IconCancel
-                onClick={() => handleRemoveUser(nameItemList, item.id)}
-                className='w-[15px] cursor-pointer'></IconCancel>
+              {toggleUpdate &&
+                <IconCancel
+                  onClick={() => handleRemoveUser(nameItemList, item.id)}
+                  className='w-[15px] cursor-pointer'></IconCancel>}
             </div>
           )
         })}

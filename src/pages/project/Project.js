@@ -109,14 +109,18 @@ export default function Project() {
       leader: userListAdd.leader,
       member: userListAdd.member,
       keyProject: uuidv4(),
-      createdBy: { id: currentUser.id }
+      createdBy: { user_id: currentUser.id }
     }, {
       headers: {
         'Authorization': `Bearer ${currentUser.token}`
       }
     }).then((res) => {
-      // lấy dữ liệu được trả về và thêm vào list danh sách project
-      // nếu cùng 1 project thì thêm vào không thì thôi
+      const regex = new RegExp(searchProject, 'i')
+      // project vừa tạo có title khớp với keyword người dùng đang search thì cho hiển thị
+      if (regex.test(res.data.data.title)) {
+        setProjectList(prevData => [res.data.data, ...prevData])
+      }
+      setShowModalCreateProject(false)
       toast.success("Create project success")
     }).catch((err) => {
       toast.error(err.response.data.messages)

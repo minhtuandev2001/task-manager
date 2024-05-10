@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios'
 import { AuthContext } from "../../context/authContext"
 import { BASE_URL } from "../../constans/url"
+import { statusList } from '../../constans/status'
 export default function CardProject({ data }) {
   const { currentUser } = useContext(AuthContext)
   const [showProject, setShowProject] = useState(false);
@@ -31,7 +32,6 @@ export default function CardProject({ data }) {
   const [nameProject, setNameProject] = useState(data.title);
   const [descriptionProject, setDescriptionProject] = useState(data.description)
   const [statusProject, setStatusProject] = useState(data.status);
-  const [isStatusRequest, setIsStatusRequest] = useState(false);
   const [showAlertCancelUpdate, setShowAlertCancelUpdate] = useState(false)
   const [starProject, setStarProject] = useState(data.star);
 
@@ -78,6 +78,7 @@ export default function CardProject({ data }) {
       })
       toast.success("Update project success")
     } catch (err) {
+      handleResetData();
       toast.error(err.response.data.messages)
     }
     // cập nhật project xong thì bắt đầu mới chuyển về lại chế độ xem
@@ -85,6 +86,12 @@ export default function CardProject({ data }) {
   }
   const handleCancel = () => {
     setShowAlertCancelUpdate(false)
+    setShowProject(false)
+    handleResetData()
+    setToggleUpdate(false)
+  }
+
+  const handleResetData = () => {
     setStateDate([
       {
         startDate: new Date(data.date.timeStart),
@@ -101,26 +108,21 @@ export default function CardProject({ data }) {
     setDescriptionProject(data.description)
     setStatusProject(data.status)
     setStarProject(data.star)
-    setShowProject(false)
-    setToggleUpdate(false)
-    // thời gian cho phép thay đổi ngay cả khi chưa cho update nhưng khi tắt modal thì thời gian sẽ trở lại (logic ở chỗ onClose modal)
   }
+
   // xử lý trạng thái project
   const handleStatusProject = (status) => {
-    setIsStatusRequest(true)
     switch (status) {
       case "going":
         // chuyển sáng pause
         setStatusProject("pause") // cập nhật ngay
-        setTimeout(() => { // call api // lỗi thì chuyển trạng thái về cái trước đó
-          console.log("check ",)
-          setIsStatusRequest(false);
-        }, 5000);
         break;
       case "pause":
+        setStatusProject("done") // cập nhật ngay
         // chuyển sáng done
         break;
       case "done":
+        setStatusProject("going") // cập nhật ngay
         // chuyển sáng going
         break;
       default:
@@ -144,6 +146,7 @@ export default function CardProject({ data }) {
         <div className='flex justify-between gap-2'>
           <h2 className='text-base font-semibold line-clamp-1'>{nameProject}</h2>
           <button type='button'
+            className='w-full max-w-[20px]'
             onClick={() => handleStarProject(true ? 1 : 0)}>
             {true ?
               <IconStarFill></IconStarFill>
@@ -154,20 +157,14 @@ export default function CardProject({ data }) {
         </div>
         {statusProject === "going" && (
           <Button
-            disabled={isStatusRequest}
-            onClick={() => handleStatusProject(statusProject)}
             className='button-default w-auto bg-button bg-opacity-30 text-sm text-[#3754DB] h-auto px-4 py-[6px] rounded-full font-medium self-start mb-0'>On going
           </Button>)}
         {statusProject === "pause" && (
           <Button
-            disabled={isStatusRequest}
-            onClick={() => handleStatusProject(statusProject)}
             className='button-default w-auto bg-[#ED3159] bg-opacity-30 text-sm text-[#ED3159] h-auto px-4 py-[6px] rounded-full font-medium self-start mb-0'>Pause
           </Button>)}
         {statusProject === "done" && (
           <Button
-            disabled={isStatusRequest}
-            onClick={() => handleStatusProject(statusProject)}
             className='button-default w-auto bg-[#00C271] bg-opacity-30 text-sm text-[#00C271] h-auto px-4 py-[6px] rounded-full font-medium self-start mb-0'>Done
           </Button>)}
         <div className='flex items-center gap-3'>
@@ -241,24 +238,15 @@ export default function CardProject({ data }) {
                 onClick={handleRemoveProject}
               ><span className='text-[#E80000] text-base font-medium'>Delete</span></Button>)}
           </div>
-          {statusProject === "going" && (
-            <Button
-              disabled={isStatusRequest}
-              onClick={() => handleStatusProject(statusProject)}
-              className='button-default w-auto bg-button bg-opacity-30  text-sm text-[#3754DB] h-auto px-4 py-[6px] rounded-full font-medium self-start'>On going
-            </Button>)}
-          {statusProject === "pause" && (
-            <Button
-              disabled={isStatusRequest}
-              onClick={() => handleStatusProject(statusProject)}
-              className='button-default w-auto bg-[#ED3159] bg-opacity-30 text-sm text-[#ED3159] h-auto px-4 py-[6px] rounded-full font-medium self-start'>Pause
-            </Button>)}
-          {statusProject === "done" && (
-            <Button
-              disabled={isStatusRequest}
-              onClick={() => handleStatusProject(statusProject)}
-              className='button-default w-auto bg-[#00C271] bg-opacity-30 text-sm text-[#00C271] h-auto px-4 py-[6px] rounded-full font-medium self-start'>Done
-            </Button>)}
+          {statusList.map((item, index) => {
+            return (
+              statusProject === item.id &&
+              <Button
+                key={item.id}
+                onClick={() => handleStatusProject(item.id)}
+                className={`button-default w-auto bg-${item.id} text-sm text-${item.id} h-auto px-4 py-[6px] rounded-full font-medium self-start`}>{item.title}
+              </Button>)
+          })}
           <div className='grid grid-cols-2 gap-8 mb-3'>
             <div className="">
               <p className='mb-3 text-base font-medium'>Due Date</p>
