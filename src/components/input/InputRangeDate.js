@@ -3,7 +3,7 @@ import { IconCalender } from '../icons'
 import Portal from '../portal/Portal'
 import { DateRange } from 'react-date-range'
 
-const InputRangeDate = ({ stateDate, handleSelectDate }) => {
+const InputRangeDate = ({ stateDate, handleSelectDate, toogleChoose = true, dateLimit = null }) => {
   const inputDateRef = useRef(null);
   const [showPickerDate, setShowPickerDate] = useState(false);
   const [coords, setCoords] = useState({
@@ -18,7 +18,7 @@ const InputRangeDate = ({ stateDate, handleSelectDate }) => {
     <>
       <div
         ref={inputDateRef}
-        onClick={clickDatePicker}
+        onClick={() => toogleChoose ? clickDatePicker() : {}}
         className='flex items-center border border-graycustom h-10 rounded-md justify-between px-[10px] cursor-pointer'>
         <span className='text-sm font-medium text-[#787486] tracking-wider'>{
           (stateDate[0].startDate.getFullYear() === stateDate[0].endDate.getFullYear()) ?
@@ -46,6 +46,8 @@ const InputRangeDate = ({ stateDate, handleSelectDate }) => {
       >
         <div className="w-auto shadow-md max-w-[332px] rounded-md overflow-hidden">
           <DateRange
+            minDate={dateLimit ? dateLimit.minDate : null}
+            maxDate={dateLimit ? dateLimit.maxDate : null}
             editableDateInputs={true}
             onChange={handleSelectDate}
             moveRangeOnFirstSelection={false}

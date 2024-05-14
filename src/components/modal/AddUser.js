@@ -3,7 +3,7 @@ import { IconCancel } from '../icons';
 import Button from '../button/Button';
 import ModalAddUser from './ModalAddUser';
 
-const AddUser = ({ nameItemList, userListAdd, handleAddUser, handleRemoveUser, toggleUpdate = true }) => {
+const AddUser = ({ nameItemList, userListAdd, handleAddUser, handleRemoveUser, toggleChoose = true }) => {
   const [showSearchPortal, setShowSearchPortal] = useState(false);
   return (
     <div className="mb-2">
@@ -13,14 +13,14 @@ const AddUser = ({ nameItemList, userListAdd, handleAddUser, handleRemoveUser, t
           return (
             <div key={item.id} className="flex items-center gap-2 h-[30px] bg-graycustom bg-opacity-20 p-1 px-2 rounded-md">
               <span className='text-sm font-medium'>{item.email}</span>
-              {toggleUpdate &&
+              {toggleChoose &&
                 <IconCancel
                   onClick={() => handleRemoveUser(nameItemList, item.id)}
                   className='w-[15px] cursor-pointer'></IconCancel>}
             </div>
           )
         })}
-        {toggleUpdate &&
+        {toggleChoose &&
           <Button
             onClick={() => setShowSearchPortal(true)}
             className="button-default w-auto bg-button h-auto px-4 py-[6px] text-white font-medium mb-0">+ add</Button>

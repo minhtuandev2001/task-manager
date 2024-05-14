@@ -186,18 +186,14 @@ export default function CardProject({ data, handleRemoveProject }) {
             }
           </button>
         </div>
-        {statusProject === "going" && (
-          <Button
-            className='button-default w-auto bg-button bg-opacity-30 text-sm text-[#3754DB] h-auto px-4 py-[6px] rounded-full font-medium self-start mb-0'>On going
-          </Button>)}
-        {statusProject === "pause" && (
-          <Button
-            className='button-default w-auto bg-[#ED3159] bg-opacity-30 text-sm text-[#ED3159] h-auto px-4 py-[6px] rounded-full font-medium self-start mb-0'>Pause
-          </Button>)}
-        {statusProject === "done" && (
-          <Button
-            className='button-default w-auto bg-[#00C271] bg-opacity-30 text-sm text-[#00C271] h-auto px-4 py-[6px] rounded-full font-medium self-start mb-0'>Done
-          </Button>)}
+        {statusList.map((item, index) => {
+          return (
+            statusProject === item.id &&
+            <Button
+              key={item.id}
+              className={`button-default w-auto bg-${item.id} text-sm text-${item.id} h-auto px-4 py-[6px] rounded-full font-medium self-start mb-0`}>{item.title}
+            </Button>)
+        })}
         <div className='flex items-center gap-3'>
           <IconCalender></IconCalender>
           <span className='text-base font-medium text-[#717279] tracking-widest'>
@@ -296,7 +292,7 @@ export default function CardProject({ data, handleRemoveProject }) {
           <div className='grid grid-cols-2 gap-8 mb-3'>
             <div className="">
               <p className='mb-3 text-base font-medium'>Due Date</p>
-              <InputRangeDate stateDate={stateDate} handleSelectDate={handleSelectDate}></InputRangeDate>
+              <InputRangeDate stateDate={stateDate} handleSelectDate={handleSelectDate} toogleChoose={toggleUpdate}></InputRangeDate>
             </div>
           </div>
           <div className="mb-3">
@@ -314,9 +310,9 @@ export default function CardProject({ data, handleRemoveProject }) {
             <p className='mb-2 text-base font-medium'>Key Project</p>
             <p className='text-sm font-medium text-blue-500'>{data.keyProject}</p>
           </div>
-          <AddUser nameItemList="client" userListAdd={userListAdd} handleAddUser={handleAddUser} toggleUpdate={toggleUpdate} handleRemoveUser={handleRemoveUser}></AddUser>
-          <AddUser nameItemList="leader" userListAdd={userListAdd} handleAddUser={handleAddUser} toggleUpdate={toggleUpdate} handleRemoveUser={handleRemoveUser}></AddUser>
-          <AddUser nameItemList="member" userListAdd={userListAdd} handleAddUser={handleAddUser} toggleUpdate={toggleUpdate} handleRemoveUser={handleRemoveUser}></AddUser>
+          <AddUser nameItemList="client" userListAdd={userListAdd} handleAddUser={handleAddUser} toggleChoose={toggleUpdate} handleRemoveUser={handleRemoveUser}></AddUser>
+          <AddUser nameItemList="leader" userListAdd={userListAdd} handleAddUser={handleAddUser} toggleChoose={toggleUpdate} handleRemoveUser={handleRemoveUser}></AddUser>
+          <AddUser nameItemList="member" userListAdd={userListAdd} handleAddUser={handleAddUser} toggleChoose={toggleUpdate} handleRemoveUser={handleRemoveUser}></AddUser>
           {toggleUpdate ?
             (<Button
               onClick={handleUpdateProject}

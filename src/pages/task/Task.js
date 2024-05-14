@@ -17,6 +17,7 @@ import { severtyList, statusList } from '../../constans/status';
 
 const Task = () => {
   const [showModalTask, setShowModalTask] = useState(false);
+  const [project, setProject] = useState(null)
   const [nameTask, setNameTask] = useState("")
   const [stateDate, setStateDate] = useState([
     {
@@ -25,6 +26,8 @@ const Task = () => {
       key: 'selection'
     }
   ]);
+  // new Date("10/06/2024")
+  const [dateLimit, setDateLimit] = useState(null)
   const [descriptionTask, setDescriptionTask] = useState("");
   const [statusTask, setStatusTask] = useState("going");
   const [severity, setSeverity] = useState("medium");
@@ -244,6 +247,23 @@ const Task = () => {
     }
   }, [])
   // kết thúc xử lý filter project
+
+  const handleChooseProject = (item) => {
+    console.log("check ", item)
+    setProject(item)
+    setDateLimit({
+      minDate: new Date(item.date.timeStart),
+      maxDate: new Date(item.date.timeEnd)
+    }
+    )
+    setStateDate([
+      {
+        startDate: new Date(item.date.timeStart),
+        endDate: new Date(item.date.timeEnd),
+        key: 'selection'
+      }
+    ])
+  }
   return (
     <>
       <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)]'>
@@ -379,10 +399,11 @@ const Task = () => {
                 </Button>)
             })}
           </div>
+          <DropdownChooseProject project={project} handleChooseProject={handleChooseProject} ></DropdownChooseProject>
           <div className='grid grid-cols-2 gap-4 mb-3'>
             <div className="">
               <p className='mb-3 text-base font-medium'>Due Date</p>
-              <InputRangeDate stateDate={stateDate} handleSelectDate={handleSelectDate}></InputRangeDate>
+              <InputRangeDate stateDate={stateDate} handleSelectDate={handleSelectDate} toogleChoose={project} dateLimit={dateLimit}></InputRangeDate>
             </div>
             <div className="">
               <p className='mb-3 text-base font-medium'>Time</p>
@@ -438,7 +459,6 @@ const Task = () => {
               )
             })}
           </div>
-          <DropdownChooseProject></DropdownChooseProject>
           <div className="flex items-center gap-4 mt-3">
             <Label htmlFor='image' className='flex items-center justify-center w-10 h-10 rounded-md bg-graycustom bg-opacity-10'><IconImage></IconImage></Label>
             <Label className="text-sm font-medium">Add Image</Label>

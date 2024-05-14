@@ -14,6 +14,7 @@ import Alert from '../alert/Alert';
 import Label from '../label/Label';
 import ThumbnailFile from '../thumbnail/ThumbnailFile';
 import DropdownChooseProject from '../dropdown/DropdownChooseProject';
+import { severtyList, statusList } from '../../constans/status';
 
 const CardTask = () => {
   const [showModalTask, setShowModalTask] = useState(false);
@@ -28,8 +29,7 @@ const CardTask = () => {
   const [nameTask, setNameTask] = useState("Create a Design System for Enum Workspace.")
   const [descriptionTask, setDescriptionTask] = useState("Lorem ipsum dolor sit amet consectetur, adipisicing elit. Modi error explicabo omnis perferendis repellat, harum soluta aliquam fugiat obcaecati! Ea perferendis magni est amet hic consequatur, eveniet repellendus impedit facere.");
   const [statusTask, setStatusTask] = useState("going");
-  const [isStatusRequest, setIsStatusRequest] = useState(false);
-  const [project, setProject] = useState("high");
+  const [severtyTask, setSevertyTask] = useState("low");
   const [userListAdd, setUserListAdd] = useState({
     client: [],
     leader: [],
@@ -73,29 +73,45 @@ const CardTask = () => {
     }
   }
   // ket thuc chon gio 
+
   // xử lý thay đổi trạng thái task
   const handleStatusProject = (status) => {
-    setIsStatusRequest(true)
     switch (status) {
       case "going":
         // chuyển sáng pause
         setStatusTask("pause") // cập nhật ngay
-        setTimeout(() => { // call api // lỗi thì chuyển trạng thái về cái trước đó
-          console.log("check ",)
-          setIsStatusRequest(false);
-        }, 5000);
         break;
       case "pause":
         // chuyển sáng done
+        setStatusTask("done") // cập nhật ngay
         break;
       case "done":
         // chuyển sáng going
+        setStatusTask("going") // cập nhật ngay
         break;
       default:
         break;
     }
   }
   // kết thúc xử lý thay đổi trạng thái task
+
+  // xử lý thay đổi severty
+  const handleSevertyTask = (status) => {
+    switch (status) {
+      case "low":
+        setSevertyTask("medium")
+        break;
+      case "medium":
+        setSevertyTask("high")
+        break;
+      case "high":
+        setSevertyTask("low")
+        break;
+      default:
+        break;
+    }
+  }
+  // kết thúc xử lý thay đổi severty
 
   // them member vào du an
   const handleAddUser = (nameItemList, data) => {
@@ -209,7 +225,7 @@ const CardTask = () => {
         <div className='flex gap-2'>
           <h2 className='text-base font-semibold line-clamp-1'>{nameTask}</h2>
           <button type='button'
-            className='w-full bg-red-300 max-w-[20px]'
+            className='w-full max-w-[20px]'
           // onClick={() => handleStarProject(true ? 1 : 0)}
           >
             {true ?
@@ -220,35 +236,23 @@ const CardTask = () => {
           </button>
         </div>
         <div className='flex gap-2'>
-          <Button
-            // disabled={isStatusRequest}
-            // onClick={() => handleStatusProject(statusTask)}
-            className='button-default w-auto bg-button bg-opacity-30 text-sm text-[#3754DB] h-auto px-4 py-[6px] rounded-full font-medium self-start mb-0'>On going
-          </Button>
-          <Button
-            // disabled={isStatusRequest}
-            // onClick={() => handleStatusProject(statusTask)}
-            className='button-default w-auto text-sm bg-[#ED3159] text-white h-auto px-4 py-[6px] rounded-full font-medium self-start mb-0'>High
-          </Button>
+          {severtyList.map((item, index) => {
+            return (
+              severtyTask === item.id &&
+              <Button
+                key={item.id}
+                className={`button-default w-auto bg-${item.id} text-sm text-white h-auto px-4 py-[6px] rounded-full font-medium self-start mb-0`}>{item.title}
+              </Button>)
+          })}
+          {statusList.map((item, index) => {
+            return (
+              statusTask === item.id &&
+              <Button
+                key={item.id}
+                className={`button-default w-auto bg-${item.id} text-sm text-${item.id} h-auto px-4 py-[6px] rounded-full font-medium self-start mb-0`}>{item.title}
+              </Button>)
+          })}
         </div>
-        {/* {statusTask === "going" && (
-          <Button
-            disabled={isStatusRequest}
-            onClick={() => handleStatusProject(statusTask)}
-            className='button-default w-auto bg-button bg-opacity-30 text-[#3754DB] h-auto px-4 py-2 rounded-full font-medium self-start'>On going
-          </Button>)}
-        {statusTask === "pause" && (
-          <Button
-            disabled={isStatusRequest}
-            onClick={() => handleStatusProject(statusTask)}
-            className='button-default w-auto bg-[#ED3159] bg-opacity-30 text-[#ED3159] h-auto px-4 py-2 rounded-full font-medium self-start'>Pause
-          </Button>)}
-        {statusTask === "done" && (
-          <Button
-            disabled={isStatusRequest}
-            onClick={() => handleStatusProject(statusTask)}
-            className='button-default w-auto bg-[#00C271] bg-opacity-30 text-[#00C271] h-auto px-4 py-2 rounded-full font-medium self-start'>Done
-          </Button>)} */}
         <div
           onClick={() => setShowModalTask(true)}
           className='flex flex-col gap-2 cursor-pointer'>
@@ -322,24 +326,27 @@ const CardTask = () => {
                 onClick={handleRemoveTask}
               ><span className='text-[#E80000] text-base font-medium'>Delete</span></Button>)}
           </div>
-          {statusTask === "going" && (
-            <Button
-              disabled={isStatusRequest}
-              onClick={() => handleStatusProject(statusTask)}
-              className='button-default w-auto bg-button bg-opacity-30  text-sm text-[#3754DB] h-auto px-4 py-[6px] rounded-full font-medium self-start'>On going
-            </Button>)}
-          {statusTask === "pause" && (
-            <Button
-              // disabled={isStatusRequest}
-              // onClick={() => handleStatusProject(statusTask)}
-              className='button-default w-auto bg-[#ED3159] bg-opacity-30 text-sm text-[#ED3159] h-auto px-4 py-[6px] rounded-full font-medium self-start'>Pause
-            </Button>)}
-          {statusTask === "done" && (
-            <Button
-              // disabled={isStatusRequest}
-              // onClick={() => handleStatusProject(statusTask)}
-              className='button-default w-auto bg-[#00C271] bg-opacity-30 text-sm text-[#00C271] h-auto px-4 py-[6px] rounded-full font-medium self-start'>Done
-            </Button>)}
+          <div className='flex gap-2'>
+            {statusList.map((item, index) => {
+              return (
+                statusTask === item.id &&
+                <Button
+                  key={item.id}
+                  onClick={() => toggleUpdate ? handleStatusProject(item.id) : {}}
+                  className={`button-default w-auto bg-${item.id} text-sm text-${item.id} h-auto px-4 py-[6px] rounded-full font-medium self-start`}>{item.title}
+                </Button>)
+            })}
+            {severtyList.map((item, index) => {
+              return (
+                severtyTask === item.id &&
+                <Button
+                  key={item.id}
+                  onClick={() => toggleUpdate ? handleSevertyTask(item.id) : {}}
+                  className={`button-default w-auto bg-${item.id} text-sm text-white h-auto px-4 py-[6px] rounded-full font-medium self-start`}>{item.title}
+                </Button>)
+            })}
+          </div>
+          <DropdownChooseProject></DropdownChooseProject>
           <div className='grid grid-cols-2 gap-4 mb-3'>
             <div className="">
               <p className='mb-3 text-base font-medium'>Due Date</p>
@@ -401,7 +408,6 @@ const CardTask = () => {
               )
             })}
           </div>
-          <DropdownChooseProject></DropdownChooseProject>
           <div className="flex items-center gap-4 mt-3">
             <Label htmlFor='image' className='flex items-center justify-center w-10 h-10 rounded-md bg-graycustom bg-opacity-10'><IconImage></IconImage></Label>
             <Label className="text-sm font-medium">Add Image</Label>
