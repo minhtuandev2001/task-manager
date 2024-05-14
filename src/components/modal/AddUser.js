@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { IconCancel } from '../icons';
 import Button from '../button/Button';
 import ModalAddUser from './ModalAddUser';
+import { BASE_URL } from '../../constans/url';
 
-const AddUser = ({ nameItemList, userListAdd, handleAddUser, handleRemoveUser, toggleChoose = true }) => {
+const AddUser = ({ nameItemList, userListAdd, handleAddUser, handleRemoveUser, toggleChoose = true, baseUrl = `${BASE_URL}/user?keyword` }) => {
   const [showSearchPortal, setShowSearchPortal] = useState(false);
   return (
     <div className="mb-2">
@@ -27,7 +28,7 @@ const AddUser = ({ nameItemList, userListAdd, handleAddUser, handleRemoveUser, t
         }
       </div>
       {showSearchPortal &&
-        <ModalAddUser nameItemList={nameItemList} showSearchPortal={showSearchPortal} setShowSearchPortal={setShowSearchPortal} userListAdd={userListAdd} handleAddUser={handleAddUser} handleRemoveUser={handleRemoveUser}></ModalAddUser>
+        <ModalAddUser nameItemList={nameItemList} showSearchPortal={showSearchPortal} setShowSearchPortal={setShowSearchPortal} userListAdd={userListAdd} handleAddUser={handleAddUser} handleRemoveUser={handleRemoveUser} baseUrl={baseUrl}></ModalAddUser>
       }
     </div>
   );

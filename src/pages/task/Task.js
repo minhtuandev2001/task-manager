@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import CardTask from '../../components/card/cardTask';
 import Button from '../../components/button/Button';
 import { v4 as uuidv4 } from 'uuid';
@@ -14,8 +14,13 @@ import Alert from '../../components/alert/Alert';
 import Textarea from '../../components/input/Textarea';
 import ThumbnailFile from '../../components/thumbnail/ThumbnailFile';
 import { severtyList, statusList } from '../../constans/status';
+import { BASE_URL } from '../../constans/url';
+import axios from 'axios';
+import { AuthContext } from "../../context/authContext"
+import { toast } from 'react-toastify';
 
 const Task = () => {
+  const { currentUser } = useContext(AuthContext)
   const [showModalTask, setShowModalTask] = useState(false);
   const [project, setProject] = useState(null)
   const [nameTask, setNameTask] = useState("")
@@ -30,10 +35,8 @@ const Task = () => {
   const [dateLimit, setDateLimit] = useState(null)
   const [descriptionTask, setDescriptionTask] = useState("");
   const [statusTask, setStatusTask] = useState("going");
-  const [severity, setSeverity] = useState("medium");
+  const [severity, setSeverity] = useState("low");
   const [userListAdd, setUserListAdd] = useState({
-    client: [],
-    leader: [],
     member: [],
   })
   const [showAlertCancelCreate, setShowAlertCancelCreate] = useState(false)
@@ -52,7 +55,7 @@ const Task = () => {
     left: 0,
     top: 0,
   })
-
+  const [submiting, setSubmiting] = useState(false);
   // chon ngay thang
   const handleSelectDate = (ranges) => {
     setStateDate([ranges.selection])
@@ -137,17 +140,93 @@ const Task = () => {
   }
   // ket thuc them member vào du an
 
-
-  const handleUpdateTask = () => {
-    console.log("check ", taskItem)
+  const handleCreateTask = () => {
+    if (!submiting) { // chưa nhấn create
+      if (!project) {
+        toast.error("You must enter information")
+        return
+      }
+      if (nameTask.length === 0) {
+        return
+      }
+      let timeStart = (stateDate[0].startDate.getMonth() + 1) + "/" + stateDate[0].startDate.getDate() + "/" + stateDate[0].startDate.getFullYear()
+      let timeEnd = (stateDate[0].endDate.getMonth() + 1) + "/" + stateDate[0].endDate.getDate() + "/" + stateDate[0].endDate.getFullYear()
+      console.log(nameTask, statusTask, severity, project, stateDate, timeTask, descriptionTask, userListAdd, taskItem, imagesUpload, filesUpload)
+      const formData = new FormData();
+      formData.append("title", nameTask)
+      formData.append("status", statusTask)
+      formData.append("severity", severity)
+      formData.append("project_id", project._id)
+      formData.append("date", JSON.stringify({
+        timeStart: timeStart,
+        timeEnd: timeEnd
+      }))
+      formData.append("time", JSON.stringify({
+        timeStart: timeTask.timeStart,
+        timeEnd: timeTask.timeEnd,
+      }))
+      formData.append("description", descriptionTask)
+      formData.append("member", JSON.stringify(userListAdd.member))
+      formData.append("taskList", JSON.stringify(taskItem))
+      if (imagesUpload) {
+        for (let i = 0; i < imagesUpload.length; i++) {
+          formData.append("images", imagesUpload[i])
+        }
+      }
+      if (filesUpload) {
+        for (let i = 0; i < filesUpload.length; i++) {
+          formData.append("files", filesUpload[i])
+        }
+      }
+      setSubmiting(true)
+      axios.post(`${BASE_URL}/task/create`, formData, {
+        headers: {
+          "Authorization": `Bearer ${currentUser.token}`,
+          "Content-Type": "multipart/form-data"
+        }
+      }).then((res) => {
+        // cập nhật lại task vừa tạo vào đúng trường
+        toast.success("Create task success")
+        setSubmiting(false)
+        setShowModalTask(false)
+        handleReset()
+      }).catch((err) => {
+        toast.success(err.response.data.messages)
+        setSubmiting(false)
+      })
+    }
   }
   const handleRemoveTask = () => {
     console.log("check delete",)
   }
   const handleCancel = () => {
     setShowAlertCancelCreate(false)
+    handleReset()
     setShowModalTask(false)
   }
+
+  // reset state
+  const handleReset = () => {
+    setNameTask("");
+    setStatusTask("going");
+    setSeverity("low");
+    setProject(null);
+    setStateDate([{
+      startDate: new Date(),
+      endDate: new Date(),
+      key: 'selection'
+    }]);
+    setDescriptionTask("");
+    setUserListAdd({
+      member: [],
+    })
+    setTaskItem([])
+    setImageUpload(null)
+    setFilesUpload(null)
+  }
+  // kết thúc reset state
+
+
   // xử lý việc upload, preview, remove image
   const handleUploadImage = (e) => {
     setImageUpload(prevImage => {
@@ -249,7 +328,10 @@ const Task = () => {
   // kết thúc xử lý filter project
 
   const handleChooseProject = (item) => {
-    console.log("check ", item)
+    // danh sách member luôn phải reset khi mới chọn project
+    setUserListAdd({
+      member: [],
+    })
     setProject(item)
     setDateLimit({
       minDate: new Date(item.date.timeStart),
@@ -366,14 +448,14 @@ const Task = () => {
           className='w-full p-6 bg-white rounded-md'>
           <div className='flex items-start justify-between w-full mb-2'>
             <div className='flex items-center flex-1 gap-2'>
-              <input type="text"
-                onChange={(e) => setNameTask(e.target.value)}
-                className='w-full max-w-[380px] p-2 text-base font-semibold border rounded-md border-graycustom'
-                defaultValue={nameTask}
-              />
-              <button type='button'>
-                <IconStarFill></IconStarFill>
-              </button>
+              <div className='flex flex-col w-full'>
+                <input type="text"
+                  onChange={(e) => setNameTask(e.target.value)}
+                  className='w-full max-w-[380px] p-2 text-base font-semibold border rounded-md border-graycustom'
+                  defaultValue={nameTask}
+                />
+                {nameTask.length <= 0 && <span className='text-xs italic font-medium text-red-500'>* You must provide a title</span>}
+              </div>
             </div>
             <Button
               onClick={() => setShowAlertCancelCreate(true)}
@@ -434,7 +516,10 @@ const Task = () => {
               setValue={setDescriptionTask}
             ></Textarea>
           </div>
-          <AddUser nameItemList="member" userListAdd={userListAdd} handleAddUser={handleAddUser} handleRemoveUser={handleRemoveUser}></AddUser>
+          <AddUser nameItemList="member" userListAdd={userListAdd} handleAddUser={handleAddUser} handleRemoveUser={handleRemoveUser}
+            toggleChoose={project}
+            baseUrl={`${BASE_URL}/project/${project?._id}?keyword`}
+          ></AddUser>
           <div className='flex items-center gap-3 mt-3'>
             <p className='mb-3 text-base font-medium'>Task</p>
             <Button
@@ -504,8 +589,8 @@ const Task = () => {
             })}
           </div>
           <Button
-            onClick={handleUpdateTask}
-            className="mt-5 mb-0 font-medium text-white button-default bg-button">Create</Button>
+            onClick={handleCreateTask}
+            className="mt-5 mb-0 font-medium text-white button-default bg-button">{submiting && <div className='w-4 h-4 border-4 border-white rounded-full border-r-4 border-r-transparent animate-spin'></div>}Create</Button>
         </motion.div>
       </Portal>
       <Alert

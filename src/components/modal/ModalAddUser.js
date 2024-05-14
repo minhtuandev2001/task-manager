@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Portal from '../portal/Portal';
 import Button from '../button/Button';
 import Input from '../input/Input';
@@ -6,13 +6,19 @@ import { IconCancel } from '../icons';
 import axios from 'axios';
 import { BASE_URL } from '../../constans/url';
 import lodash from "lodash";
+import { AuthContext } from "../../context/authContext";
 
-const ModalAddUser = ({ nameItemList, showSearchPortal, setShowSearchPortal, userListAdd, handleAddUser, handleRemoveUser }) => {
+const ModalAddUser = ({ nameItemList, showSearchPortal, setShowSearchPortal, userListAdd, handleAddUser, handleRemoveUser, baseUrl = `${BASE_URL}/user?keyword` }) => {
+  const { currentUser } = useContext(AuthContext);
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState([]);
   useEffect(() => {
     const getUser = async () => {
-      const response = await axios.get(`${BASE_URL}/user?keyword=${search}`)
+      const response = await axios.get(`${baseUrl}=${search}`, {
+        headers: {
+          "Authorization": `Bearer ${currentUser.token}`
+        }
+      })
       setUsers(response.data.data)
       console.log("check ", response)
     }

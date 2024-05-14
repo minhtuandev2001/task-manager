@@ -17,7 +17,7 @@ export default function DropdownChooseProject({ project, handleChooseProject }) 
         </div>
       </Button>
       {project === null ? (
-        <span className='block mb-2 text-xs italic font-medium text-red-500'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non, earum!</span>
+        <span className='block mb-2 text-xs italic font-medium text-red-500'>You must choose the project first</span>
       ) : (
         <span className='block mb-2'></span>
       )}

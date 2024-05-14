@@ -45,14 +45,23 @@ const InputRangeDate = ({ stateDate, handleSelectDate, toogleChoose = true, date
         classOverlay="bg-transparent z-40"
       >
         <div className="w-auto shadow-md max-w-[332px] rounded-md overflow-hidden">
-          <DateRange
-            minDate={dateLimit ? dateLimit.minDate : null}
-            maxDate={dateLimit ? dateLimit.maxDate : null}
-            editableDateInputs={true}
-            onChange={handleSelectDate}
-            moveRangeOnFirstSelection={false}
-            ranges={stateDate}
-          />
+          {dateLimit ? (
+            <DateRange
+              minDate={dateLimit ? dateLimit.minDate : null}
+              maxDate={dateLimit ? dateLimit.maxDate : null}
+              editableDateInputs={true}
+              onChange={handleSelectDate}
+              moveRangeOnFirstSelection={false}
+              ranges={stateDate}
+            />
+          ) : (
+            <DateRange
+              editableDateInputs={true}
+              onChange={handleSelectDate}
+              moveRangeOnFirstSelection={false}
+              ranges={stateDate}
+            />
+          )}
         </div>
       </Portal>
     </>
