@@ -6,12 +6,10 @@ export const statusList = [
   {
     id: "pause",
     title: "Pause",
-    color: "#ED3159"
   },
   {
     id: "done",
     title: "Done",
-    color: "#00C271"
   },
 ]
 export const severtyList = [

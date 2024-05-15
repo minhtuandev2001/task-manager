@@ -66,8 +66,8 @@ const ModalAddUser = ({ nameItemList, showSearchPortal, setShowSearchPortal, use
             <div className="flex flex-wrap gap-2 mt-3">
               {users.length > 0 && users.map((item, index) => {
                 return (
-                  <div key={item._id}
-                    onClick={() => handleAddUser(nameItemList, { id: item._id, email: item.email })}
+                  <div key={item._id || item.id}
+                    onClick={() => handleAddUser(nameItemList, { id: item._id || item.id, email: item.email })}
                     className="inline-block h-[30px] gap-2 bg-graycustom bg-opacity-20 p-1 px-2 rounded-md cursor-pointer">
                     <span className='text-sm font-medium'>{item.email}</span>
                   </div>)

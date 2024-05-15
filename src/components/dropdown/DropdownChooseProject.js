@@ -4,12 +4,12 @@ import { IconChevronDown } from '../icons'
 
 import ShowModalSearchProject from './ShowModalSearchProject';
 
-export default function DropdownChooseProject({ project, handleChooseProject }) {
+export default function DropdownChooseProject({ project, handleChooseProject, toogleChoose = true }) {
   const [showDropdow, setShowDropdown] = useState(false);
   return (
     <>
       <Button
-        onClick={() => setShowDropdown(true)}
+        onClick={() => toogleChoose ? setShowDropdown(true) : {}}
         className="w-full">
         <div className='flex items-center justify-between p-3 mt-2 border rounded-md border-graycustom'>
           <p>{project ? project.title : "Choose Project"}</p>

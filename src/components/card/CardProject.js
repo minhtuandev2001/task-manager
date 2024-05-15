@@ -45,6 +45,8 @@ export default function CardProject({ data, handleRemoveProject }) {
   // them client, leader, member vào du an
   const handleAddUser = (nameItemList, data) => {
     setUserListAdd(preData => {
+      console.log("check ", preData[nameItemList])
+      console.log("check ", data)
       let userExist = preData[nameItemList].some((item) => item.id === data.id)
       return { ...preData, [nameItemList]: userExist ? preData[nameItemList] : [...preData[nameItemList], data] }
     })

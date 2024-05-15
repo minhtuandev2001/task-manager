@@ -56,7 +56,7 @@ export default function Project() {
     console.log("check ", data)
     setUserListAdd(preData => {
       let userExist = preData[nameItemList].some((item) => item.id === data.id)
-      return { ...preData, [nameItemList]: userExist ? preData[nameItemList] : [...preData[nameItemList], data] }
+      return { ...preData, [nameItemList]: userExist ? preData[nameItemList] : [...preData[nameItemList], { id: data.id.toString(), email: data.email }] }
     })
   }
 
@@ -94,6 +94,7 @@ export default function Project() {
   // kết thúc xử lý trạng thái project
 
   const handleCreateProject = () => {
+    console.log("check ", userListAdd.client)
     let timeStart = (stateDate[0].startDate.getMonth() + 1) + "/" + stateDate[0].startDate.getDate() + "/" + stateDate[0].startDate.getFullYear()
     let timeEnd = (stateDate[0].endDate.getMonth() + 1) + "/" + stateDate[0].endDate.getDate() + "/" + stateDate[0].endDate.getFullYear()
 
@@ -134,8 +135,7 @@ export default function Project() {
           'Authorization': `Bearer ${currentUser.token}`
         }
       }).then((res) => {
-        console.log("check ", res.data.data)
-        setProjectList(res.data.data);
+        setProjectList(res.data?.data);
         setLoading(false)
       }).catch((err) => {
         toast.error(err.response.data.messages)

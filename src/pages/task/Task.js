@@ -56,6 +56,9 @@ const Task = () => {
     top: 0,
   })
   const [submiting, setSubmiting] = useState(false);
+  const [statusAction, setStatusAction] = useState("going")
+  const [tasks, setTasks] = useState([])
+
   // chon ngay thang
   const handleSelectDate = (ranges) => {
     setStateDate([ranges.selection])
@@ -130,6 +133,8 @@ const Task = () => {
   // them member vào du an
   const handleAddUser = (nameItemList, data) => {
     setUserListAdd(preData => {
+      console.log("check ", preData[nameItemList])
+      console.log("check ", data)
       let userExist = preData[nameItemList].some((item) => item.id === data.id)
       return { ...preData, [nameItemList]: userExist ? preData[nameItemList] : [...preData[nameItemList], data] }
     })
@@ -191,7 +196,7 @@ const Task = () => {
         setShowModalTask(false)
         handleReset()
       }).catch((err) => {
-        toast.success(err.response.data.messages)
+        toast.error(err.response.data.messages)
         setSubmiting(false)
       })
     }
@@ -346,27 +351,41 @@ const Task = () => {
       }
     ])
   }
+  const handleStatusAction = (id) => {
+    setStatusAction(id);
+  }
+  useEffect(() => {
+    axios.get(`${BASE_URL}/task?statusAction=${statusAction}`, {
+      headers: {
+        "Authorization": `Bearer ${currentUser.token}`
+      }
+    }).then((res) => {
+      setTasks(res.data?.tasks || []);
+    }).catch((err) => {
+      console.log("check ", err.response?.data.messages);
+    })
+  }, [statusAction])
+
   return (
     <>
       <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)]'>
         <div className="flex items-start justify-between">
           <div className='flex gap-8'>
-            <div>
-              <span className='mb-2 text-base font-medium'>All Task</span>
-              <div className='w-full h-[2px] bg-black'></div>
-            </div>
-            <div>
-              <span className='mb-2 text-base font-medium'>All Task</span>
-              <div className='w-full h-[2px] bg-black'></div>
-            </div>
-            <div>
-              <span className='mb-2 text-base font-medium'>All Task</span>
-              <div className='w-full h-[2px] bg-black'></div>
-            </div>
-            <div>
-              <span className='mb-2 text-base font-medium'>All Task</span>
-              <div className='w-full h-[2px] bg-black'></div>
-            </div>
+            {statusList.map((item) => {
+              return (
+                <div key={item.id}
+                  className='cursor-pointer'
+                  onClick={() => handleStatusAction(item.id)}
+                >
+                  <span className={`mb-2 text-base font-medium ${item.id === statusAction ? "text-black" : "text-[#717279]"}`}>{item.title}</span>
+                  {item.id === statusAction &&
+                    <motion.div
+                      layoutId='statusAction'
+                      transition={{ duration: 0.2 }}
+                      className='w-full h-[2px] bg-black'></motion.div>}
+                </div>
+              )
+            })}
           </div>
           <div className='flex gap-3'>
             <Button
@@ -385,47 +404,16 @@ const Task = () => {
             placehoder="Search..."
             className="w-full max-w-[252px] h-10 p-3 border rounded-md border-graycustom bg-input focus:border-bluecustom"
           ></Input>
+          <Button
+            onClick={() => setShowModalTask(true)}
+            className="button-default h-10 bg-button max-w-[100px] text-white font-medium mb-0"
+          ><span>+ new</span></Button>
         </div>
         <div className="grid gap-4 mt-3 project-content sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          <div className='w-full'>
-            <div className='flex items-center justify-between mb-6'>
-              <div className='flex items-center gap-4'>
-                <div className='w-4 h-4 rounded-md bg-[#2384FF]'></div>
-                <span className='font-medium text-base text-[#717279]'>On going</span>
-              </div>
-              <button
-                onClick={() => setShowModalTask(true)}
-                type="button" className='text-[#2384FF] font-medium'>+ new</button>
-            </div>
-            {/* list */}
-            <CardTask></CardTask>
-            <CardTask></CardTask>
-            <CardTask></CardTask>
-          </div>
-          <div className='w-full'>
-            <div className='flex items-center justify-between mb-6'>
-              <div className='flex items-center gap-4'>
-                <div className='w-4 h-4 rounded-md bg-[#E80000]'></div>
-                <span className='font-medium text-base text-[#717279]'>Paused</span>
-              </div>
-            </div>
-            {/* list */}
-            <CardTask></CardTask>
-            <CardTask></CardTask>
-            <CardTask></CardTask>
-          </div>
-          <div className='w-full'>
-            <div className='flex items-center justify-between mb-6'>
-              <div className='flex items-center gap-4'>
-                <div className='w-4 h-4 rounded-md bg-[#00C271]'></div>
-                <span className='font-medium text-base text-[#717279]'>Done</span>
-              </div>
-            </div>
-            {/* list */}
-            <CardTask></CardTask>
-            <CardTask></CardTask>
-            <CardTask></CardTask>
-          </div>
+          {tasks.length > 0 && tasks.map((item, index) => {
+            console.log(item._id)
+            return (<CardTask key={item._id} data={item}></CardTask>)
+          })}
         </div>
       </div>
       <Portal

@@ -1,10 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import IconStarFill from '../icons/IconStarFill';
 import IconStarOutline from '../icons/IconStarOutline';
 import Button from '../button/Button';
 import IconCalender from '../icons/IconCalender';
-import { IconCancel, IconChevronDown, IconDOC, IconFile, IconImage, IconProject, IconThink } from '../icons';
+import { IconCancel, IconFile, IconImage, IconProject, IconThink } from '../icons';
 import Portal from '../portal/Portal';
 import { motion } from "framer-motion"
 import InputRangeDate from '../input/InputRangeDate';
@@ -16,34 +16,40 @@ import ThumbnailFile from '../thumbnail/ThumbnailFile';
 import DropdownChooseProject from '../dropdown/DropdownChooseProject';
 import { severtyList, statusList } from '../../constans/status';
 
-const CardTask = () => {
+const CardTask = ({ data }) => {
   const [showModalTask, setShowModalTask] = useState(false);
   const [stateDate, setStateDate] = useState([
     {
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: new Date(data.date.timeStart),
+      endDate: new Date(data.date.timeEnd),
       key: 'selection'
     }
   ]);
   const [toggleUpdate, setToggleUpdate] = useState(false);
-  const [nameTask, setNameTask] = useState("Create a Design System for Enum Workspace.")
-  const [descriptionTask, setDescriptionTask] = useState("Lorem ipsum dolor sit amet consectetur, adipisicing elit. Modi error explicabo omnis perferendis repellat, harum soluta aliquam fugiat obcaecati! Ea perferendis magni est amet hic consequatur, eveniet repellendus impedit facere.");
-  const [statusTask, setStatusTask] = useState("going");
-  const [severtyTask, setSevertyTask] = useState("low");
+  const [nameTask, setNameTask] = useState(data.title)
+  const [descriptionTask, setDescriptionTask] = useState(data.description);
+  const [statusTask, setStatusTask] = useState(data.status);
+  const [severtyTask, setSevertyTask] = useState(data.severity);
+  console.log("check ", data.severity)
   const [userListAdd, setUserListAdd] = useState({
-    client: [],
-    leader: [],
-    member: [],
+    member: data.member,
   })
   const [showAlertCancelUpdate, setShowAlertCancelUpdate] = useState(false)
   const [imagesUpload, setImageUpload] = useState(null);
   const [filesUpload, setFilesUpload] = useState(null);
   const [timeTask, setTimeTask] = useState({
-    timeStart: new Date().getHours() + ':' + (new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes()),
-    timeEnd: new Date().getHours() + ':' + (new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes()),
+    timeStart: data.time.timeStart,
+    timeEnd: data.time.timeEnd,
   })
   const [errorTime, setErrorTime] = useState("");
-  const [taskItem, setTaskItem] = useState([]);
+  const [taskItem, setTaskItem] = useState(data.taskList);
+  const [dateLimit, setDateLimit] = useState({
+    minDate: new Date(data.date.timeStart),
+    maxDate: new Date(data.date.timeEnd)
+  });
+  const [project, setProject] = useState(data.infoProject);
+  const [images, setImages] = useState(data.images)
+  const [files, setFiles] = useState(data.files)
 
   // chon ngay thang
   const handleSelectDate = (ranges) => {
@@ -116,6 +122,8 @@ const CardTask = () => {
   // them member vào du an
   const handleAddUser = (nameItemList, data) => {
     setUserListAdd(preData => {
+      console.log("check ", preData[nameItemList])
+      console.log("check ", data)
       let userExist = preData[nameItemList].some((item) => item.id === data.id)
       return { ...preData, [nameItemList]: userExist ? preData[nameItemList] : [...preData[nameItemList], data] }
     })
@@ -219,10 +227,31 @@ const CardTask = () => {
     setTaskItem(prev => prev.filter((item, index) => item.id !== id))
   }
   // kết thúc thêm, xóa , sửa task item
+
+  const handleChooseProject = (item) => {
+    // danh sách member luôn phải reset khi mới chọn project
+    setUserListAdd({
+      member: [],
+    })
+    setProject(item)
+    setDateLimit({
+      minDate: new Date(item.date.timeStart),
+      maxDate: new Date(item.date.timeEnd)
+    }
+    )
+    setStateDate([
+      {
+        startDate: new Date(item.date.timeStart),
+        endDate: new Date(item.date.timeEnd),
+        key: 'selection'
+      }
+    ])
+  }
+
   return (
     <>
       <div className="flex flex-col gap-3 p-4 py-3 mb-3 rounded-md shadow-md card-project">
-        <div className='flex gap-2'>
+        <div className='flex gap-2 justify-between'>
           <h2 className='text-base font-semibold line-clamp-1'>{nameTask}</h2>
           <button type='button'
             className='w-full max-w-[20px]'
@@ -236,20 +265,20 @@ const CardTask = () => {
           </button>
         </div>
         <div className='flex gap-2'>
-          {severtyList.map((item, index) => {
-            return (
-              severtyTask === item.id &&
-              <Button
-                key={item.id}
-                className={`button-default w-auto bg-${item.id} text-sm text-white h-auto px-4 py-[6px] rounded-full font-medium self-start mb-0`}>{item.title}
-              </Button>)
-          })}
           {statusList.map((item, index) => {
             return (
               statusTask === item.id &&
               <Button
                 key={item.id}
                 className={`button-default w-auto bg-${item.id} text-sm text-${item.id} h-auto px-4 py-[6px] rounded-full font-medium self-start mb-0`}>{item.title}
+              </Button>)
+          })}
+          {severtyList.map((item, index) => {
+            return (
+              severtyTask === item.id &&
+              <Button
+                key={item.id}
+                className={`button-default w-auto bg-${item.id} text-sm text-white h-auto px-4 py-[6px] rounded-full font-medium self-start mb-0`}>{item.title}
               </Button>)
           })}
         </div>
@@ -276,7 +305,7 @@ const CardTask = () => {
           </div>
           <div className='flex items-center gap-3'>
             <IconProject></IconProject>
-            <span className='text-sm font-medium text-[#717279]'>Asan Website</span>
+            <span className='text-sm font-medium text-[#717279] line-clamp-1'>{project?.title}</span>
           </div>
           <div className='flex items-center gap-2'>
             <div className='w-full rounded-full bg-[#D9D9D9] h-2'>
@@ -346,11 +375,11 @@ const CardTask = () => {
                 </Button>)
             })}
           </div>
-          <DropdownChooseProject></DropdownChooseProject>
+          <DropdownChooseProject project={project} handleChooseProject={handleChooseProject} toogleChoose={toggleUpdate}></DropdownChooseProject>
           <div className='grid grid-cols-2 gap-4 mb-3'>
             <div className="">
               <p className='mb-3 text-base font-medium'>Due Date</p>
-              <InputRangeDate stateDate={stateDate} handleSelectDate={handleSelectDate}></InputRangeDate>
+              <InputRangeDate stateDate={stateDate} handleSelectDate={handleSelectDate} dateLimit={dateLimit} toogleChoose={toggleUpdate}></InputRangeDate>
             </div>
             <div className="">
               <p className='mb-3 text-base font-medium'>Time</p>
@@ -383,30 +412,40 @@ const CardTask = () => {
               ></Textarea>)
               : (<p className='text-sm text-[#717279]'>{descriptionTask}</p>)}
           </div>
-          <AddUser nameItemList="member" userListAdd={userListAdd} handleAddUser={handleAddUser} handleRemoveUser={handleRemoveUser}></AddUser>
+          <AddUser nameItemList="member" userListAdd={userListAdd} handleAddUser={handleAddUser} handleRemoveUser={handleRemoveUser} toggleChoose={toggleUpdate}></AddUser>
           <div className='flex items-center gap-3 mt-3'>
             <p className='mb-3 text-base font-medium'>Task</p>
-            <Button
-              onClick={addTaskItem}
-              className="button-default w-auto bg-button h-auto px-4 py-[6px] text-white font-medium">+ add</Button>
+            {toggleUpdate &&
+              <Button
+                onClick={addTaskItem}
+                className="button-default w-auto bg-button h-auto px-4 py-[6px] text-white font-medium">+ add</Button>
+            }
           </div>
           <div className='flex flex-col gap-2'>
-            {taskItem.length > 0 && taskItem.map((item, index) => {
-              return (
-                <div key={item.id} className='flex items-center justify-between w-full gap-4'>
-                  <input type="checkbox" defaultChecked={item.checked} onChange={(e) => handleChangeCheckTask(e, index)} />
-                  <input
-                    onChange={(e) => handleChangeContentTask(e, index)}
-                    type="text"
-                    className="flex-1 px-2 py-1 text-sm border rounded-md border-graycustom"
-                    defaultValue={item.content}
-                  />
-                  <Button onClick={() => removeTaskItem(item.id)} className='w-4'>
-                    <IconCancel></IconCancel>
-                  </Button>
-                </div>
-              )
-            })}
+            {toggleUpdate ? (
+              taskItem.length > 0 && taskItem.map((item, index) => {
+                return (
+                  <div key={item.id} className='flex items-center justify-between w-full gap-4'>
+                    <input type="checkbox" defaultChecked={item.checked} onChange={(e) => handleChangeCheckTask(e, index)} />
+                    <input
+                      onChange={(e) => handleChangeContentTask(e, index)}
+                      type="text"
+                      className="flex-1 px-2 py-1 text-sm border rounded-md border-graycustom"
+                      defaultValue={item.content}
+                    />
+                    <Button onClick={() => removeTaskItem(item.id)} className='w-4'>
+                      <IconCancel></IconCancel>
+                    </Button>
+                  </div>)
+              })
+            ) : (
+              taskItem.length > 0 && taskItem.map((item, index) => {
+                return (
+                  <div key={item.id} className='flex items-center justify-between w-full gap-4'>
+                    <p className='text-sm'> - {item.content}</p>
+                  </div>)
+              })
+            )}
           </div>
           <div className="flex items-center gap-4 mt-3">
             <Label htmlFor='image' className='flex items-center justify-center w-10 h-10 rounded-md bg-graycustom bg-opacity-10'><IconImage></IconImage></Label>
@@ -414,6 +453,16 @@ const CardTask = () => {
           </div>
 
           <div className='flex flex-wrap gap-3 my-2'>
+            {images.length > 0 && images.map((item, index) => {
+              return (
+                <div key={item} className='relative w-[100px] h-[100px]'>
+                  <img className='object-cover w-full h-full' src={item} alt="" />
+                  {toggleUpdate && <Button
+                    // onClick={() => handleRemoveImageUpload(index)}
+                    className="w-5 absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 bg-gray-300 p-[2px] h-5 rounded-full flex justify-center items-center"><IconCancel></IconCancel></Button>}
+                </div>
+              )
+            })}
             {imagesUpload !== null && Array(imagesUpload.length).fill(null).map((item, index) => {
               return (
                 <div key={index} className='relative w-[100px] h-[100px]'>
@@ -438,6 +487,20 @@ const CardTask = () => {
             onChange={handleUploadFile}
             type="file" id="files" multiple />
           <div className='flex flex-wrap gap-2 mt-3'>
+            {files.length > 0 && files.map((item, index) => {
+              return (
+                <div key={index} className='w-[calc(50%-8px)] flex items-center gap-2 rounded-md p-2 bg-gray-200'>
+                  <div className='min-w-[22px] min-h-[29px]'>
+                    <ThumbnailFile fileExtension={item.nameFile.split(".")[1]}></ThumbnailFile>
+                  </div>
+                  <span className='flex-1 text-sm font-medium line-clamp-1'>{item.nameFile}</span>
+                  {toggleUpdate && <Button
+                    // onClick={() => handleRemoveFilesUpload(index)}
+                    className="flex items-center justify-center w-full h-full max-w-4 max-h-4"><IconCancel></IconCancel></Button>
+                  }
+                </div>
+              )
+            })}
             {filesUpload !== null && Array(filesUpload.length).fill(null).map((item, index) => {
               return (
                 <div key={index} className='w-[calc(50%-8px)] flex items-center gap-2 rounded-md p-2 bg-gray-200'>
