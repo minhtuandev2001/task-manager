@@ -10,7 +10,6 @@ import InputRangeDate from '../../components/input/InputRangeDate';
 import AddUser from '../../components/modal/AddUser';
 import DropdownChooseProject from '../../components/dropdown/DropdownChooseProject';
 import Label from '../../components/label/Label';
-import Alert from '../../components/alert/Alert';
 import Textarea from '../../components/input/Textarea';
 import ThumbnailFile from '../../components/thumbnail/ThumbnailFile';
 import { severtyList, statusList } from '../../constans/status';
@@ -19,6 +18,7 @@ import axios from 'axios';
 import { AuthContext } from "../../context/authContext"
 import { toast } from 'react-toastify';
 import lodash from "lodash"
+import AlertWarning from '../../components/alert/AlertWarning';
 
 const Task = () => {
   const { currentUser } = useContext(AuthContext)
@@ -199,8 +199,9 @@ const Task = () => {
       })
     }
   }
-  const handleRemoveTask = () => {
-    console.log("check delete",)
+  const handleRemoveTask = (id) => {
+    setTasks(prevTask => prevTask.filter((item) => item._id !== id))
+    console.log("check delete", id)
   }
   // xử lý khi người dùng chuyển sang chế đốj update và thoát khỏi update 
   const handleCancel = () => {
@@ -359,9 +360,10 @@ const Task = () => {
   }
   const [projectSelected, setProjectSelected] = useState(null)
   const [projectCurrent, setProjectCurrent] = useState(null)
+  const [searchTask, setSearchTask] = useState("")
   useEffect(() => {
     const getTask = () => {
-      axios.get(`${BASE_URL}/task?statusAction=${statusAction}&idProject=${projectSelected !== null ? projectSelected._id : ""}`, {
+      axios.get(`${BASE_URL}/task?statusAction=${statusAction}&idProject=${projectSelected !== null ? projectSelected._id : ""}&keyword=${searchTask}`, {
         headers: {
           "Authorization": `Bearer ${currentUser.token}`
         }
@@ -373,7 +375,7 @@ const Task = () => {
       })
     }
     getTask()
-  }, [statusAction, projectSelected])
+  }, [statusAction, projectSelected, searchTask])
 
   const [searchProject, setSearchProject] = useState("")
   const [projectList, setProjectList] = useState([])
@@ -400,10 +402,17 @@ const Task = () => {
     setSearchProject(e.target.value)
   }, 500)
 
-  // chọn project để hiển thị
+  // xử lý chọn project để hiển thị
   const handleSelectedProject = (item) => {
     setProjectSelected(item)
   }
+  // kết thúc xử lý chọn project để hiển thị
+
+  // xử lý Input search task
+  const handleSearchTask = lodash.debounce((e) => {
+    setSearchTask(e.target.value)
+  }, 500)
+  // kết thúc xử lý Input search task
   return (
     <>
       <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)]'>
@@ -441,6 +450,7 @@ const Task = () => {
           {projectCurrent !== null ? <span className='text-xl font-semibold'>{projectCurrent.title}</span> : <span></span>}
           <div className='flex items-center gap-2'>
             <Input
+              onChange={handleSearchTask}
               placeholder="Search..."
               className="w-full max-w-[252px] h-10 p-3 border rounded-md border-graycustom bg-input focus:border-bluecustom"
             ></Input>
@@ -452,7 +462,7 @@ const Task = () => {
         </div>
         <div className="grid gap-4 mt-4 project-content sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {tasks.length > 0 && tasks.map((item, index) => {
-            return (<CardTask key={item._id} data={item}></CardTask>)
+            return (<CardTask key={item._id} data={item} handleRemoveTask={handleRemoveTask}></CardTask>)
           })}
         </div>
       </div>
@@ -621,20 +631,12 @@ const Task = () => {
             className="mt-5 mb-0 font-medium text-white button-default bg-button">{submiting && <div className='w-4 h-4 border-4 border-white rounded-full border-r-4 border-r-transparent animate-spin'></div>}Create</Button>
         </motion.div>
       </Portal>
-      <Alert
-        showAlert={showAlertCancelCreate}
-      >
-        <div
-          transition={{ type: "spring", duration: 0.15 }}
-          className='flex flex-col items-center w-full h-full gap-3 p-6 bg-white rounded-md'>
-          <IconThink className='block w-12 h-12'></IconThink>
-          <p className='text-base font-semibold text-center'>Do you want to continue creating the task?</p>
-          <div className='flex items-center justify-between w-full mt-3'>
-            <Button onClick={() => setShowAlertCancelCreate(false)} className="px-4 py-2 font-medium text-white rounded-md bg-button">Continue</Button>
-            <Button onClick={handleCancel} className="px-4 py-2 font-medium text-[#E80000] rounded-md bg-gray-300 bg-opacity-50">Cancel</Button>
-          </div>
-        </div>
-      </Alert>
+      <AlertWarning
+        toggleShow={showAlertCancelCreate}
+        messages="Do you want to continue creating the task?"
+        handleCancel={handleCancel}
+        handleContinue={() => setShowAlertCancelCreate(false)}
+      ><IconThink className='block w-12 h-12'></IconThink></AlertWarning>
       <Portal
         visible={showModalFilterProject}
         containerClassName="fixed inset-0 z-[999] flex items-center justify-center"

@@ -5,13 +5,13 @@ import AddUser from '../modal/AddUser'
 import InputRangeDate from '../input/InputRangeDate'
 import Portal from '../portal/Portal'
 import Textarea from '../input/Textarea'
-import Alert from '../alert/Alert'
 import { motion } from "framer-motion"
 import { toast } from 'react-toastify';
 import axios from 'axios'
 import { AuthContext } from "../../context/authContext"
 import { BASE_URL } from "../../constans/url"
 import { statusList } from '../../constans/status'
+import AlertWarning from '../alert/AlertWarning'
 
 export default function CardProject({ data, handleRemoveProject }) {
   const { currentUser } = useContext(AuthContext)
@@ -324,34 +324,18 @@ export default function CardProject({ data, handleRemoveProject }) {
               className="mt-5 mb-0 font-medium text-white button-default bg-button">Update</Button>)}
         </motion.div>
       </Portal>
-      <Alert
-        showAlert={showAlertCancelUpdate}
-      >
-        <div
-          transition={{ type: "spring", duration: 0.15 }}
-          className='flex flex-col items-center w-full h-full gap-3 p-6 bg-white rounded-md'>
-          <IconThink className='block w-12 h-12'></IconThink>
-          <p className='text-base font-semibold'>You definitely don't save ?</p>
-          <div className='flex items-center justify-between w-full mt-3'>
-            <Button onClick={handleUpdateProject} className="px-4 py-2 font-medium text-white rounded-md bg-button">Save</Button>
-            <Button onClick={handleCancel} className="px-4 py-2 font-medium text-[#E80000] rounded-md bg-gray-300 bg-opacity-50">Cancel</Button>
-          </div>
-        </div>
-      </Alert>
-      <Alert
-        showAlert={showAlertWarningDelete}
-      >
-        <div
-          transition={{ type: "spring", duration: 0.15 }}
-          className='flex flex-col items-center w-full h-full gap-3 p-6 bg-white rounded-md'>
-          <IconWarning className='block w-12 h-12'></IconWarning>
-          <p className='text-base font-semibold text-center'>Do you want to delete the project?</p>
-          <div className='flex items-center justify-between w-full mt-3'>
-            <Button onClick={() => handleRemoveProject(data._id)} className="px-4 py-2 font-medium text-white rounded-md bg-button">continue</Button>
-            <Button onClick={() => setShowAlertWarningDelete(false)} className="px-4 py-2 font-medium text-[#E80000] rounded-md bg-gray-300 bg-opacity-50">Cancel</Button>
-          </div>
-        </div>
-      </Alert>
+      <AlertWarning
+        toggleShow={showAlertCancelUpdate}
+        messages="You definitely don't save ?"
+        handleCancel={handleCancel}
+        handleContinue={() => setShowAlertCancelUpdate(false)}
+      ><IconThink className='block w-12 h-12'></IconThink></AlertWarning>
+      <AlertWarning
+        toggleShow={showAlertWarningDelete}
+        messages="Do you want to delete the project?"
+        handleCancel={() => setShowAlertWarningDelete(false)}
+        handleContinue={() => handleRemoveProject(data._id)}
+      ><IconWarning className='block w-12 h-12'></IconWarning></AlertWarning>
     </>
   )
 }

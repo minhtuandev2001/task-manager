@@ -4,13 +4,12 @@ import IconStarFill from '../icons/IconStarFill';
 import IconStarOutline from '../icons/IconStarOutline';
 import Button from '../button/Button';
 import IconCalender from '../icons/IconCalender';
-import { IconCancel, IconDownload, IconFile, IconImage, IconProject, IconThink } from '../icons';
+import { IconCancel, IconDownload, IconFile, IconImage, IconProject, IconThink, IconWarning } from '../icons';
 import Portal from '../portal/Portal';
 import { motion } from "framer-motion"
 import InputRangeDate from '../input/InputRangeDate';
 import Textarea from '../input/Textarea';
 import AddUser from '../modal/AddUser';
-import Alert from '../alert/Alert';
 import Label from '../label/Label';
 import ThumbnailFile from '../thumbnail/ThumbnailFile';
 import DropdownChooseProject from '../dropdown/DropdownChooseProject';
@@ -19,8 +18,9 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { BASE_URL } from '../../constans/url';
 import { AuthContext } from "../../context/authContext"
+import AlertWarning from '../alert/AlertWarning';
 
-const CardTask = ({ data }) => {
+const CardTask = ({ data, handleRemoveTask }) => {
   const { currentUser } = useContext(AuthContext);
   const [showModalTask, setShowModalTask] = useState(false);
   const [stateDate, setStateDate] = useState([
@@ -197,9 +197,6 @@ const CardTask = ({ data }) => {
       })
     }
   }
-  const handleRemoveTask = () => {
-    console.log("check delete",)
-  }
   const handleCancel = () => {
     setShowAlertCancelUpdate(false)
     handleReset()
@@ -358,6 +355,7 @@ const CardTask = ({ data }) => {
     ])
   }
 
+  const [showAlertWarningDelete, setShowAlertWarningDelete] = useState(false);
   return (
     <>
       <div className="flex flex-col gap-3 p-4 py-3 mb-3 rounded-md shadow-md card-project">
@@ -462,7 +460,7 @@ const CardTask = ({ data }) => {
                 onClick={() => setShowAlertCancelUpdate(true)}
               ><span className='text-base font-semibold text-blue-500'>Cancel</span></Button>)
               : (<Button
-                onClick={handleRemoveTask}
+                onClick={() => setShowAlertWarningDelete(true)}
               ><span className='text-[#E80000] text-base font-medium'>Delete</span></Button>)}
           </div>
           <div className='flex gap-2'>
@@ -638,20 +636,18 @@ const CardTask = ({ data }) => {
               className="mt-5 mb-0 font-medium text-white button-default bg-button">Update</Button>)}
         </motion.div>
       </Portal>
-      <Alert
-        showAlert={showAlertCancelUpdate}
-      >
-        <div
-          transition={{ type: "spring", duration: 0.15 }}
-          className='flex flex-col items-center w-full h-full gap-3 p-6 bg-white rounded-md'>
-          <IconThink className='block w-12 h-12'></IconThink>
-          <p className='text-base font-semibold'>You definitely don't save ?</p>
-          <div className='flex items-center justify-between w-full mt-3'>
-            <Button onClick={handleUpdateTask} className="px-4 py-2 font-medium text-white rounded-md bg-button">Save</Button>
-            <Button onClick={handleCancel} className="px-4 py-2 font-medium text-[#E80000] rounded-md bg-gray-300 bg-opacity-50">Cancel</Button>
-          </div>
-        </div>
-      </Alert>
+      <AlertWarning
+        toggleShow={showAlertCancelUpdate}
+        messages="You definitely don't save ?"
+        handleCancel={handleCancel}
+        handleContinue={() => setShowAlertCancelUpdate(false)}
+      ><IconThink className='block w-12 h-12'></IconThink></AlertWarning>
+      <AlertWarning
+        toggleShow={showAlertWarningDelete}
+        messages="Do you want to delete the task?"
+        handleCancel={() => setShowAlertWarningDelete(false)}
+        handleContinue={() => handleRemoveTask(data._id)}
+      ><IconWarning className='block w-12 h-12'></IconWarning></AlertWarning>
     </>
   );
 }

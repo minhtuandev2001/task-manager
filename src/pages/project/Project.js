@@ -11,7 +11,6 @@ import { motion } from "framer-motion"
 import InputRangeDate from '../../components/input/InputRangeDate';
 import Textarea from '../../components/input/Textarea';
 import AddUser from '../../components/modal/AddUser';
-import Alert from '../../components/alert/Alert';
 import { IconThink } from '../../components/icons';
 import axios from 'axios';
 import { BASE_URL } from '../../constans/url';
@@ -20,6 +19,7 @@ import { AuthContext } from "../../context/authContext"
 import { toast } from 'react-toastify';
 import lodash from "lodash"
 import noResultImage from "../../asset/images/noResult.png"
+import AlertWarning from '../../components/alert/AlertWarning';
 
 export default function Project() {
   const { currentUser } = useContext(AuthContext)
@@ -269,20 +269,12 @@ export default function Project() {
             className="mt-5 mb-0 font-medium text-white button-default bg-button">Create Project</Button>
         </motion.div>
       </Portal>
-      <Alert
-        showAlert={showAlertCancelCreate}
-      >
-        <div
-          transition={{ type: "spring", duration: 0.15 }}
-          className='flex flex-col items-center w-full h-full gap-3 p-6 bg-white rounded-md'>
-          <IconThink className='block w-12 h-12'></IconThink>
-          <p className='text-base font-semibold text-center'>Do you want to continue creating the project?</p>
-          <div className='flex items-center justify-between w-full mt-3'>
-            <Button onClick={() => setShowAlertCancelCreate(false)} className="px-4 py-2 font-medium text-white rounded-md bg-button">continue</Button>
-            <Button onClick={handleCancel} className="px-4 py-2 font-medium text-[#E80000] rounded-md bg-gray-300 bg-opacity-50">Cancel</Button>
-          </div>
-        </div>
-      </Alert>
+      <AlertWarning
+        toggleShow={showAlertCancelCreate}
+        messages="Do you want to continue creating the project?"
+        handleCancel={handleCancel}
+        handleContinue={() => setShowAlertCancelCreate(false)}
+      ><IconThink className='block w-12 h-12'></IconThink></AlertWarning>
     </>
   )
 }
