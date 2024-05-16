@@ -20,4 +20,3 @@ export default function AlertWarning({ toggleShow = false, messages = "", handle
     </Alert>
   )
 }
-// Do you want to delete the project?

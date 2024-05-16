@@ -356,6 +356,22 @@ const CardTask = ({ data, handleRemoveTask }) => {
   }
 
   const [showAlertWarningDelete, setShowAlertWarningDelete] = useState(false);
+  const [starTask, setStarTask] = useState(data.star)
+  const handleStarTask = () => {
+    let newStar = starTask === 0 ? 1 : 0;
+    axios.patch(`${BASE_URL}/task/change-star/${data._id}`, {
+      star: newStar,
+    }, {
+      headers: {
+        "Authorization": `Bearer ${currentUser.token}`
+      }
+    }).then((res) => {
+      toast.success(`${newStar === 0 ? "Unstar" : "Star"} task success`)
+      setStarTask(newStar)
+    }).catch((err) => {
+      toast.error(err.response.data.messages)
+    })
+  }
   return (
     <>
       <div className="flex flex-col gap-3 p-4 py-3 mb-3 rounded-md shadow-md card-project">
@@ -363,9 +379,8 @@ const CardTask = ({ data, handleRemoveTask }) => {
           <h2 className='text-base font-semibold line-clamp-1'>{nameTask}</h2>
           <button type='button'
             className='w-full max-w-[20px]'
-          // onClick={() => handleStarProject(true ? 1 : 0)}
-          >
-            {true ?
+            onClick={handleStarTask}>
+            {starTask !== 0 ?
               <IconStarFill></IconStarFill>
               :
               <IconStarOutline></IconStarOutline>
@@ -451,8 +466,14 @@ const CardTask = ({ data, handleRemoveTask }) => {
               ) : (
                 <h2 className='text-base font-semibold line-clamp-3 w-full max-w-[380px]'>{nameTask}</h2>
               )}
-              <button type='button'>
-                <IconStarFill></IconStarFill>
+              <button type='button'
+                className='w-full max-w-[20px]'
+                onClick={handleStarTask}>
+                {starTask !== 0 ?
+                  <IconStarFill></IconStarFill>
+                  :
+                  <IconStarOutline></IconStarOutline>
+                }
               </button>
             </div>
             {toggleUpdate ? (
