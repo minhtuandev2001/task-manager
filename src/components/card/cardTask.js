@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import IconStarFill from '../icons/IconStarFill';
 import IconStarOutline from '../icons/IconStarOutline';
 import Button from '../button/Button';
 import IconCalender from '../icons/IconCalender';
-import { IconCancel, IconFile, IconImage, IconProject, IconThink } from '../icons';
+import { IconCancel, IconDownload, IconFile, IconImage, IconProject, IconThink } from '../icons';
 import Portal from '../portal/Portal';
 import { motion } from "framer-motion"
 import InputRangeDate from '../input/InputRangeDate';
@@ -15,8 +15,13 @@ import Label from '../label/Label';
 import ThumbnailFile from '../thumbnail/ThumbnailFile';
 import DropdownChooseProject from '../dropdown/DropdownChooseProject';
 import { severtyList, statusList } from '../../constans/status';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+import { BASE_URL } from '../../constans/url';
+import { AuthContext } from "../../context/authContext"
 
 const CardTask = ({ data }) => {
+  const { currentUser } = useContext(AuthContext);
   const [showModalTask, setShowModalTask] = useState(false);
   const [stateDate, setStateDate] = useState([
     {
@@ -29,8 +34,7 @@ const CardTask = ({ data }) => {
   const [nameTask, setNameTask] = useState(data.title)
   const [descriptionTask, setDescriptionTask] = useState(data.description);
   const [statusTask, setStatusTask] = useState(data.status);
-  const [severtyTask, setSevertyTask] = useState(data.severity);
-  console.log("check ", data.severity)
+  const [severityTask, setSeverityTask] = useState(data.severity);
   const [userListAdd, setUserListAdd] = useState({
     member: data.member,
   })
@@ -102,16 +106,16 @@ const CardTask = ({ data }) => {
   // kết thúc xử lý thay đổi trạng thái task
 
   // xử lý thay đổi severty
-  const handleSevertyTask = (status) => {
+  const handleSeverityTask = (status) => {
     switch (status) {
       case "low":
-        setSevertyTask("medium")
+        setSeverityTask("medium")
         break;
       case "medium":
-        setSevertyTask("high")
+        setSeverityTask("high")
         break;
       case "high":
-        setSevertyTask("low")
+        setSeverityTask("low")
         break;
       default:
         break;
@@ -133,18 +137,112 @@ const CardTask = ({ data }) => {
     setUserListAdd(preData => ({ ...preData, [nameItemList]: preData[nameItemList].filter((item) => item.id !== id) }))
   }
   // ket thuc them member vào du an
-
+  const [submiting, setSubmiting] = useState(false);
   const handleUpdateTask = () => {
-    console.log("check ", taskItem)
+    if (!submiting) { // chưa nhấn create
+      if (!project) {
+        toast.error("You must enter information")
+        return
+      }
+      if (nameTask.length === 0) {
+        return
+      }
+      let timeStart = (stateDate[0].startDate.getMonth() + 1) + "/" + stateDate[0].startDate.getDate() + "/" + stateDate[0].startDate.getFullYear()
+      let timeEnd = (stateDate[0].endDate.getMonth() + 1) + "/" + stateDate[0].endDate.getDate() + "/" + stateDate[0].endDate.getFullYear()
+      const formData = new FormData();
+      formData.append("title", nameTask)
+      formData.append("status", statusTask)
+      formData.append("severity", severityTask)
+      formData.append("project_id", project._id)
+      formData.append("date", JSON.stringify({
+        timeStart: timeStart,
+        timeEnd: timeEnd
+      }))
+      formData.append("time", JSON.stringify({
+        timeStart: timeTask.timeStart,
+        timeEnd: timeTask.timeEnd,
+      }))
+      formData.append("description", descriptionTask)
+      formData.append("member", JSON.stringify(userListAdd.member))
+      formData.append("taskList", JSON.stringify(taskItem))
+      if (imagesUpload) {
+        for (let i = 0; i < imagesUpload.length; i++) {
+          formData.append("images", imagesUpload[i])
+        }
+      }
+      if (filesUpload) {
+        for (let i = 0; i < filesUpload.length; i++) {
+          formData.append("files", filesUpload[i])
+        }
+      }
+      formData.append("imagesOld", JSON.stringify(images))
+      formData.append("filesOld", JSON.stringify(files))
+      setSubmiting(true)
+      axios.patch(`${BASE_URL}/task/update/${data._id}`, formData, {
+        headers: {
+          "Authorization": `Bearer ${currentUser.token}`,
+          "Content-Type": "multipart/form-data"
+        }
+      }).then((res) => {
+        // cập nhật lại task vừa tạo vào đúng trường
+        toast.success("Update task success")
+        setSubmiting(false)
+        setShowModalTask(false)
+        setToggleUpdate(false)
+        handleReset()// sửa lại handle reset (tai từ database về)
+      }).catch((err) => {
+        toast.error(err.response.data.messages)
+        setToggleUpdate(false)
+        setSubmiting(false)
+      })
+    }
   }
   const handleRemoveTask = () => {
     console.log("check delete",)
   }
   const handleCancel = () => {
     setShowAlertCancelUpdate(false)
+    handleReset()
     setShowModalTask(false)
     setToggleUpdate(false)
   }
+  // reset lại data của task
+  const handleReset = () => {
+    axios.get(`${BASE_URL}/task/detail/${data._id}`, {
+      headers: {
+        "Authorization": `Bearer ${currentUser.token}`
+      }
+    }).then((res) => {
+      console.log("check ", res.data?.data)
+      let data = res.data?.data;
+      setNameTask(data.title)
+      setStatusTask(data.status)
+      setSeverityTask(data.severity)
+      setProject(data.infoProject)
+      setStateDate([{
+        startDate: new Date(data.date.timeStart),
+        endDate: new Date(data.date.timeEnd),
+        key: 'selection'
+      }])
+      setTimeTask({
+        timeStart: data.time.timeStart,
+        timeEnd: data.time.timeEnd,
+      })
+      setDescriptionTask(data.description)
+      setUserListAdd({
+        member: data.member,
+      })
+      setTaskItem(data.taskList)
+      setImages(data.images)
+      setFiles(data.files)
+      setFilesUpload(null)
+      setImageUpload(null)
+    }).catch((err) => {
+      toast.error(err.response.data.messages)
+    })
+  }
+  // kết thúc reset lại data của task
+
   // xử lý việc upload, preview, remove image
   const handleUploadImage = (e) => {
     setImageUpload(prevImage => {
@@ -204,6 +302,18 @@ const CardTask = ({ data }) => {
     setFilesUpload(dt.files)
   }
   // kết thúc tiền xử lý việc Upload file driver
+
+  // xử lý xóa các item ảnh từ database trả về
+  const handleRemoveImageDatabase = (item) => {
+    setImages(prevImages => prevImages.filter((image) => image !== item))
+  }
+  // kết thúc xử lý xóa các item ảnh từ database trả về
+
+  // xử lý xóa các item file từ database trả về
+  const handleRemoveFileDatabase = (id) => {
+    setFiles(prevFiles => prevFiles.filter((file) => file.id !== id))
+  }
+  // kết thúc xử lý xóa các item file từ database trả về
 
   // thêm, xóa , sửa task item
   const addTaskItem = () => {
@@ -275,7 +385,7 @@ const CardTask = ({ data }) => {
           })}
           {severtyList.map((item, index) => {
             return (
-              severtyTask === item.id &&
+              severityTask === item.id &&
               <Button
                 key={item.id}
                 className={`button-default w-auto bg-${item.id} text-sm text-white h-auto px-4 py-[6px] rounded-full font-medium self-start mb-0`}>{item.title}
@@ -338,7 +448,7 @@ const CardTask = ({ data }) => {
                 <input type="text"
                   onChange={(e) => setNameTask(e.target.value)}
                   className='w-full max-w-[380px] p-2 text-base font-semibold border rounded-md border-graycustom'
-                  defaultValue="Create a Design System for Enum Workspace."
+                  defaultValue={nameTask}
                 />
               ) : (
                 <h2 className='text-base font-semibold line-clamp-3 w-full max-w-[380px]'>{nameTask}</h2>
@@ -367,10 +477,10 @@ const CardTask = ({ data }) => {
             })}
             {severtyList.map((item, index) => {
               return (
-                severtyTask === item.id &&
+                severityTask === item.id &&
                 <Button
                   key={item.id}
-                  onClick={() => toggleUpdate ? handleSevertyTask(item.id) : {}}
+                  onClick={() => toggleUpdate ? handleSeverityTask(item.id) : {}}
                   className={`button-default w-auto bg-${item.id} text-sm text-white h-auto px-4 py-[6px] rounded-full font-medium self-start`}>{item.title}
                 </Button>)
             })}
@@ -448,7 +558,7 @@ const CardTask = ({ data }) => {
             )}
           </div>
           <div className="flex items-center gap-4 mt-3">
-            <Label htmlFor='image' className='flex items-center justify-center w-10 h-10 rounded-md bg-graycustom bg-opacity-10'><IconImage></IconImage></Label>
+            <Label htmlFor={toggleUpdate ? "image" : ""} className='flex items-center justify-center w-10 h-10 rounded-md bg-graycustom bg-opacity-10'><IconImage></IconImage></Label>
             <Label className="text-sm font-medium">Add Image</Label>
           </div>
 
@@ -458,7 +568,7 @@ const CardTask = ({ data }) => {
                 <div key={item} className='relative w-[100px] h-[100px]'>
                   <img className='object-cover w-full h-full' src={item} alt="" />
                   {toggleUpdate && <Button
-                    // onClick={() => handleRemoveImageUpload(index)}
+                    onClick={() => handleRemoveImageDatabase(item)}
                     className="w-5 absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 bg-gray-300 p-[2px] h-5 rounded-full flex justify-center items-center"><IconCancel></IconCancel></Button>}
                 </div>
               )
@@ -479,7 +589,7 @@ const CardTask = ({ data }) => {
             onChange={handleUploadImage}
             type="file" id="image" accept="image/png, image/jpeg" multiple />
           <div className="flex items-center gap-4 mt-3">
-            <Label htmlFor='files' className='flex items-center justify-center w-10 h-10 rounded-md bg-graycustom bg-opacity-10'><IconFile></IconFile></Label>
+            <Label htmlFor={toggleUpdate ? "files" : ""} className='flex items-center justify-center w-10 h-10 rounded-md bg-graycustom bg-opacity-10'><IconFile></IconFile></Label>
             <Label className="text-sm font-medium">Add File</Label>
           </div>
           <input
@@ -489,15 +599,19 @@ const CardTask = ({ data }) => {
           <div className='flex flex-wrap gap-2 mt-3'>
             {files.length > 0 && files.map((item, index) => {
               return (
-                <div key={index} className='w-[calc(50%-8px)] flex items-center gap-2 rounded-md p-2 bg-gray-200'>
-                  <div className='min-w-[22px] min-h-[29px]'>
-                    <ThumbnailFile fileExtension={item.nameFile.split(".")[1]}></ThumbnailFile>
-                  </div>
-                  <span className='flex-1 text-sm font-medium line-clamp-1'>{item.nameFile}</span>
-                  {toggleUpdate && <Button
-                    // onClick={() => handleRemoveFilesUpload(index)}
-                    className="flex items-center justify-center w-full h-full max-w-4 max-h-4"><IconCancel></IconCancel></Button>
-                  }
+                <div
+                  key={item.id} className='w-[calc(50%-8px)] flex items-center justify-between rounded-md p-2 bg-gray-200'>
+                  <a href={item.link_view} target='_blank' rel="noreferrer" className='flex items-center gap-2 w-[calc(100%-25px)]'>
+                    <div className='min-w-[22px] min-h-[29px]'>
+                      <ThumbnailFile fileExtension={item.nameFile.split(".")[1]}></ThumbnailFile>
+                    </div>
+                    <span className='flex-1 text-sm font-medium line-clamp-1'>{item.nameFile}</span>
+                  </a>
+                  {toggleUpdate ?
+                    (<Button
+                      onClick={() => handleRemoveFileDatabase(item.id)}
+                      className="flex items-center justify-center w-full h-full max-w-4 max-h-4"><IconCancel></IconCancel></Button>)
+                    : (<a href={item.link_download} target='_blank' rel="noreferrer" className="flex items-center justify-center w-full h-full max-w-4 max-h-4"><IconDownload></IconDownload></a>)}
                 </div>
               )
             })}
@@ -518,7 +632,7 @@ const CardTask = ({ data }) => {
           {toggleUpdate ?
             (<Button
               onClick={handleUpdateTask}
-              className="mt-5 mb-0 font-medium text-white button-default bg-button">Save</Button>)
+              className="mt-5 mb-0 font-medium text-white button-default bg-button">{submiting && <div className='w-4 h-4 border-4 border-white rounded-full border-r-4 border-r-transparent animate-spin'></div>}Save</Button>)
             : (<Button
               onClick={() => setToggleUpdate(true)}
               className="mt-5 mb-0 font-medium text-white button-default bg-button">Update</Button>)}

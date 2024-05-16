@@ -18,6 +18,7 @@ import { BASE_URL } from '../../constans/url';
 import axios from 'axios';
 import { AuthContext } from "../../context/authContext"
 import { toast } from 'react-toastify';
+import lodash from "lodash"
 
 const Task = () => {
   const { currentUser } = useContext(AuthContext)
@@ -133,8 +134,6 @@ const Task = () => {
   // them member vào du an
   const handleAddUser = (nameItemList, data) => {
     setUserListAdd(preData => {
-      console.log("check ", preData[nameItemList])
-      console.log("check ", data)
       let userExist = preData[nameItemList].some((item) => item.id === data.id)
       return { ...preData, [nameItemList]: userExist ? preData[nameItemList] : [...preData[nameItemList], data] }
     })
@@ -156,7 +155,6 @@ const Task = () => {
       }
       let timeStart = (stateDate[0].startDate.getMonth() + 1) + "/" + stateDate[0].startDate.getDate() + "/" + stateDate[0].startDate.getFullYear()
       let timeEnd = (stateDate[0].endDate.getMonth() + 1) + "/" + stateDate[0].endDate.getDate() + "/" + stateDate[0].endDate.getFullYear()
-      console.log(nameTask, statusTask, severity, project, stateDate, timeTask, descriptionTask, userListAdd, taskItem, imagesUpload, filesUpload)
       const formData = new FormData();
       formData.append("title", nameTask)
       formData.append("status", statusTask)
@@ -204,11 +202,13 @@ const Task = () => {
   const handleRemoveTask = () => {
     console.log("check delete",)
   }
+  // xử lý khi người dùng chuyển sang chế đốj update và thoát khỏi update 
   const handleCancel = () => {
     setShowAlertCancelCreate(false)
     handleReset()
     setShowModalTask(false)
   }
+  // kết thúc xử lý khi người dùng chuyển sang chế đốj update và thoát khỏi update 
 
   // reset state
   const handleReset = () => {
@@ -317,7 +317,6 @@ const Task = () => {
 
   // xử lý filter project
   const clickButtonFilter = () => {
-    console.log("check ", buttonFilterRef.current.getBoundingClientRect())
     setCoordsModalFilter(buttonFilterRef.current.getBoundingClientRect())
     setShowModalFilterProject(true)
   }
@@ -332,6 +331,7 @@ const Task = () => {
   }, [])
   // kết thúc xử lý filter project
 
+  // xử lý chọn project cho task
   const handleChooseProject = (item) => {
     // danh sách member luôn phải reset khi mới chọn project
     setUserListAdd({
@@ -351,21 +351,59 @@ const Task = () => {
       }
     ])
   }
+  // kết thúc xử lý chọn project cho task
+
   const handleStatusAction = (id) => {
+    // xem các task theo status 
     setStatusAction(id);
   }
+  const [projectSelected, setProjectSelected] = useState(null)
+  const [projectCurrent, setProjectCurrent] = useState(null)
   useEffect(() => {
-    axios.get(`${BASE_URL}/task?statusAction=${statusAction}`, {
-      headers: {
-        "Authorization": `Bearer ${currentUser.token}`
-      }
-    }).then((res) => {
-      setTasks(res.data?.tasks || []);
-    }).catch((err) => {
-      console.log("check ", err.response?.data.messages);
-    })
-  }, [statusAction])
+    const getTask = () => {
+      axios.get(`${BASE_URL}/task?statusAction=${statusAction}&idProject=${projectSelected !== null ? projectSelected._id : ""}`, {
+        headers: {
+          "Authorization": `Bearer ${currentUser.token}`
+        }
+      }).then((res) => {
+        setTasks(res.data?.tasks || []);
+        setProjectCurrent(res.data?.projectCurrent);
+      }).catch((err) => {
+        console.log("check ", err.response?.data.messages);
+      })
+    }
+    getTask()
+  }, [statusAction, projectSelected])
 
+  const [searchProject, setSearchProject] = useState("")
+  const [projectList, setProjectList] = useState([])
+  const [searchLoading, setSearchLoading] = useState(false)
+  useEffect(() => {
+    const getProject = () => {
+      axios.get(`${BASE_URL}/project?keyword=${searchProject}`, {
+        headers: {
+          'Authorization': `Bearer ${currentUser.token}`
+        }
+      }).then((res) => {
+        setProjectList(res.data?.data);
+        setSearchLoading(false)
+      }).catch((err) => {
+        toast.error(err.response.data.messages)
+        setSearchLoading(false)
+      })
+    }
+    getProject()
+  }, [searchProject])
+  // xử lý input search project
+  const handleSearchProject = lodash.debounce((e) => {
+    setSearchLoading(true)
+    setSearchProject(e.target.value)
+  }, 500)
+
+  // chọn project để hiển thị
+  const handleSelectedProject = (item) => {
+    setProjectSelected(item)
+  }
   return (
     <>
       <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)]'>
@@ -399,19 +437,21 @@ const Task = () => {
               className='button-default bg-[#F6F7F9] w-10 h-10 text-white rounded-md font-medium mb-0'><IconFilter></IconFilter></button>
           </div>
         </div>
-        <div className='flex items-center justify-end gap-2 mt-3'>
-          <Input
-            placehoder="Search..."
-            className="w-full max-w-[252px] h-10 p-3 border rounded-md border-graycustom bg-input focus:border-bluecustom"
-          ></Input>
-          <Button
-            onClick={() => setShowModalTask(true)}
-            className="button-default h-10 bg-button max-w-[100px] text-white font-medium mb-0"
-          ><span>+ new</span></Button>
+        <div className='flex items-center gap-2 mt-4 justify-between'>
+          {projectCurrent !== null ? <span className='text-xl font-semibold'>{projectCurrent.title}</span> : <span></span>}
+          <div className='flex items-center gap-2'>
+            <Input
+              placeholder="Search..."
+              className="w-full max-w-[252px] h-10 p-3 border rounded-md border-graycustom bg-input focus:border-bluecustom"
+            ></Input>
+            <Button
+              onClick={() => setShowModalTask(true)}
+              className="button-default h-10 bg-button max-w-[100px] text-white font-medium mb-0"
+            ><span>+ new</span></Button>
+          </div>
         </div>
-        <div className="grid gap-4 mt-3 project-content sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+        <div className="grid gap-4 mt-4 project-content sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {tasks.length > 0 && tasks.map((item, index) => {
-            console.log(item._id)
             return (<CardTask key={item._id} data={item}></CardTask>)
           })}
         </div>
@@ -607,15 +647,24 @@ const Task = () => {
             top: coordsModalFilter.top + coordsModalFilter.height
           }}
         >
-          <Label className="text-base font-medium" >Filter Project</Label>
+          <div className='flex gap-2 items-center'>
+            <Label className="text-base font-medium" >Filter Project</Label>
+            {searchLoading && <div className='w-4 h-4 border-2 border-blue-600 rounded-full border-r-3 border-r-transparent animate-spin'></div>}
+          </div>
           <Input
+            onChange={handleSearchProject}
             placeholder="Enter name project"
             className="w-full h-10 p-3 my-3 border rounded-md border-graycustom bg-input focus:border-bluecustom"></Input>
-          <div className='flex flex-col items-start gap-1 h-full overflow-y-scroll no-scrollbar max-h-[300px]'>
-            <Button className="flex items-center w-full px-2 transition-all rounded-md hover:bg-gray-100 min-h-10 max-h-10">
-              <span className='text-sm font-medium line-clamp-1'>Create a Design System for Enum Workspace.
-              </span>
-            </Button>
+          <div className='flex flex-col items-start gap-1 h-full overflow-y-scroll no-scrollbar min-h-[200px] max-h-[300px]'>
+            {projectList.length > 0 && projectList.map((item) => {
+              return (
+                <Button
+                  onClick={() => handleSelectedProject(item)}
+                  key={item._id} className="flex items-center w-full px-2 transition-all rounded-md hover:bg-gray-100 min-h-10 max-h-10">
+                  <span className='text-sm font-medium line-clamp-1'>{item.title}</span>
+                </Button>
+              )
+            })}
           </div>
         </div>
       </Portal>

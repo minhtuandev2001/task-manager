@@ -169,16 +169,16 @@ export default function Project() {
             onChange={handleSearchProject}
             type='text'
             name='search'
-            className='w-full h-11 p-3 max-w-[246px] border rounded-md border-graycustom bg-input focus:border-bluecustom'
+            className='w-full h-10 p-3 max-w-[246px] border rounded-md border-graycustom bg-input focus:border-bluecustom'
             placeholder="Search"
           ></Input>
           <Button
             onClick={() => setShowModalCreateProject(true)}
-            className="button-default h-11 bg-button max-w-[110px] text-white font-medium"
+            className="button-default h-10 bg-button max-w-[110px] text-white font-medium"
           ><span>+ Create</span></Button>
           <Button
             onClick={() => setShowModalJoinProject(true)}
-            className="button-default h-11 bg-button max-w-[110px] text-white font-medium"
+            className="button-default h-10 bg-button max-w-[110px] text-white font-medium"
           ><span>Join</span></Button>
         </div>
         {loading && <div className='w-10 h-10 mx-auto my-2 border-4 border-r-4 border-blue-500 rounded-full border-r-transparent animate-spin'></div>}

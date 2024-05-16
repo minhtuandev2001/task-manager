@@ -33,5 +33,6 @@ import IconCSV from "./IconCSV"
 import IconZIP from "./IconZIP"
 import IconFILE1 from "./IconFILE1"
 import IconJPG from "./IconJPG"
+import IconDownload from "./IconDownload"
 
-export { IconEyeOpen, IconEyeClose, IconBell, IconLogo, IconMessage, IconProject, IconMetting, IconSendMail, IconTask, IconSun, IconLogout, IconMoon, IconCalender, IconDelete, IconEdit, IconStarOutline, IconStarFill, IconCancel, IconThink, IconCol, IconList, IconFilter, IconChevronDown, IconImage, IconFile, IconPDF, IconDOC, IconXSL, IconMP4, IconRAR, IconCSV, IconZIP, IconFILE1, IconJPG, IconWarning }
+export { IconEyeOpen, IconEyeClose, IconBell, IconLogo, IconMessage, IconProject, IconMetting, IconSendMail, IconTask, IconSun, IconLogout, IconMoon, IconCalender, IconDelete, IconEdit, IconStarOutline, IconStarFill, IconCancel, IconThink, IconCol, IconList, IconFilter, IconChevronDown, IconImage, IconFile, IconPDF, IconDOC, IconXSL, IconMP4, IconRAR, IconCSV, IconZIP, IconFILE1, IconJPG, IconWarning, IconDownload }
