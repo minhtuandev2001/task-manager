@@ -1,11 +1,11 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Filed from '../../components/filed/Filed'
 import Label from '../../components/label/Label'
 import Input from '../../components/input/Input'
 import Button from '../../components/button/Button'
 import backgroundForm from "../../asset/images/backgroudForm.jpg"
 import iconGoogle from "../../asset/images/Google.png"
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import { IconEyeClose, IconEyeOpen } from '../../components/icons'
@@ -13,7 +13,8 @@ import { motion } from "framer-motion";
 import { AuthContext } from "../../context/authContext"
 
 export default function Login() {
-  const { login } = useContext(AuthContext)
+  const { currentUser, login } = useContext(AuthContext)
+  const navigate = useNavigate();
   const formikLogin = useFormik({
     initialValues: {
       email: "",
@@ -29,6 +30,11 @@ export default function Login() {
     }
   })
   const [togglePassword, setTogglePassword] = useState(true);
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/project")
+    }
+  }, [])
   return (
     <div className='flex items-center justify-center h-screen bg-center'
       style={{
