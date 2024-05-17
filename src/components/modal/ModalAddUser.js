@@ -20,12 +20,10 @@ const ModalAddUser = ({ nameItemList, showSearchPortal, setShowSearchPortal, use
         }
       })
       setUsers(response.data.data)
-      console.log("check ", response)
     }
     getUser()
   }, [search])
   const handleChangeInput = lodash.debounce((e) => {
-    console.log("check ", e.target.value)
     setSearch(e.target.value)
   }, 500)
   return (

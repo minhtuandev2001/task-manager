@@ -11,7 +11,6 @@ function AuthoProvider(props) {
   const navigate = useNavigate()
 
   const login = ({ email, password }) => {
-    // await axios.get("http://localhost:4000")
     axios.post(`${BASE_URL}/user/login`, {
       email: email,
       password: password

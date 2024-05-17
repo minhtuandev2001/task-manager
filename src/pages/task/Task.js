@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import CardTask from '../../components/card/cardTask';
 import Button from '../../components/button/Button';
 import { v4 as uuidv4 } from 'uuid';
-import { IconCancel, IconCol, IconFile, IconFilter, IconImage, IconList, IconStarFill, IconThink } from '../../components/icons';
+import { IconCancel, IconCol, IconFile, IconFilter, IconImage, IconList, IconThink } from '../../components/icons';
 import Input from '../../components/input/Input';
 import Portal from '../../components/portal/Portal';
 import { motion } from "framer-motion";
@@ -421,7 +421,7 @@ const Task = () => {
             {statusList.map((item) => {
               return (
                 <div key={item.id}
-                  className='cursor-pointer'
+                  className='cursor-pointer select-none'
                   onClick={() => handleStatusAction(item.id)}
                 >
                   <span className={`mb-2 text-base font-medium ${item.id === statusAction ? "text-black" : "text-[#717279]"}`}>{item.title}</span>

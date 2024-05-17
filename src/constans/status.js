@@ -26,3 +26,18 @@ export const severtyList = [
     title: "High",
   },
 ]
+
+export const friendActionList = [
+  {
+    id: "friends",
+    title: "Friends"
+  },
+  {
+    id: "myfriends",
+    title: "My Friends"
+  },
+  {
+    id: "restricted",
+    title: "Restricted "
+  },
+]

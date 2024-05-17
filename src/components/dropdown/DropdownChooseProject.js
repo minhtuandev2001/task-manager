@@ -21,8 +21,7 @@ export default function DropdownChooseProject({ project, handleChooseProject, to
       ) : (
         <span className='block mb-2'></span>
       )}
-      {showDropdow && <ShowModalSearchProject showDropdow={showDropdow} setShowDropdown={setShowDropdown} handleChooseProject={handleChooseProject}></ShowModalSearchProject>
-      }
+      {showDropdow && <ShowModalSearchProject showDropdow={showDropdow} setShowDropdown={setShowDropdown} handleChooseProject={handleChooseProject}></ShowModalSearchProject>}
     </>
   )
 }

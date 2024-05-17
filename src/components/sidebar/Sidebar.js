@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { IconLogo, IconLogout, IconMessage, IconMetting, IconProject, IconSendMail, IconSun, IconTask } from '../icons'
+import { IconLogo, IconLogout, IconMessage, IconMetting, IconProject, IconSendMail, IconSun, IconTask, IconUsers } from '../icons'
 import { motion } from "framer-motion"
 import { NavLink } from 'react-router-dom';
 
@@ -38,6 +38,13 @@ const action = [
     to: "/send-mail",
     icon: <IconSendMail />,
     iconActive: <IconSendMail selected={true} />,
+  },
+  {
+    id: 5,
+    title: "Friends",
+    to: "/friends",
+    icon: <IconUsers />,
+    iconActive: <IconUsers selected={true} />,
   },
 ];
 export default function Sidebar() {

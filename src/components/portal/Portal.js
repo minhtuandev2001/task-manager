@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import React, { useEffect } from 'react'
 import { createPortal } from "react-dom"
 

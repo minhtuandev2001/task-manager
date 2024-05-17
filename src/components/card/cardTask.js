@@ -589,7 +589,8 @@ const CardTask = ({ data, handleRemoveTask }) => {
               {images.length > 0 && images.map((item, index) => {
                 return (
                   <div key={item} className='relative w-[100px] h-[100px]'>
-                    <img className='object-cover w-full h-full' src={item} alt="" />
+                    <img
+                      className='object-cover w-full h-full' src={item} alt="" />
                     {toggleUpdate && <Button
                       onClick={() => handleRemoveImageDatabase(item)}
                       className="w-5 absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 bg-gray-300 p-[2px] h-5 rounded-full flex justify-center items-center"><IconCancel></IconCancel></Button>}

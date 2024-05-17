@@ -136,9 +136,11 @@ export default function Project() {
         }
       }).then((res) => {
         setProjectList(res.data?.data);
+        console.log("check ")
         setLoading(false)
       }).catch((err) => {
-        toast.error(err.response.data.messages)
+        console.log("check ")
+        toast.error(err)
         setLoading(false)
       })
     }

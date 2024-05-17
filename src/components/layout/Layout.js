@@ -5,14 +5,16 @@ import { Outlet } from 'react-router-dom'
 
 export default function Layout() {
   return (
-    <div className='flex'>
-      <Sidebar></Sidebar>
-      <div className='w-full'>
-        <HeaderBar></HeaderBar>
-        <main className='p-3 bg-[#F6FAFB]'>
-          <Outlet></Outlet>
-        </main>
+    <>
+      <div className='flex'>
+        <Sidebar></Sidebar>
+        <div className='w-full'>
+          <HeaderBar></HeaderBar>
+          <main className='p-3 bg-[#F6FAFB]'>
+            <Outlet></Outlet>
+          </main>
+        </div>
       </div>
-    </div>
+    </>
   )
 }

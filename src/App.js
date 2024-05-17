@@ -10,6 +10,7 @@ import Layout from './components/layout/Layout';
 import Project from './pages/project/Project';
 import Task from './pages/task/Task';
 import { AuthContext } from "./context/authContext"
+import Users from './pages/users/Users';
 
 
 const ProtectedRoute = ({ children }) => {
@@ -33,6 +34,7 @@ function App() {
           {/* projectId == "" lấy tất cả */}
           {/* /task/projectId?statusProject=going&search=name */}
           <Route path='/task' element={<Task></Task>}></Route>
+          <Route path='/friends' element={<Users></Users>}></Route>
         </Route>
         <Route path='*' element={<div>404</div>}></Route>
       </Routes>
