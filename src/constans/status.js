@@ -37,7 +37,11 @@ export const friendActionList = [
     title: "My Friends"
   },
   {
-    id: "restricted",
-    title: "Restricted "
+    id: "request",
+    title: "Request"
   },
+  {
+    id: "accept",
+    title: "Accept"
+  }
 ]

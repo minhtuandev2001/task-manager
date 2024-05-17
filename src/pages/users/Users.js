@@ -1,33 +1,63 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { friendActionList } from '../../constans/status'
 import { motion } from "framer-motion"
 import Input from '../../components/input/Input'
 import axios from 'axios'
 import { BASE_URL } from '../../constans/url'
 import lodash from "lodash";
+import { AuthContext } from "../../context/authContext"
+import CardUser from '../../components/card/CardUser'
+import { toast } from 'react-toastify'
 
 export default function Users() {
+  const { currentUser } = useContext(AuthContext)
   const [friendAction, setFriendAction] = useState("friends");
   const [friendsList, setFriendsList] = useState([]);
   const [search, setSearch] = useState("");
-  const handleFriendsAction = (id) => {
-    setFriendAction(id)
-  }
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const getUser = () => {
-      axios.get(`${BASE_URL}/user?keyword=${search}&limit=20`)
+      setLoading(true)
+      axios.get(`${BASE_URL}/users?keyword=${search}&statusFriend=${friendAction}&limit=20`, {
+        headers: {
+          "Authorization": `Bearer ${currentUser.token}`
+        }
+      })
         .then((res) => {
           console.log("check ", res.data?.data)
           setFriendsList(res.data?.data || [])
+          setLoading(false)
         }).catch((err) => {
+          setLoading(false)
           console.log("check ", err)
         })
     }
     getUser()
-  }, [search])
+  }, [search, friendAction])
+
+  const handleFriendsAction = (id) => {
+    setFriendAction(id)
+  }
+
   const handleChangeInput = lodash.debounce((e) => {
     setSearch(e.target.value)
   }, 500)
+  const handleClick = (pathAction, id) => {
+    axios.get(`${BASE_URL}/users/${pathAction}/${id}`, {
+      headers: {
+        "Authorization": `Bearer ${currentUser.token}`
+      }
+    }).then((res) => {
+      console.log("check ", pathAction)
+      setFriendsList(prevUsers => prevUsers.filter((user) => user._id !== id))
+      toast.success(res.data.messages)
+    }).catch((err) => {
+      toast.error(err.data.messages)
+      console.log("check ", err)
+      toast.error(err.data.messages)
+    })
+  }
   return (
     <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)]'>
       <div className="flex items-center justify-between">
@@ -55,22 +85,24 @@ export default function Users() {
         ></Input>
       </div>
       {/* danh sach user */}
-      <div className='grid grid-cols-7 mt-3 gap-3'>
-        {friendsList.length > 0 && friendsList.map((item, index) => {
-          return (
-            <div key={item._id}
-              className='bg-gray-50 p-1 w-full max-w-[200px] rounded-md'
-            >
-              <img src={item.avatar} alt="" />
-              <p className='text-base font-medium'>{item.username}</p>
-              <div className='flex flex-col gap-2 mt-2'>
-                <button className='bg-[#0866ff] rounded-md p-2 text-white font-medium h-9'>add friend</button>
-                <button className='bg-[#e4e6eb] rounded-md p-2 text-black font-medium h-9'>Restricted</button>
-              </div>
-            </div>
-          )
-        })}
-      </div>
+      {loading ? (
+        <div className='w-5 h-5 border-4 border-[#0866ff] border-r-4 border-r-transparent rounded-full animate-spin'></div>
+      )
+        : (
+          <div className='grid grid-cols-7 gap-3 mt-3'>
+            {friendsList.length > 0 && friendsList.map((item, index) => {
+              return (
+                <CardUser
+                  key={item._id}
+                  data={item}
+                  statusFriend={friendAction}
+                  // handleViewProfile={}
+                  handleButtonClick={handleClick}
+                ></CardUser>
+              )
+            })}
+          </div>
+        )}
     </div>
   )
 }
