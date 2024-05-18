@@ -8,13 +8,16 @@ import lodash from "lodash";
 import { AuthContext } from "../../context/authContext"
 import CardUser from '../../components/card/CardUser'
 import { toast } from 'react-toastify'
+import { useSocket } from '../../context/socketContext'
 
 export default function Users() {
+  const socket = useSocket()
   const { currentUser } = useContext(AuthContext)
   const [friendAction, setFriendAction] = useState("friends");
   const [friendsList, setFriendsList] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
     const getUser = () => {
@@ -34,10 +37,10 @@ export default function Users() {
         })
     }
     getUser()
-  }, [search, friendAction])
+  }, [search, friendAction, currentUser.token])
 
   const handleFriendsAction = (id) => {
-    setFriendAction(id)
+    setFriendAction(prev => id)
   }
 
   const handleChangeInput = lodash.debounce((e) => {
@@ -58,6 +61,25 @@ export default function Users() {
       toast.error(err.data.messages)
     })
   }
+  useEffect(() => {
+    socket.on("CLIENT_ADD_FRIEND", (data) => {
+      console.log("check ", friendAction)
+      if (friendAction === "accept") {
+        setFriendsList(preveFriend => [data.infoUser, ...preveFriend])
+      } else {
+        setFriendsList(preveFriend => preveFriend.filter((friend) => friend._id !== data.infoUser._id))
+      }
+    })
+    socket.on("CLIENT_ACCEPT_FRIEND", (data) => {
+      if (friendAction === "myfriends") {
+        setFriendsList(preveFriend => [data.infoUser, ...preveFriend])
+      } else {
+        setFriendsList(preveFriend => preveFriend.filter((friend) => friend._id !== data.infoUser._id))
+      }
+    })
+    return () => {
+    }
+  }, [friendAction, socket])
   return (
     <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)]'>
       <div className="flex items-center justify-between">
