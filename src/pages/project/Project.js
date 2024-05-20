@@ -53,7 +53,6 @@ export default function Project() {
 
   // them client, leader, member vào du an
   const handleAddUser = (nameItemList, data) => {
-    console.log("check ", data)
     setUserListAdd(preData => {
       let userExist = preData[nameItemList].some((item) => item.id === data.id)
       return { ...preData, [nameItemList]: userExist ? preData[nameItemList] : [...preData[nameItemList], { id: data.id.toString(), email: data.email }] }

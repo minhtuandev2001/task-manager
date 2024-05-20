@@ -11,6 +11,7 @@ import Project from './pages/project/Project';
 import Task from './pages/task/Task';
 import { AuthContext } from "./context/authContext"
 import Users from './pages/users/Users';
+import Chat from './pages/chat/Chat';
 
 
 const ProtectedRoute = ({ children }) => {
@@ -31,6 +32,7 @@ function App() {
         <Route path='/new-password' element={<NewPassword></NewPassword>}></Route>
         <Route element={<ProtectedRoute><Layout></Layout></ProtectedRoute>}>
           <Route path='/project' element={<Project></Project>}></Route>
+          <Route path='/chat' element={<Chat></Chat>}></Route>
           {/* projectId == "" lấy tất cả */}
           {/* /task/projectId?statusProject=going&search=name */}
           <Route path='/task' element={<Task></Task>}></Route>

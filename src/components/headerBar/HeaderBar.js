@@ -44,7 +44,7 @@ export default function HeaderBar() {
       setNotifications(res.data?.data || [])
     }).catch((err) => {
       toast.error("load notification failed")
-      console.log("check ", err.response.data.messages)
+      console.log("check ", err.response?.data.messages)
     })
   }
   useEffect(() => {
