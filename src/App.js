@@ -12,6 +12,7 @@ import Task from './pages/task/Task';
 import { AuthContext } from "./context/authContext"
 import Users from './pages/users/Users';
 import Chat from './pages/chat/Chat';
+import Meeting from './pages/meeting/Meeting';
 
 
 const ProtectedRoute = ({ children }) => {
@@ -33,6 +34,7 @@ function App() {
         <Route element={<ProtectedRoute><Layout></Layout></ProtectedRoute>}>
           <Route path='/project' element={<Project></Project>}></Route>
           <Route path='/chat' element={<Chat></Chat>}></Route>
+          <Route path='/meeting' element={<Meeting></Meeting>}></Route>
           <Route path='/task' element={<Task></Task>}></Route>
           <Route path='/friends' element={<Users></Users>}></Route>
         </Route>

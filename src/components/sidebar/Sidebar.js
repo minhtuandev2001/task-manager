@@ -5,7 +5,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useMessageNoti } from '../../context/messageNotiContext';
 import axios from 'axios';
 import { BASE_URL } from '../../constans/url';
-import { AuthContext } from "../../context/authContext"
+import { AuthContext } from "../../context/authContext";
 import { useSocket } from '../../context/socketContext';
 
 const action = [
@@ -61,7 +61,6 @@ export default function Sidebar() {
         "Authorization": `Bearer ${currentUser.token}`
       }
     }).then((res) => {
-      console.log("check ", res)
       setCountMessageUnRead(res.data?.data || [])
     }).catch((err) => {
       console.log("check ", err)
@@ -76,15 +75,12 @@ export default function Sidebar() {
   useEffect(() => {
     // nhận tin nhắn và cập nhật số lượng thông báo ở sidebar
     socket.on("server return message noti", message => {
-      console.log("check nhan", message)
       if (message.infoSender._id !== currentUser.id) { // những client khác nhận được thôi
         // cập nhật lại số lượng thông báo tin nhắn
-        console.log("check nhan 1")
         setCountMessageUnRead(prevChats => prevChats.map((chat) => {
           if (chat._id === message.room_chat_id) {
             chat.latestMessage.usersRead = [...chat.latestMessage.usersRead.map(item => item !== currentUser.id)];
           }
-          console.log("check ", chat)
           return chat
         }))
       }

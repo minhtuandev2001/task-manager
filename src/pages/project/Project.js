@@ -144,7 +144,7 @@ export default function Project() {
       })
     }
     getProject()
-  }, [searchProject])
+  }, [searchProject, currentUser.token])
 
   const handleSearchProject = lodash.debounce((e) => {
     setSearchProject(e.target.value)

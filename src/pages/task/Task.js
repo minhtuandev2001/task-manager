@@ -375,7 +375,7 @@ const Task = () => {
       })
     }
     getTask()
-  }, [statusAction, projectSelected, searchTask])
+  }, [statusAction, projectSelected, searchTask, currentUser.token])
 
   const [searchProject, setSearchProject] = useState("")
   const [projectList, setProjectList] = useState([])
@@ -395,7 +395,7 @@ const Task = () => {
       })
     }
     getProject()
-  }, [searchProject])
+  }, [searchProject, currentUser.token])
   // xử lý input search project
   const handleSearchProject = lodash.debounce((e) => {
     setSearchLoading(true)
@@ -446,7 +446,7 @@ const Task = () => {
               className='button-default bg-[#F6F7F9] w-10 h-10 text-white rounded-md font-medium mb-0'><IconFilter></IconFilter></button>
           </div>
         </div>
-        <div className='flex items-center gap-2 mt-4 justify-between'>
+        <div className='flex items-center justify-between gap-2 mt-4'>
           {projectCurrent !== null ? <span className='text-xl font-semibold'>{projectCurrent.title}</span> : <span></span>}
           <div className='flex items-center gap-2'>
             <Input
@@ -628,7 +628,7 @@ const Task = () => {
           </div>
           <Button
             onClick={handleCreateTask}
-            className="mt-5 mb-0 font-medium text-white button-default bg-button">{submiting && <div className='w-4 h-4 border-4 border-white rounded-full border-r-4 border-r-transparent animate-spin'></div>}Create</Button>
+            className="mt-5 mb-0 font-medium text-white button-default bg-button">{submiting && <div className='w-4 h-4 border-4 border-r-4 border-white rounded-full border-r-transparent animate-spin'></div>}Create</Button>
         </motion.div>
       </Portal>
       <AlertWarning
@@ -649,7 +649,7 @@ const Task = () => {
             top: coordsModalFilter.top + coordsModalFilter.height
           }}
         >
-          <div className='flex gap-2 items-center'>
+          <div className='flex items-center gap-2'>
             <Label className="text-base font-medium" >Filter Project</Label>
             {searchLoading && <div className='w-4 h-4 border-2 border-blue-600 rounded-full border-r-3 border-r-transparent animate-spin'></div>}
           </div>
