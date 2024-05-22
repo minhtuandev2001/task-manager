@@ -33,8 +33,6 @@ function App() {
         <Route element={<ProtectedRoute><Layout></Layout></ProtectedRoute>}>
           <Route path='/project' element={<Project></Project>}></Route>
           <Route path='/chat' element={<Chat></Chat>}></Route>
-          {/* projectId == "" lấy tất cả */}
-          {/* /task/projectId?statusProject=going&search=name */}
           <Route path='/task' element={<Task></Task>}></Route>
           <Route path='/friends' element={<Users></Users>}></Route>
         </Route>

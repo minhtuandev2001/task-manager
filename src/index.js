@@ -7,18 +7,21 @@ import { AuthoProvider } from './context/authContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { SocketProvider } from './context/socketContext';
+import { MessageProvider } from './context/messageNotiContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <AuthoProvider>
-        <SocketProvider>
+  // <React.StrictMode>
+  <BrowserRouter>
+    <AuthoProvider>
+      <SocketProvider>
+        <MessageProvider>
           <App />
-        </SocketProvider>
-      </AuthoProvider>
-      <ToastContainer />
-    </BrowserRouter>
-  </React.StrictMode>
+        </MessageProvider>
+      </SocketProvider>
+    </AuthoProvider>
+    <ToastContainer />
+  </BrowserRouter>
+  // </React.StrictMode>
 );
 

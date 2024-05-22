@@ -9,13 +9,25 @@ import { AuthContext } from "../../context/authContext"
 import { toast } from 'react-toastify';
 import imageGroup from "../../asset/images/imageGroup.png";
 import noMessage from "../../asset/images/noMessage.png"
+import { useSocket } from '../../context/socketContext';
+import { useMessageNoti } from '../../context/messageNotiContext';
 
 export default function Chat() {
+  const socket = useSocket()
   const { currentUser } = useContext(AuthContext)
+  const { setCountMessageUnRead } = useMessageNoti();
   const [imagesUpload, setImageUpload] = useState(null);
   const [filesUpload, setFilesUpload] = useState(null);
   const [inputMessage, setInputMessage] = useState("");
 
+  const loadChatRef = useRef(null)
+  const [chats, setChats] = useState([]);
+  const [loadingLoadUser, setLoadingLoadUser] = useState(false)
+
+  const [selectedChat, setSelectedChat] = useState(null)
+  const [loadingMessages, setLoadingMessages] = useState(false)
+  const [messages, setMessages] = useState([])
+  const bodyRef = useRef(null)
   // xử lý việc upload, preview, remove image
   const handleUploadImage = (e) => {
     setImageUpload(prevImage => {
@@ -76,9 +88,6 @@ export default function Chat() {
   }
   // kết thúc tiền xử lý việc Upload file driver
 
-  const loadChatRef = useRef(null)
-  const [chats, setChats] = useState([]);
-  const [loadingLoadUser, setLoadingLoadUser] = useState(false)
   loadChatRef.current = () => {
     setLoadingLoadUser(true)
     axios.get(`${BASE_URL}/chat`, {
@@ -99,26 +108,52 @@ export default function Chat() {
     loadChatRef.current();
   }, [])
 
-  const [selectedChat, setSelectedChat] = useState(null)
-  const [loadingMessages, setLoadingMessages] = useState(false)
-  const [messages, setMessages] = useState([])
   // tải message
-  const handleSelectedChat = (item) => {
+  const handleSelectedChat = async (item) => {
     setSelectedChat(item)
     setLoadingMessages(true)
     setMessages([]);
-    axios.get(`${BASE_URL}/message/${item._id}`, {
-      headers: {
-        "Authorization": `Bearer ${currentUser.token}`,
-      }
-    }).then((res) => {
-      console.log("check ", res)
-      setMessages(res.data?.data || [])
+    // load messages in board
+    try {
+      const { data } = await axios.get(`${BASE_URL}/message/${item._id}`, {
+        headers: {
+          "Authorization": `Bearer ${currentUser.token}`,
+        }
+      })
+      setMessages(data?.data || [])
       setLoadingMessages(false)
-    }).catch((err) => {
-      toast.error(err.response.data.messages)
+      socket.emit("join chat", item._id)
+    } catch (err) {
+      toast.error(err)
       setLoadingMessages(false)
-    })
+    }
+
+    if (item?.latestMessage) { // có tin nhắn mới xử lý
+      // cập nhật lại trạng thái đọc tin nhắn
+      axios.patch(`${BASE_URL}/message/status-message/${item?.latestMessageId}`, {}, {
+        headers: {
+          "Authorization": `Bearer ${currentUser.token}`
+        }
+      }).then((res) => {
+        console.log("check ", res)
+        // cập nhật trạng thái tin nhắn ở list nếu người dùng đang ở trong đoạn chat
+        setChats(prevChats => prevChats.map((chat) => {
+          if (chat._id === item._id) {
+            chat.latestMessage.usersRead = [...chat.latestMessage.usersRead, currentUser.id];
+          }
+          return chat
+        }))
+        setCountMessageUnRead(prevChats => prevChats.map((chat) => {
+          if (chat._id === item._id) {
+            chat.latestMessage.usersRead = [...chat.latestMessage.usersRead, currentUser.id];
+          }
+          return chat
+        }))
+      }).catch((err) => {
+        console.log("check ", err.response.data.message);
+      })
+
+    }
   }
   // kết thúc tải message
 
@@ -126,33 +161,112 @@ export default function Chat() {
   const handleSendMessage = (e) => {
     e.preventDefault()
     if (selectedChat) {
-      const formData = new FormData();
-      formData.append("sender", currentUser.id);
-      formData.append("content", inputMessage);
-      formData.append("room_chat_id", selectedChat._id);
-      if (imagesUpload) {
-        for (let i = 0; i < imagesUpload.length; i++) {
-          formData.append("images", imagesUpload[i])
+      if (inputMessage.length > 0 || imagesUpload !== null || filesUpload !== null) {
+        const formData = new FormData();
+        formData.append("sender", currentUser.id);
+        formData.append("content", inputMessage);
+        formData.append("room_chat_id", selectedChat._id);
+        formData.append("usersRead", [currentUser.id]);
+        if (imagesUpload) {
+          for (let i = 0; i < imagesUpload.length; i++) {
+            formData.append("images", imagesUpload[i])
+          }
         }
+        if (filesUpload) {
+          for (let i = 0; i < filesUpload.length; i++) {
+            formData.append("files", filesUpload[i])
+          }
+        }
+        axios.post(`${BASE_URL}/message/create`, formData, {
+          headers: {
+            "Authorization": `Bearer ${currentUser.token}`,
+            "Content-Type": "multipart/form-data"
+          }
+        }).then((res) => {
+          setMessages(prevMessage => [...prevMessage, res.data?.data])
+          socket.emit("new message", res.data?.data, selectedChat.users)
+          setInputMessage("")// reset input
+        }).catch((err) => {
+          toast.error(err.response.data.messages)
+        })
       }
-      if (filesUpload) {
-        for (let i = 0; i < filesUpload.length; i++) {
-          formData.append("files", filesUpload[i])
-        }
-      }
-      axios.post(`${BASE_URL}/message/create`, formData, {
-        headers: {
-          "Authorization": `Bearer ${currentUser.token}`,
-          "Content-Type": "multipart/form-data"
-        }
-      }).then((res) => {
-        console.log("check ", res)
-      }).catch((err) => {
-        toast.error(err.response.data.messages)
-      })
     }
   }
   // kết thúc gửi tin nhắn
+
+  useEffect(() => {
+    // nhận tin nhắn
+    socket.on("server return message", message => {
+      if (message.infoSender._id !== currentUser.id) { // những client khác nhận được thôi
+        if (selectedChat) {
+          if (message.room_chat_id === selectedChat._id) {
+            // cập nhật ở board chat
+            setMessages(prevMessage => [...prevMessage, message])
+            // cập nhật lại trạng thái đọc tin nhắn
+            axios.patch(`${BASE_URL}/message/status-message/${message._id}`, {}, {
+              headers: {
+                "Authorization": `Bearer ${currentUser.token}`
+              }
+            }).then((res) => {
+              console.log("check ", res)
+              // cập nhật trạng thái tin nhắn ở list nếu người dùng đang ở trong đoạn chat
+              setChats(prevChats => prevChats.map((chat) => {
+                if (chat._id === message.room_chat_id) {
+                  chat.latestMessage.usersRead = [...chat.latestMessage.usersRead, currentUser.id];
+                }
+                return chat
+              }))
+              setCountMessageUnRead(prevChats => prevChats.map((chat) => {
+                if (chat._id === message.room_chat_id) {
+                  chat.latestMessage.usersRead = [...chat.latestMessage.usersRead, currentUser.id];
+                }
+                return chat
+              }))
+            }).catch((err) => {
+              console.log("check ", err.response.data.message);
+            })
+          } else {
+            setCountMessageUnRead(prevChats => prevChats.map((chat) => {
+              if (chat._id === message.room_chat_id) {
+                chat.latestMessage.usersRead = [...chat.latestMessage.usersRead.map(item => item !== currentUser.id)];
+              }
+              return chat
+            }))
+          }
+        } else {
+          setCountMessageUnRead(prevChats => prevChats.map((chat) => {
+            if (chat._id === message.room_chat_id) {
+              chat.latestMessage.usersRead = [...chat.latestMessage.usersRead.map(item => item !== currentUser.id)];
+            }
+            return chat
+          }))
+        }
+      }
+      // cập nhật tin nhắn ở list chats
+      setChats(prevChats => prevChats.map((chat) => {
+        if (chat._id === message.room_chat_id) {
+          chat.latestMessageId = message._id;
+          chat.latestMessage = message;
+        }
+        return chat;
+      }))
+    })
+    return () => {
+      socket.off("server return message")
+    }
+  }, [socket, selectedChat, currentUser, setCountMessageUnRead])
+
+  useEffect(() => {
+    if (selectedChat) {
+      const element = bodyRef.current;
+      element.scroll({
+        top: element.scrollHeight,
+        left: 0,
+        behavior: "smooth"
+      })
+    }
+
+  }, [messages, selectedChat])
   return (
     <div className='min-h-[calc(100vh-56px-24px)]'>
       <div className='flex gap-3'>
@@ -167,21 +281,27 @@ export default function Chat() {
               )}
             </div>
           </div>
-          <div className="px-4 w-full h-[calc(100vh-56px-24px-52px-40px-18px)] flex flex-col gap-2 overflow-scroll no-scrollbar">
-            {messages.length > 0 ? (
-              messages.map((item, index) => {
-                return (<div key={item._id} className={`${currentUser.id === item.infoSender._id ? "self-end" : ""}`}>
-                  {messages[index - 1] ? (
-                    item.infoSender._id !== messages[index - 1].infoSender._id && (
-                      <p className='text-sm font-semibold'>{currentUser.id === item.infoSender._id ? "" : item.infoSender?.username}</p>
-                    )
-                  ) : (
-                    <p className='text-sm font-semibold'>{currentUser.id === item.infoSender._id ? "" : item.infoSender?.username}</p>
-                  )}
-                  <p className={`max-w-[350px] p-2 rounded-md text-base mt-1 inline-block ${currentUser.id === item.infoSender._id ? "bg-blue-500 text-white" : "bg-gray-100"}`}>{item?.content}</p>
-                </div>)
-              }))
-              : (<img className='w-[200px] mx-auto mt-20' src={noMessage} alt="" />)}
+          <div ref={bodyRef} className="px-4 w-full h-[calc(100vh-56px-24px-52px-40px-18px)] flex flex-col gap-2 overflow-scroll no-scrollbar">
+            {selectedChat !== null ? (
+              loadingMessages ? (<div className='w-6 h-6 mx-auto mt-10 border-4 border-r-4 border-blue-600 rounded-full border-r-transparent animate-spin'></div>)
+                : (
+                  messages.length > 0 ? (
+                    messages.map((item, index) => {
+                      return (<div key={item._id} className={`${currentUser.id === item.infoSender._id ? "self-end" : ""}`}>
+                        {messages[index - 1] ? (
+                          item.infoSender._id !== messages[index - 1].infoSender._id && (
+                            <p className='text-sm font-semibold'>{currentUser.id === item.infoSender._id ? "" : item.infoSender?.username}</p>
+                          )
+                        ) : (
+                          <p className='text-sm font-semibold'>{currentUser.id === item.infoSender._id ? "" : item.infoSender?.username}</p>
+                        )}
+                        <p className={`max-w-[350px] p-2 rounded-md text-base mt-1 inline-block ${currentUser.id === item.infoSender._id ? "bg-blue-500 text-white" : "bg-gray-100"}`}>{item?.content}</p>
+                      </div>)
+                    }))
+                    : (<img className='w-[200px] mx-auto mt-20' src={noMessage} alt="" />)))
+              : (
+                <p className='mt-10 text-2xl font-medium text-center text-graycustom'>Selected Chat</p>
+              )}
             <div className='flex flex-wrap gap-2 '>
               {imagesUpload !== null && Array(imagesUpload.length).fill(null).map((item, index) => {
                 return (
@@ -213,6 +333,7 @@ export default function Chat() {
           <form onSubmit={handleSendMessage} className="flex items-center w-full gap-2 px-4 my-2">
             <input type="text"
               onChange={(e) => setInputMessage(e.target.value)}
+              value={inputMessage}
               className="rounded-lg border border-[#D9D9D9] h-10 px-2 bg-[#F6F7F9] flex-1 focus:border-blue-500"
             />
             <label htmlFor='image' className='cursor-pointer w-10 h-10 rounded-md bg-[#F6F8FD] flex justify-center items-center hover:bg-slate-200 transition-all '><IconImage></IconImage></label>
@@ -230,12 +351,12 @@ export default function Chat() {
               type='submit' className='w-10 h-10 rounded-md bg-[#F6F8FD] flex justify-center items-center hover:bg-slate-200 transition-all '><IconSend></IconSend></button>
           </form>
         </div>
-        <div className='w-full max-w-[300px] bg-white rounded-md p-4'>
+        <div className='w-full max-w-[350px] bg-white rounded-md p-4'>
           <input type="text"
             className="rounded-lg border border-[#D9D9D9] h-10 px-2 bg-[#F6F7F9] w-full focus:border-blue-500"
           />
           <div className='flex flex-col mt-3 gap-2 overflow-scroll max-h-[calc(100vh-56px-24px-52px-50px)] no-scrollbar'>
-            {loadingLoadUser && <div className='w-5 h-5 rounded-full border-4 border-blue-600 border-r-4 border-r-transparent animate-spin mx-auto mt-2'></div>}
+            {loadingLoadUser && <div className='w-5 h-5 mx-auto mt-2 border-4 border-r-4 border-blue-600 rounded-full border-r-transparent animate-spin'></div>}
             {chats.length > 0 ? chats.map((item) => {
               return (<ChatItem key={item._id} data={item} handleSelectedChat={handleSelectedChat}></ChatItem>)
             })
