@@ -1,5 +1,5 @@
 import { io } from 'socket.io-client';
-const URL = "http://localhost:4000"
+const URL = "https://task-manager-backend-ten-iota.vercel.app"
 
 export const socket = io(URL, {
   autoConnect: false,
