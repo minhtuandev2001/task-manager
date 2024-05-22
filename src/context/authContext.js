@@ -20,6 +20,7 @@ function AuthoProvider(props) {
         toast.success("Login Success")
         navigate("/project")
       }).catch((err) => {
+        console.log("check ", err)
         toast.error(err.response.data.messages)
       })
   }
