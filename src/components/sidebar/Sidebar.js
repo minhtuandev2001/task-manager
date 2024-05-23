@@ -101,7 +101,7 @@ export default function Sidebar() {
     <div className='w-full max-w-[300px] h-screen py-5 px-8 flex flex-col border-r border-r-[#c7c8c9] sticky top-0 '>
       <div className="flex items-center gap-6 sider-header">
         <IconLogo></IconLogo>
-        <p className='text-2xl font-bold text-[#2A304E]'>Task<span className='text-[#2384FF]'>Maker</span></p>
+        <p className='text-2xl font-bold text-[#2A304E]'>Task<span className='text-[#2384FF]'>Work</span></p>
       </div>
       <div className="sider-content mt-14">
         {action.map((item, index) => {
