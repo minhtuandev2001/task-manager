@@ -390,7 +390,7 @@ const Task = () => {
         setProjectList(res.data?.data);
         setSearchLoading(false)
       }).catch((err) => {
-        toast.error(err.response.data.messages)
+        toast.error(err.response?.data.messages)
         setSearchLoading(false)
       })
     }

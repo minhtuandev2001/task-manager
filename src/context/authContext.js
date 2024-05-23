@@ -21,7 +21,7 @@ function AuthoProvider(props) {
         navigate("/project")
       }).catch((err) => {
         console.log("check ", err)
-        toast.error(err.response.data.messages)
+        toast.error(err.response?.data.messages)
       })
   }
   useEffect(() => {
