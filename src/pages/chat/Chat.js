@@ -187,7 +187,7 @@ export default function Chat() {
           socket.emit("new message", res.data?.data, selectedChat.users)
           setInputMessage("")// reset input
         }).catch((err) => {
-          toast.error(err.response.data.messages)
+          toast.error(err.response?.data.messages)
         })
       }
     }
@@ -275,6 +275,26 @@ export default function Chat() {
       }))
     })
   }, [socket])
+
+  const handleExitsChat = (id) => {
+    // kiểm tra xem có đang selected chat không
+    if (selectedChat) {
+      if (selectedChat._id === id) {
+        setSelectedChat(null)
+      }
+    }
+    axios.patch(`${BASE_URL}/chat/exits-chat/${id}`, {}, {
+      headers: {
+        "Authorization": `Bearer ${currentUser.token}`
+      }
+    }).then((res) => {
+      toast.success("Exits chat success")
+      setChats(prevChats => prevChats.filter((chat) => chat._id !== id))
+    }).catch((err) => {
+      toast.error(err.response?.data.messages)
+    })
+  }
+
   return (
     <div className='min-h-[calc(100vh-56px-24px)]'>
       <div className='flex gap-3'>
@@ -366,7 +386,7 @@ export default function Chat() {
           <div className='flex flex-col mt-3 gap-2 overflow-scroll max-h-[calc(100vh-56px-24px-52px-50px)] no-scrollbar'>
             {loadingLoadUser && <div className='w-5 h-5 mx-auto mt-2 border-4 border-r-4 border-blue-600 rounded-full border-r-transparent animate-spin'></div>}
             {chats.length > 0 ? chats.map((item) => {
-              return (<ChatItem key={item._id} data={item} handleSelectedChat={handleSelectedChat}></ChatItem>)
+              return (<ChatItem key={item._id} data={item} handleSelectedChat={handleSelectedChat} handleExitsChat={handleExitsChat}></ChatItem>)
             })
               : (
                 null
