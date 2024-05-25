@@ -60,13 +60,13 @@ export default function HeaderBar() {
   }, [socket])
   return (
     <>
-      <div className='w-full h-14 flex justify-between items-center px-4'>
+      <div className='flex items-center justify-between w-full px-4 h-14'>
         <p className='text-2xl font-semibold'>Hello, {currentUser.name}!</p>
-        <div className="nav-info flex items-center gap-4">
+        <div className="flex items-center gap-4 nav-info">
           <div
             ref={bellRef}
             onClick={handleShowNotification}
-            className='w-10 h-10 rounded-md bg-icon flex justify-center items-center cursor-pointer relative'>
+            className='relative flex items-center justify-center w-10 h-10 rounded-md cursor-pointer bg-icon'>
             <span className='bg-[#ED3159] text-xs font-medium text-white rounded-full w-auto min-w-[18px] h-[18px] absolute top-0 right-0 flex justify-center items-center'>{notificatios.length}</span>
             <IconBell></IconBell>
           </div>
@@ -96,20 +96,20 @@ export default function HeaderBar() {
           className='relative bg-white w-full max-w-[400px] rounded-md p-3 shadow-md mt-2'
           style={{
             top: coords.top + coords.height,
-            left: coords.left - 400
+            left: coords.left - 400 + coords.width
           }}
         >
           <p className='text-base font-medium'>Notification</p>
           <div className='w-full h-[400px] max-h-[400px] mt-2 overflow-scroll no-scrollbar'>
             {notificatios.length > 0 ? notificatios.map((item, index) => {
               return (
-                <div key={index} className='p-2 cursor-pointer hover:bg-gray-100 transition-all rounded-md'>
-                  <div className='flex gap-2 items-center'>
+                <div key={index} className='p-2 transition-all rounded-md cursor-pointer hover:bg-gray-100'>
+                  <div className='flex items-center gap-2'>
                     <img
                       className='w-10 h-10 rounded-full'
                       src={item?.infoUser.avatar} alt="" />
                     <div className='flex-1'>
-                      <p className='font-semibold text-sm'>{item?.infoUser.username}</p>
+                      <p className='text-sm font-semibold'>{item?.infoUser.username}</p>
                       <p className='text-sm line-clamp-2'>{item.content}{item.content}{item.content}</p>
                     </div>
                     <IconDelete></IconDelete>

@@ -208,7 +208,6 @@ export default function Chat() {
                 "Authorization": `Bearer ${currentUser.token}`
               }
             }).then((res) => {
-              console.log("check ", res)
               // cập nhật trạng thái tin nhắn ở list nếu người dùng đang ở trong đoạn chat
               setChats(prevChats => prevChats.map((chat) => {
                 if (chat._id === message.room_chat_id) {
@@ -265,8 +264,17 @@ export default function Chat() {
         behavior: "smooth"
       })
     }
-
   }, [messages, selectedChat])
+  useEffect(() => {
+    socket.on("server return change statusOnline", data => {
+      setChats(prevChats => prevChats.map((chat) => {
+        if (chat._id === data.room_chat_id) {
+          chat.infoUser.statusOnline = data.status;
+        }
+        return chat
+      }))
+    })
+  }, [socket])
   return (
     <div className='min-h-[calc(100vh-56px-24px)]'>
       <div className='flex gap-3'>

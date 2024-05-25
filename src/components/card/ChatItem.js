@@ -8,8 +8,8 @@ export default function ChatItem({ data, handleSelectedChat }) {
   return (
     <div onClick={() => handleSelectedChat(data)} className='flex gap-2 p-[6px] items-center cursor-pointer hover:bg-gray-100 rounded-md transition-all justify-between'>
       {data.isGroupChat ?
-        (<img className='object-cover h-10 rounded-full min-w-10' src={imageGroup} alt="" />)
-        : (<img className='object-cover h-10 rounded-full min-w-10' src={data.infoUser?.avatar} alt="" />)}
+        (<img className={`object-cover h-10 rounded-full min-w-10 ${data.infoUsers?.some((item) => item.statusOnline === true) ? "border-4 border-green-400" : ""}`} src={imageGroup} alt="" />)
+        : (<img className={`object-cover h-10 rounded-full min-w-10 ${data.infoUser?.statusOnline ? "border-4 border-green-400" : ""}`} src={data.infoUser?.avatar} alt="" />)}
       <div className='flex-col flex-1'>
         <div className='flex items-center justify-between w-full gap-2'>
           <span className='text-sm font-medium line-clamp-1'>{data.isGroupChat ? data.chatName : data.infoUser?.username}</span>

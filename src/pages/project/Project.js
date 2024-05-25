@@ -43,7 +43,7 @@ export default function Project() {
   const [statusProject, setStatusProject] = useState("going");
   const [projectList, setProjectList] = useState([])
   const [searchProject, setSearchProject] = useState("")
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   // chon ngay thang
   const handleSelectDate = (ranges) => {
@@ -182,13 +182,15 @@ export default function Project() {
             className="button-default h-10 bg-button max-w-[110px] text-white font-medium"
           ><span>Join</span></Button>
         </div>
-        {loading && <div className='w-10 h-10 mx-auto my-2 border-4 border-r-4 border-blue-500 rounded-full border-r-transparent animate-spin'></div>}
-        <div className="grid gap-4 project-content sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          {projectList.length > 0 && projectList.map((item, index) => <CardProject key={item._id} data={item} handleRemoveProject={handleRemoveProject}></CardProject>)}
-        </div>
-        {projectList.length === 0 && <div className='flex justify-center items-center w-full min-h-[600px] '>
-          <img src={noResultImage} alt="" />
-        </div>}
+        {loading ? (<div className='w-10 h-10 mx-auto my-2 border-4 border-r-4 border-blue-500 rounded-full border-r-transparent animate-spin'></div>) :
+          (projectList.length > 0 ?
+            <div className="grid gap-4 project-content sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+              {projectList.map((item, index) => <CardProject key={item._id} data={item} handleRemoveProject={handleRemoveProject}></CardProject>)}
+            </div> :
+            <div className='flex justify-center items-center w-full min-h-[600px] '>
+              <img src={noResultImage} alt="" />
+            </div>
+          )}
       </div>
       <Portal
         visible={showModalJoinProject}

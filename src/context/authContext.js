@@ -17,6 +17,7 @@ function AuthoProvider(props) {
     })
       .then((res) => {
         setCurrentUser(res.data.data);
+        console.log("check ", res.data.data)
         toast.success("Login Success")
         navigate("/project")
       }).catch((err) => {
