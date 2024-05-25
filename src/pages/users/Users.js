@@ -65,6 +65,7 @@ export default function Users() {
     socket.on("CLIENT_ADD_FRIEND", (data) => {
       console.log("check ", friendAction)
       if (friendAction === "accept") {
+        console.log("check ", data)
         setFriendsList(preveFriend => [data.infoUser, ...preveFriend])
       } else {
         setFriendsList(preveFriend => preveFriend.filter((friend) => friend._id !== data.infoUser._id))

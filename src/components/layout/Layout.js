@@ -9,7 +9,7 @@ export default function Layout() {
   const socket = useSocket()
   useEffect(() => {
     window.addEventListener('beforeunload', function (e) {
-      socket.emit("disconnected", currentUser.id, currentUser.friendsList, false)
+      socket.emit("disconnected", currentUser.id, false)
     });
   }, [socket, currentUser.id, currentUser.friendsList])
   return (

@@ -166,6 +166,7 @@ export default function Chat() {
         formData.append("sender", currentUser.id);
         formData.append("content", inputMessage);
         formData.append("room_chat_id", selectedChat._id);
+        formData.append("users", selectedChat.users);
         formData.append("usersRead", [currentUser.id]);
         if (imagesUpload) {
           for (let i = 0; i < imagesUpload.length; i++) {
@@ -241,14 +242,19 @@ export default function Chat() {
           }))
         }
       }
-      // cập nhật tin nhắn ở list chats
-      setChats(prevChats => prevChats.map((chat) => {
-        if (chat._id === message.room_chat_id) {
-          chat.latestMessageId = message._id;
-          chat.latestMessage = message;
-        }
-        return chat;
-      }))
+      setChats(prevChats => {
+        let chatNewUpdate = prevChats.filter((chat) => chat._id === message.room_chat_id)
+        let chatsNew = prevChats.filter((chat) => chat._id !== message.room_chat_id)
+        let newChats = [chatNewUpdate[0], ...chatsNew];
+        newChats.map((chat) => {
+          if (chat._id === message.room_chat_id) {
+            chat.latestMessageId = message._id;
+            chat.latestMessage = message;
+          }
+          return chat;
+        })
+        return newChats
+      })
     })
     return () => {
       socket.off("server return message")
@@ -267,9 +273,20 @@ export default function Chat() {
   }, [messages, selectedChat])
   useEffect(() => {
     socket.on("server return change statusOnline", data => {
+      console.log("check status", data)
       setChats(prevChats => prevChats.map((chat) => {
-        if (chat._id === data.room_chat_id) {
-          chat.infoUser.statusOnline = data.status;
+        if (chat.isGroupChat) {
+          chat.infoUsers = chat.infoUsers.map((user) => {
+            if (user._id === data.id) {
+              user.statusOnline = data.status
+            }
+            return user
+          })
+        } else {
+          if (chat.infoUser._id === data.id) {
+            chat.infoUser.statusOnline = data.status;
+            console.log("check 1", chat.infoUser.statusOnline)
+          }
         }
         return chat
       }))
