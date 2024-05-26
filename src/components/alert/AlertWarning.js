@@ -6,6 +6,7 @@ export default function AlertWarning({ toggleShow = false, messages = "", handle
   return (
     <Alert
       showAlert={toggleShow}
+      handleClose={handleCancel}
     >
       <div
         transition={{ type: "spring", duration: 0.15 }}

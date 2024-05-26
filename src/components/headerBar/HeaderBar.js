@@ -8,6 +8,7 @@ import { BASE_URL } from '../../constans/url'
 import { toast } from 'react-toastify'
 import noNoti from "../../asset/images/no-noti.png"
 import { useSocket } from '../../context/socketContext'
+import moment from 'moment'
 
 export default function HeaderBar() {
   const socket = useSocket()
@@ -109,8 +110,11 @@ export default function HeaderBar() {
                       className='w-10 h-10 rounded-full'
                       src={item?.infoUser.avatar} alt="" />
                     <div className='flex-1'>
-                      <p className='text-sm font-semibold'>{item?.infoUser.username}</p>
-                      <p className='text-sm line-clamp-2'>{item.content}{item.content}{item.content}</p>
+                      <div className='flex items-center justify-between'>
+                        <p className='text-sm font-semibold'>{item?.infoUser.username}</p>
+                        <p className='text-sm font-medium text-gray-400'>{moment(item?.createdAt, "YYYY-MM-DD HH:mm Z").format("HH:mm").toString()}</p>
+                      </div>
+                      <p className='text-sm line-clamp-2'>{item.content}</p>
                     </div>
                     <IconDelete></IconDelete>
                   </div>

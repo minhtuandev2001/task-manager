@@ -11,6 +11,7 @@ import imageGroup from "../../asset/images/imageGroup.png";
 import noMessage from "../../asset/images/noMessage.png"
 import { useSocket } from '../../context/socketContext';
 import { useMessageNoti } from '../../context/messageNotiContext';
+import moment from "moment";
 
 export default function Chat() {
   const socket = useSocket()
@@ -326,13 +327,13 @@ export default function Chat() {
               )}
             </div>
           </div>
-          <div ref={bodyRef} className="px-4 w-full h-[calc(100vh-56px-24px-52px-40px-18px)] flex flex-col gap-2 overflow-scroll no-scrollbar">
+          <div ref={bodyRef} className="px-4 w-full h-[calc(100vh-56px-24px-52px-40px-18px)] flex flex-col overflow-scroll no-scrollbar">
             {selectedChat !== null ? (
               loadingMessages ? (<div className='w-6 h-6 mx-auto mt-10 border-4 border-r-4 border-blue-600 rounded-full border-r-transparent animate-spin'></div>)
                 : (
                   messages.length > 0 ? (
                     messages.map((item, index) => {
-                      return (<div key={item._id} className={`${currentUser.id === item.infoSender._id ? "self-end" : ""}`}>
+                      return (<div key={item._id} className={`${currentUser.id === item.infoSender._id ? "self-end" : ""} flex flex-col`}>
                         {messages[index - 1] ? (
                           item.infoSender._id !== messages[index - 1].infoSender._id && (
                             <p className='text-sm font-semibold'>{currentUser.id === item.infoSender._id ? "" : item.infoSender?.username}</p>
@@ -340,7 +341,8 @@ export default function Chat() {
                         ) : (
                           <p className='text-sm font-semibold'>{currentUser.id === item.infoSender._id ? "" : item.infoSender?.username}</p>
                         )}
-                        <p className={`max-w-[350px] p-2 rounded-md text-base mt-1 inline-block ${currentUser.id === item.infoSender._id ? "bg-blue-500 text-white" : "bg-gray-100"}`}>{item?.content}</p>
+                        <p className={`max-w-[350px] p-2 rounded-md text-base mt-1 ${currentUser.id === item.infoSender._id ? "bg-blue-500 text-white self-end" : "bg-gray-100 self-start"}`}>{item?.content}</p>
+                        <span className={`block text-xs font-medium text-gray-400 ${currentUser.id === item.infoSender._id ? "self-end" : ""}`}>{moment(item?.createdAt, "YYYY-MM-DD HH:mm Z").format("HH:mm").toString()}</span>
                       </div>)
                     }))
                     : (<img className='w-[200px] mx-auto mt-20' src={noMessage} alt="" />)))
