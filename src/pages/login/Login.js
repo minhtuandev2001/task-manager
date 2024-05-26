@@ -34,7 +34,7 @@ export default function Login() {
     if (currentUser) {
       navigate("/project")
     }
-  }, [])
+  }, [currentUser, navigate])
   return (
     <div className='flex items-center justify-center h-screen bg-center'
       style={{

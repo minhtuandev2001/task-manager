@@ -22,7 +22,7 @@ const ModalAddUser = ({ nameItemList, showSearchPortal, setShowSearchPortal, use
       setUsers(response.data.data)
     }
     getUser()
-  }, [search])
+  }, [search, baseUrl, currentUser.token])
   const handleChangeInput = lodash.debounce((e) => {
     setSearch(e.target.value)
   }, 500)

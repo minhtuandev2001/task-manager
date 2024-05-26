@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { IconCancel, IconFile, IconImage, IconSend, IconSmile } from '../../components/icons'
+import { IconCancel, IconDownload, IconFile, IconImage, IconSend, IconSmile } from '../../components/icons'
 import ChatItem from '../../components/card/ChatItem'
 import Button from '../../components/button/Button';
 import ThumbnailFile from '../../components/thumbnail/ThumbnailFile';
@@ -159,10 +159,12 @@ export default function Chat() {
   // kết thúc tải message
 
   // gửi tin nhắn
+  const [loadingSendMessasge, setLoadingSendMessasge] = useState(false)
   const handleSendMessage = (e) => {
     e.preventDefault()
     if (selectedChat) {
       if (inputMessage.length > 0 || imagesUpload !== null || filesUpload !== null) {
+        setLoadingSendMessasge(true)
         const formData = new FormData();
         formData.append("sender", currentUser.id);
         formData.append("content", inputMessage);
@@ -188,8 +190,12 @@ export default function Chat() {
           setMessages(prevMessage => [...prevMessage, res.data?.data])
           socket.emit("new message", res.data?.data, selectedChat.users)
           setInputMessage("")// reset input
+          setImageUpload(null)
+          setFilesUpload(null)
+          setLoadingSendMessasge(false)
         }).catch((err) => {
           toast.error(err.response?.data.messages)
+          setLoadingSendMessasge(false)
         })
       }
     }
@@ -341,7 +347,32 @@ export default function Chat() {
                         ) : (
                           <p className='text-sm font-semibold'>{currentUser.id === item.infoSender._id ? "" : item.infoSender?.username}</p>
                         )}
-                        <p className={`max-w-[350px] p-2 rounded-md text-base mt-1 ${currentUser.id === item.infoSender._id ? "bg-blue-500 text-white self-end" : "bg-gray-100 self-start"}`}>{item?.content}</p>
+                        {item?.content &&
+                          <p className={`max-w-[350px] p-2 rounded-md text-base mt-1 ${currentUser.id === item.infoSender._id ? "bg-blue-500 text-white self-end" : "bg-gray-100 self-start"}`}>{item?.content}</p>}
+                        {item?.images &&
+                          <div className='max-w-[350px] p-2 rounded-md flex gap-1'>
+                            {item?.images.map((item) => {
+                              return (
+                                <img key={item} className='max-w-[100px h-[100px] object-cover' src={item} alt="" />
+                              )
+                            })}
+                          </div>}
+                        <div className='max-w-[350px] flex flex-col gap-1'>
+                          {item?.files.length > 0 && item?.files.map((item, index) => {
+                            return (
+                              <div
+                                key={item.id} className='flex items-center justify-between rounded-md p-2 bg-gray-200'>
+                                <a href={item.link_view} target='_blank' rel="noreferrer" className='flex items-center gap-2 w-[calc(100%-25px)]'>
+                                  <div className='min-w-[22px] min-h-[29px]'>
+                                    <ThumbnailFile fileExtension={item.nameFile.split(".")[1]}></ThumbnailFile>
+                                  </div>
+                                  <span className='flex-1 text-sm font-medium line-clamp-1'>{item.nameFile}</span>
+                                </a>
+                                <a href={item.link_download} target='_blank' rel="noreferrer" className="flex items-center justify-center w-full h-full max-w-4 max-h-4"><IconDownload></IconDownload></a>
+                              </div>
+                            )
+                          })}
+                        </div>
                         <span className={`block text-xs font-medium text-gray-400 ${currentUser.id === item.infoSender._id ? "self-end" : ""}`}>{moment(item?.createdAt, "YYYY-MM-DD HH:mm Z").format("HH:mm").toString()}</span>
                       </div>)
                     }))
@@ -349,7 +380,7 @@ export default function Chat() {
               : (
                 <p className='mt-10 text-2xl font-medium text-center text-graycustom'>Selected Chat</p>
               )}
-            <div className='flex flex-wrap gap-2 '>
+            <div className='flex flex-wrap gap-2 mt-auto mb-2'>
               {imagesUpload !== null && Array(imagesUpload.length).fill(null).map((item, index) => {
                 return (
                   <div key={index} className='relative w-[70px] h-[70px]'>
@@ -361,7 +392,7 @@ export default function Chat() {
                 )
               })}
             </div>
-            <div className='grid grid-cols-4 gap-2 '>
+            <div className='grid grid-cols-4 gap-2'>
               {filesUpload !== null && Array(filesUpload.length).fill(null).map((item, index) => {
                 return (
                   <div key={index} className='flex items-center gap-2 p-2 bg-gray-200 rounded-md'>
@@ -395,7 +426,11 @@ export default function Chat() {
               type="file" id="files" multiple />
             <button type="button" className='w-10 h-10 rounded-md bg-[#F6F8FD] flex justify-center items-center hover:bg-slate-200 transition-all '><IconSmile></IconSmile></button>
             <button
-              type='submit' className='w-10 h-10 rounded-md bg-[#F6F8FD] flex justify-center items-center hover:bg-slate-200 transition-all '><IconSend></IconSend></button>
+              type='submit' className='w-10 h-10 rounded-md bg-[#F6F8FD] flex justify-center items-center hover:bg-slate-200 transition-all '>
+              {loadingSendMessasge ? (
+                <div className='w-5 h-5 rounded-full border-4 border-blue-500 border-r-4 border-r-transparent animate-spin'></div>
+              ) : (<IconSend></IconSend>)}
+            </button>
           </form>
         </div>
         <div className='w-full max-w-[350px] bg-white rounded-md p-4'>

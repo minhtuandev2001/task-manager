@@ -27,7 +27,7 @@ export default function ShowModalSearchProject({ showDropdow, setShowDropdown, h
       }).catch((err) => {
         toast.error(err.response.data.messages)
       })
-  }, [search])
+  }, [currentUser.token, search])
 
   const handleChangeInput = lodash.debounce((e) => {
     console.log("check ", e.target.value)

@@ -189,6 +189,7 @@ const Task = () => {
         }
       }).then((res) => {
         // cập nhật lại task vừa tạo vào đúng trường
+        getTask()
         toast.success("Create task success")
         setSubmiting(false)
         setShowModalTask(false)
@@ -361,19 +362,19 @@ const Task = () => {
   const [projectSelected, setProjectSelected] = useState(null)
   const [projectCurrent, setProjectCurrent] = useState(null)
   const [searchTask, setSearchTask] = useState("")
+  const getTask = () => {
+    axios.get(`${BASE_URL}/task?statusAction=${statusAction}&idProject=${projectSelected !== null ? projectSelected._id : ""}&keyword=${searchTask}`, {
+      headers: {
+        "Authorization": `Bearer ${currentUser.token}`
+      }
+    }).then((res) => {
+      setTasks(res.data?.tasks || []);
+      setProjectCurrent(res.data?.projectCurrent);
+    }).catch((err) => {
+      console.log("check ", err.response?.data.messages);
+    })
+  }
   useEffect(() => {
-    const getTask = () => {
-      axios.get(`${BASE_URL}/task?statusAction=${statusAction}&idProject=${projectSelected !== null ? projectSelected._id : ""}&keyword=${searchTask}`, {
-        headers: {
-          "Authorization": `Bearer ${currentUser.token}`
-        }
-      }).then((res) => {
-        setTasks(res.data?.tasks || []);
-        setProjectCurrent(res.data?.projectCurrent);
-      }).catch((err) => {
-        console.log("check ", err.response?.data.messages);
-      })
-    }
     getTask()
   }, [statusAction, projectSelected, searchTask, currentUser.token])
 

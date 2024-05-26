@@ -7,7 +7,6 @@ import { motion } from "framer-motion";
 
 import {
   MeetingProvider,
-  MeetingConsumer,
   useMeeting,
   useParticipant,
   usePubSub,
