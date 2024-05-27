@@ -162,6 +162,32 @@ export default function Project() {
       toast.error(err.response.data.messages)
     })
   }
+  const [valueInputKeyProject, setValueInputKeyProject] = useState("");
+  const [loadingJoinProject, setLoadingJoinProject] = useState(false);
+  const handleJoinProject = () => {
+    setLoadingJoinProject(true)
+    axios.patch(`${BASE_URL}/project/join-project`, {
+      key: valueInputKeyProject
+    }, {
+      headers: {
+        "Authorization": `Bearer ${currentUser.token}`
+      }
+    }).then((res) => {
+      const regex = new RegExp(searchProject, 'i')
+      // project vừa join có title khớp với keyword người dùng đang search thì cho hiển thị
+      if (regex.test(res?.data?.data.title)) {
+        setProjectList(prevData => [res.data.data, ...prevData])
+      }
+      setLoadingJoinProject(false)
+      toast.success("Join project success")
+      setValueInputKeyProject("")
+      setShowModalJoinProject(false)
+    }).catch((err) => {
+      toast.error(err.response?.data.messages)
+      setLoadingJoinProject(false)
+      setValueInputKeyProject("")
+    })
+  }
   return (
     <>
       <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)]'>
@@ -198,13 +224,29 @@ export default function Project() {
         contentClassName="z-50 w-full max-w-[439px]"
         onClose={() => setShowModalJoinProject(false)}
       >
-        <div className='px-6 py-4 bg-white rounded-md'>
+        <motion.div
+          animate={{
+            opacity: [0, 1],
+            scale: [0.7, 1]
+          }}
+          key="showmodalJoinProject"
+          exit={{
+            opacity: [1, 0],
+            scale: [1, 0.5]
+          }}
+          transition={{ duration: 0.2 }}
+          className='px-6 py-4 bg-white rounded-md'>
           <Label className="text-base font-medium" >Key project</Label>
           <Input
+            onChange={(e) => setValueInputKeyProject(e.target.value)}
             placeholder="Enter key project"
             className="w-full h-12 p-3 mt-4 border rounded-md border-graycustom bg-input focus:border-bluecustom"></Input>
-          <Button className="font-medium text-white button-default bg-button mt-7">Join Project</Button>
-        </div>
+          <Button
+            onClick={handleJoinProject}
+            className="font-medium text-white button-default bg-button mt-7">
+            {loadingJoinProject && <div className='w-5 h-5 rounded-full border-4 border-white border-r-4 border-r-transparent animate-spin'></div>}
+            Join Project</Button>
+        </motion.div>
       </Portal>
       <Portal
         visible={showModalCreateProject}
