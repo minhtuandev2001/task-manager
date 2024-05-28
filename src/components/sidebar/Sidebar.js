@@ -74,7 +74,7 @@ export default function Sidebar() {
   // nếu bạn ở trang chat thì đã cập nhật ở trang chat và chuyển qua nhờ context
   useEffect(() => {
     // nhận tin nhắn và cập nhật số lượng thông báo ở sidebar
-    socket.on("server return message noti", message => {
+    socket.on("server return message", message => {
       if (message.infoSender._id !== currentUser.id) { // những client khác nhận được thôi
         // cập nhật lại số lượng thông báo tin nhắn
         setCountMessageUnRead(prevChats => prevChats.map((chat) => {

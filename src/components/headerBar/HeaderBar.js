@@ -22,7 +22,6 @@ export default function HeaderBar() {
   })
   const [notificatios, setNotifications] = useState([])
   const handleShowNotification = () => {
-    console.log("check ", bellRef.current.getBoundingClientRect());
     setCoords(bellRef.current.getBoundingClientRect())
     setShowModalNotification(true)
     loadNotiRef.current()
@@ -57,6 +56,10 @@ export default function HeaderBar() {
     })
     socket.on("CLIENT_ACCEPT_FRIEND", (data) => {
       setNotifications(prevNotifi => [data, ...prevNotifi])
+    })
+    socket.on("CREATE PROJECT", (project, noti, chat) => {
+      console.log("check trong noti")
+      setNotifications(prevNotifi => [noti, ...prevNotifi])
     })
   }, [socket])
   return (

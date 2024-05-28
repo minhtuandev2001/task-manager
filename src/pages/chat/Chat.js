@@ -374,6 +374,16 @@ export default function Chat() {
   }
   // kết thúc xử lý tạo phòng chat (single, multiple)
 
+  // xử lý nhận nhóm chat mới 
+  useEffect(() => {
+    socket.on("CREATE PROJECT", (project, noti, chat) => {
+      if (chat?.createdBy?.user_id !== currentUser.id) {
+        console.log("check trong chat")
+        setChats(prevChats => [chat, ...prevChats])
+      }
+    })
+  }, [socket, currentUser.id])
+  // kết thúc xử lý nhận nhóm chat mới 
   return (
     <div className='min-h-[calc(100vh-56px-24px)]'>
       <div className='flex gap-3'>

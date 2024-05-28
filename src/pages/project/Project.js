@@ -20,8 +20,10 @@ import { toast } from 'react-toastify';
 import lodash from "lodash"
 import noResultImage from "../../asset/images/noResult.png"
 import AlertWarning from '../../components/alert/AlertWarning';
+import { useSocket } from '../../context/socketContext';
 
 export default function Project() {
+  const socket = useSocket()
   const { currentUser } = useContext(AuthContext)
   const [showModalJoinProject, setShowModalJoinProject] = useState(false);
   const [showModalCreateProject, setShowModalCreateProject] = useState(false);
@@ -195,6 +197,21 @@ export default function Project() {
     })
   }
   // kết thúc xử lý xóa project
+
+  // nhận project từ socket
+  useEffect(() => {
+    socket.on("CREATE PROJECT", (project, noti, chat) => {
+      if (project?.createdBy?.user_id !== currentUser.id) {
+        console.log("check trong project")
+        const regex = new RegExp(searchProject, 'i')
+        // kiểm tra dữ liệu input search có trùng với project vừa được thêm vào ko
+        if (regex.test(project.title)) {
+          setProjectList(prevData => [project, ...prevData])
+        }
+      }
+    })
+  }, [socket, searchProject, currentUser.id])
+  // kết thúc nhận project từ socket
   return (
     <>
       <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)]'>
