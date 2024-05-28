@@ -79,7 +79,9 @@ export default function Sidebar() {
         // cập nhật lại số lượng thông báo tin nhắn
         setCountMessageUnRead(prevChats => prevChats.map((chat) => {
           if (chat._id === message.room_chat_id) {
-            chat.latestMessage.usersRead = [...chat.latestMessage.usersRead.map(item => item !== currentUser.id)];
+            if (chat.latestMessage?.usersRead) {
+              chat.latestMessage.usersRead = [...chat.latestMessage.usersRead.map(item => item !== currentUser.id)];
+            }
           }
           return chat
         }))

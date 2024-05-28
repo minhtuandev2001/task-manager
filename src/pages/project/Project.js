@@ -92,6 +92,7 @@ export default function Project() {
   }
   // kết thúc xử lý trạng thái project
 
+  // xử lý việc tạo project 
   const handleCreateProject = () => {
     console.log("check ", userListAdd.client)
     let timeStart = (stateDate[0].startDate.getMonth() + 1) + "/" + stateDate[0].startDate.getDate() + "/" + stateDate[0].startDate.getFullYear()
@@ -126,6 +127,9 @@ export default function Project() {
       toast.error(err.response.data.messages)
     })
   }
+  // kết thúc xử lý việc tạo project
+
+  // xử lý lấy danh sách project
   useEffect(() => {
     const getProject = () => {
       setLoading(true)
@@ -135,21 +139,23 @@ export default function Project() {
         }
       }).then((res) => {
         setProjectList(res.data?.data);
-        console.log("check ")
         setLoading(false)
       }).catch((err) => {
-        console.log("check ")
         toast.error(err)
         setLoading(false)
       })
     }
     getProject()
   }, [searchProject, currentUser.token])
+  // kết thúc xử lý lấy danh sách project
 
+  // xử lý tìm kiếm project
   const handleSearchProject = lodash.debounce((e) => {
     setSearchProject(e.target.value)
   }, 500)
+  // kết thúc xử lý tìm kiếm project
 
+  // xử lý xóa project
   const handleRemoveProject = (id) => {
     axios.delete(`${BASE_URL}/project/delete/${id}`, {
       headers: {
@@ -188,6 +194,7 @@ export default function Project() {
       setValueInputKeyProject("")
     })
   }
+  // kết thúc xử lý xóa project
   return (
     <>
       <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)]'>

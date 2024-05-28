@@ -23,7 +23,7 @@ export const SocketProvider = (props) => {
           }
         }).then((res) => {
           console.log("check ", res)
-          socket.emit("client send statusOnline", currentUser.id, currentUser.statusOnline)
+          socket.emit("client send statusOnline", currentUser.id, true)
         })
           .catch((err) => {
             console.log("check ", err)

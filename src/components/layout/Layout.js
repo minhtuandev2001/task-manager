@@ -8,7 +8,9 @@ export default function Layout() {
   const { currentUser } = useContext(AuthContext)
   const socket = useSocket()
   useEffect(() => {
-    window.addEventListener('beforeunload', function (e) {
+    console.log("check da vao day")
+    window.addEventListener('unload', function (e) {
+      console.log("check socket dissss")
       socket.emit("disconnected", currentUser.id, false)
     });
   }, [socket, currentUser.id, currentUser.friendsList])

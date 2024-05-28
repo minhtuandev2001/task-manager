@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { IconCancel, IconDownload, IconFile, IconImage, IconSend, IconSmile } from '../../components/icons'
+import { IconCancel, IconDownload, IconFile, IconImage, IconPlus, IconSend, IconSmile } from '../../components/icons'
 import ChatItem from '../../components/card/ChatItem'
 import Button from '../../components/button/Button';
 import ThumbnailFile from '../../components/thumbnail/ThumbnailFile';
@@ -12,6 +12,7 @@ import noMessage from "../../asset/images/noMessage.png"
 import { useSocket } from '../../context/socketContext';
 import { useMessageNoti } from '../../context/messageNotiContext';
 import moment from "moment";
+import ModalCreateChat from '../../components/modal/ModalCreateChat';
 
 export default function Chat() {
   const socket = useSocket()
@@ -140,13 +141,17 @@ export default function Chat() {
         // cập nhật trạng thái tin nhắn ở list nếu người dùng đang ở trong đoạn chat
         setChats(prevChats => prevChats.map((chat) => {
           if (chat._id === item._id) {
-            chat.latestMessage.usersRead = [...chat.latestMessage.usersRead, currentUser.id];
+            if (chat.latestMessage?.usersRead) {
+              chat.latestMessage.usersRead = [...chat.latestMessage.usersRead, currentUser.id];
+            }
           }
           return chat
         }))
         setCountMessageUnRead(prevChats => prevChats.map((chat) => {
           if (chat._id === item._id) {
-            chat.latestMessage.usersRead = [...chat.latestMessage.usersRead, currentUser.id];
+            if (chat.latestMessage?.usersRead) {
+              chat.latestMessage.usersRead = [...chat.latestMessage.usersRead, currentUser.id];
+            }
           }
           return chat
         }))
@@ -219,13 +224,17 @@ export default function Chat() {
               // cập nhật trạng thái tin nhắn ở list nếu người dùng đang ở trong đoạn chat
               setChats(prevChats => prevChats.map((chat) => {
                 if (chat._id === message.room_chat_id) {
-                  chat.latestMessage.usersRead = [...chat.latestMessage.usersRead, currentUser.id];
+                  if (chat.latestMessage?.usersRead) {
+                    chat.latestMessage.usersRead = [...chat.latestMessage.usersRead, currentUser.id];
+                  }
                 }
                 return chat
               }))
               setCountMessageUnRead(prevChats => prevChats.map((chat) => {
                 if (chat._id === message.room_chat_id) {
-                  chat.latestMessage.usersRead = [...chat.latestMessage.usersRead, currentUser.id];
+                  if (chat.latestMessage?.usersRead) {
+                    chat.latestMessage.usersRead = [...chat.latestMessage.usersRead, currentUser.id];
+                  }
                 }
                 return chat
               }))
@@ -235,7 +244,9 @@ export default function Chat() {
           } else {
             setCountMessageUnRead(prevChats => prevChats.map((chat) => {
               if (chat._id === message.room_chat_id) {
-                chat.latestMessage.usersRead = [...chat.latestMessage.usersRead.map(item => item !== currentUser.id)];
+                if (chat.latestMessage?.usersRead) {
+                  chat.latestMessage.usersRead = [...chat.latestMessage.usersRead.map(item => item !== currentUser.id)];
+                }
               }
               return chat
             }))
@@ -243,24 +254,30 @@ export default function Chat() {
         } else {
           setCountMessageUnRead(prevChats => prevChats.map((chat) => {
             if (chat._id === message.room_chat_id) {
-              chat.latestMessage.usersRead = [...chat.latestMessage.usersRead.map(item => item !== currentUser.id)];
+              if (chat.latestMessage?.usersRead) {
+                chat.latestMessage.usersRead = [...chat.latestMessage.usersRead.map(item => item !== currentUser.id)];
+              }
             }
             return chat
           }))
         }
       }
       setChats(prevChats => {
-        let chatNewUpdate = prevChats.filter((chat) => chat._id === message.room_chat_id)
-        let chatsNew = prevChats.filter((chat) => chat._id !== message.room_chat_id)
-        let newChats = [chatNewUpdate[0], ...chatsNew];
-        newChats.map((chat) => {
-          if (chat._id === message.room_chat_id) {
-            chat.latestMessageId = message._id;
-            chat.latestMessage = message;
-          }
-          return chat;
-        })
-        return newChats
+        if (prevChats.length > 0) {
+          let chatNewUpdate = prevChats.filter((chat) => chat._id === message.room_chat_id)
+          let chatsNew = prevChats.filter((chat) => chat._id !== message.room_chat_id)
+          let newChats = [chatNewUpdate[0], ...chatsNew];
+          newChats.map((chat) => {
+            if (chat._id === message.room_chat_id) {
+              chat.latestMessageId = message._id;
+              chat.latestMessage = message;
+            }
+            return chat;
+          })
+          return newChats
+        } else {
+          return []
+        }
       })
     })
     return () => {
@@ -279,7 +296,8 @@ export default function Chat() {
     }
   }, [messages, selectedChat])
   useEffect(() => {
-    socket.on("server return change statusOnline", data => {
+    socket.on("server return statusOnline", data => {
+      console.log("other user dis", data)
       console.log("check status", data)
       setChats(prevChats => prevChats.map((chat) => {
         if (chat.isGroupChat) {
@@ -292,7 +310,6 @@ export default function Chat() {
         } else {
           if (chat.infoUser._id === data.id) {
             chat.infoUser.statusOnline = data.status;
-            console.log("check 1", chat.infoUser.statusOnline)
           }
         }
         return chat
@@ -300,6 +317,7 @@ export default function Chat() {
     })
   }, [socket])
 
+  // xử lý thoát khỏi phongf chat
   const handleExitsChat = (id) => {
     // kiểm tra xem có đang selected chat không
     if (selectedChat) {
@@ -318,6 +336,43 @@ export default function Chat() {
       toast.error(err.response?.data.messages)
     })
   }
+  // kết thúc xử lý thoát khỏi phòng chat
+
+  // xử lý tạo phòng chat (single, multiple)
+  const [showModalCreateRoom, setShowModalCreateRoom] = useState(false);
+  const [nameGroup, setNameGroup] = useState("");
+  const [userListAdd, setUserListAdd] = useState([{ id: currentUser.id, email: currentUser.email }]);
+  const handleAddUser = (data) => {
+    setUserListAdd(preData => {
+      let userExist = preData.some((item) => item.id === data.id)
+      return userExist ? preData : [...preData, { id: data.id.toString(), email: data.email }]
+    })
+  }
+
+  const handleRemoveUser = (id) => {
+    setUserListAdd(preData => preData.filter((item) => item.id !== id))
+  }
+
+  const handleCreateChat = () => {
+    console.log("check ", nameGroup)
+    console.log("check ", [userListAdd.map((item) => item.id)])
+    axios.post(`${BASE_URL}/chat/create`, {
+      chatName: nameGroup,
+      isGroupChat: true,
+      users: userListAdd.map((item) => item.id),
+      groupAdmin: [currentUser.id],
+      createdBy: { user_id: currentUser.id },
+    }, {
+      headers: {
+        "Authorization": `Bearer ${currentUser.token}`
+      }
+    }).then((res) => {
+      toast.success("Create chat success")
+    }).catch((err) => {
+      toast.error(err.response?.data.messages)
+    })
+  }
+  // kết thúc xử lý tạo phòng chat (single, multiple)
 
   return (
     <div className='min-h-[calc(100vh-56px-24px)]'>
@@ -434,9 +489,14 @@ export default function Chat() {
           </form>
         </div>
         <div className='w-full max-w-[350px] bg-white rounded-md p-4'>
-          <input type="text"
-            className="rounded-lg border border-[#D9D9D9] h-10 px-2 bg-[#F6F7F9] w-full focus:border-blue-500"
-          />
+          <div className='flex items-center gap-3'>
+            <input type="text"
+              className="rounded-lg border border-[#D9D9D9] h-10 px-2 bg-[#F6F7F9] w-full focus:border-blue-500"
+            />
+            <button
+              onClick={() => setShowModalCreateRoom(true)}
+              type='button' className='w-5'><IconPlus></IconPlus></button>
+          </div>
           <div className='flex flex-col mt-3 gap-2 overflow-scroll max-h-[calc(100vh-56px-24px-52px-50px)] no-scrollbar'>
             {loadingLoadUser && <div className='w-5 h-5 mx-auto mt-2 border-4 border-r-4 border-blue-600 rounded-full border-r-transparent animate-spin'></div>}
             {chats.length > 0 ? chats.map((item) => {
@@ -448,6 +508,17 @@ export default function Chat() {
           </div>
         </div>
       </div>
+      {/* protal create room chat */}
+      <ModalCreateChat
+        showSearchPortal={showModalCreateRoom}
+        setShowSearchPortal={setShowModalCreateRoom}
+        userListAdd={userListAdd}
+        handleAddUser={handleAddUser}
+        handleRemoveUser={handleRemoveUser}
+        nameGroup={nameGroup}
+        setNameGroup={setNameGroup}
+        handleCreateChat={handleCreateChat}
+      ></ModalCreateChat>
     </div>
   )
 }

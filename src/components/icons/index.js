@@ -43,5 +43,6 @@ import IconCamOn from "./IconCamOn"
 import IconMicOff from "./IconMicOff"
 import IconMicOn from "./IconMicOn"
 import IconMonitor from "./IconMonitor"
+import IconPlus from "./IconPlus"
 
-export { IconEyeOpen, IconEyeClose, IconBell, IconLogo, IconMessage, IconProject, IconMetting, IconSendMail, IconTask, IconSun, IconLogout, IconMoon, IconCalender, IconDelete, IconEdit, IconStarOutline, IconStarFill, IconCancel, IconThink, IconCol, IconList, IconFilter, IconChevronDown, IconImage, IconFile, IconPDF, IconDOC, IconXSL, IconMP4, IconRAR, IconCSV, IconZIP, IconFILE1, IconJPG, IconWarning, IconDownload, IconClear, IconUsers, IconSmile, IconSend, IconCamOff, IconCamOn, IconMicOn, IconMicOff, IconMonitor }
+export { IconEyeOpen, IconEyeClose, IconBell, IconLogo, IconMessage, IconProject, IconMetting, IconSendMail, IconTask, IconSun, IconLogout, IconMoon, IconCalender, IconDelete, IconEdit, IconStarOutline, IconStarFill, IconCancel, IconThink, IconCol, IconList, IconFilter, IconChevronDown, IconImage, IconFile, IconPDF, IconDOC, IconXSL, IconMP4, IconRAR, IconCSV, IconZIP, IconFILE1, IconJPG, IconWarning, IconDownload, IconClear, IconUsers, IconSmile, IconSend, IconCamOff, IconCamOn, IconMicOn, IconMicOff, IconMonitor, IconPlus }
