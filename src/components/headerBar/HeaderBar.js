@@ -61,6 +61,9 @@ export default function HeaderBar() {
       console.log("check trong noti")
       setNotifications(prevNotifi => [noti, ...prevNotifi])
     })
+    socket.on("CREATE CHAT", (chat, noti) => {
+      setNotifications(prevNotifi => [noti, ...prevNotifi])
+    })
   }, [socket])
   return (
     <>

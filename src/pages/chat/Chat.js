@@ -376,11 +376,16 @@ export default function Chat() {
 
   // xử lý nhận nhóm chat mới 
   useEffect(() => {
+    // nhận nhóm chat khi project được tạo
     socket.on("CREATE PROJECT", (project, noti, chat) => {
       if (chat?.createdBy?.user_id !== currentUser.id) {
         console.log("check trong chat")
         setChats(prevChats => [chat, ...prevChats])
       }
+    })
+    // nhận nhóm chát khi tạo một nhóm chat
+    socket.on("CREATE CHAT", (chat, noti) => {
+      setChats(prevChats => [chat, ...prevChats])
     })
   }, [socket, currentUser.id])
   // kết thúc xử lý nhận nhóm chat mới 
@@ -426,7 +431,7 @@ export default function Chat() {
                           {item?.files.length > 0 && item?.files.map((item, index) => {
                             return (
                               <div
-                                key={item.id} className='flex items-center justify-between rounded-md p-2 bg-gray-200'>
+                                key={item.id} className='flex items-center justify-between p-2 bg-gray-200 rounded-md'>
                                 <a href={item.link_view} target='_blank' rel="noreferrer" className='flex items-center gap-2 w-[calc(100%-25px)]'>
                                   <div className='min-w-[22px] min-h-[29px]'>
                                     <ThumbnailFile fileExtension={item.nameFile.split(".")[1]}></ThumbnailFile>
@@ -493,7 +498,7 @@ export default function Chat() {
             <button
               type='submit' className='w-10 h-10 rounded-md bg-[#F6F8FD] flex justify-center items-center hover:bg-slate-200 transition-all '>
               {loadingSendMessasge ? (
-                <div className='w-5 h-5 rounded-full border-4 border-blue-500 border-r-4 border-r-transparent animate-spin'></div>
+                <div className='w-5 h-5 border-4 border-r-4 border-blue-500 rounded-full border-r-transparent animate-spin'></div>
               ) : (<IconSend></IconSend>)}
             </button>
           </form>
