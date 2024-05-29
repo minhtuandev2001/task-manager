@@ -75,13 +75,20 @@ export default function Sidebar() {
   useEffect(() => {
     // nhận tin nhắn và cập nhật số lượng thông báo ở sidebar
     socket.on("server return message", message => {
+      console.log("check o sidebar")
       if (message.infoSender._id !== currentUser.id) { // những client khác nhận được thôi
+        // cập nhật lại danh sách chat, cập nhật lại tin nhắn mới nhất có thể có 
+        loadChatRef.current()
         // cập nhật lại số lượng thông báo tin nhắn
         setCountMessageUnRead(prevChats => prevChats.map((chat) => {
           if (chat._id === message.room_chat_id) {
+            console.log("check co chat o day")
+            console.log("check co chat o day", chat.latestMessage?.usersRead)
+            console.log("check 1", chat)
             if (chat.latestMessage?.usersRead) {
-              chat.latestMessage.usersRead = [...chat.latestMessage.usersRead.map(item => item !== currentUser.id)];
+              chat.latestMessage.usersRead = [...chat.latestMessage.usersRead.filter(item => item !== currentUser.id)];
             }
+            console.log("check 1", chat)
           }
           return chat
         }))

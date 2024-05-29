@@ -242,20 +242,22 @@ export default function Chat() {
               console.log("check ", err.response.data.message);
             })
           } else {
+            console.log("check selected chat khac")
             setCountMessageUnRead(prevChats => prevChats.map((chat) => {
               if (chat._id === message.room_chat_id) {
                 if (chat.latestMessage?.usersRead) {
-                  chat.latestMessage.usersRead = [...chat.latestMessage.usersRead.map(item => item !== currentUser.id)];
+                  chat.latestMessage.usersRead = [...chat.latestMessage.usersRead.filter(item => item !== currentUser.id)];
                 }
               }
               return chat
             }))
           }
         } else {
+          console.log("check ko selected")
           setCountMessageUnRead(prevChats => prevChats.map((chat) => {
             if (chat._id === message.room_chat_id) {
               if (chat.latestMessage?.usersRead) {
-                chat.latestMessage.usersRead = [...chat.latestMessage.usersRead.map(item => item !== currentUser.id)];
+                chat.latestMessage.usersRead = [...chat.latestMessage.usersRead.filter(item => item !== currentUser.id)];
               }
             }
             return chat
@@ -266,15 +268,19 @@ export default function Chat() {
         if (prevChats.length > 0) {
           let chatNewUpdate = prevChats.filter((chat) => chat._id === message.room_chat_id)
           let chatsNew = prevChats.filter((chat) => chat._id !== message.room_chat_id)
-          let newChats = [chatNewUpdate[0], ...chatsNew];
-          newChats.map((chat) => {
-            if (chat._id === message.room_chat_id) {
-              chat.latestMessageId = message._id;
-              chat.latestMessage = message;
-            }
-            return chat;
-          })
-          return newChats
+          if (chatNewUpdate.length > 0) {
+            let newChats = [chatNewUpdate[0], ...chatsNew];
+            newChats.map((chat) => {
+              if (chat._id === message.room_chat_id) {
+                chat.latestMessageId = message._id;
+                chat.latestMessage = message;
+              }
+              return chat;
+            })
+            return newChats
+          } else {
+            return chatsNew
+          }
         } else {
           return []
         }
