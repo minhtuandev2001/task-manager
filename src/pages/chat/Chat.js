@@ -287,7 +287,7 @@ export default function Chat() {
       })
     })
     return () => {
-      socket.off("server return message")
+      socket.off("server return message");
     }
   }, [socket, selectedChat, currentUser, setCountMessageUnRead])
 
@@ -395,6 +395,14 @@ export default function Chat() {
     })
   }, [socket, currentUser.id])
   // kết thúc xử lý nhận nhóm chat mới 
+
+  // Rời khỏi trang chat
+  useEffect(() => {
+    // loại bỏ chat đang chọn
+    return () => {
+      setSelectedChat(null);
+    }
+  }, [])
   return (
     <div className='min-h-[calc(100vh-56px-24px)]'>
       <div className='flex gap-3'>

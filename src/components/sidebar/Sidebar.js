@@ -73,8 +73,9 @@ export default function Sidebar() {
   // sẽ hoạt động khi bạn không ở trang chát
   // nếu bạn ở trang chat thì đã cập nhật ở trang chat và chuyển qua nhờ context
   useEffect(() => {
+    console.log("check sidebar")
     // nhận tin nhắn và cập nhật số lượng thông báo ở sidebar
-    socket.on("server return message", message => {
+    socket.on("server return message noti", message => {
       console.log("check o sidebar")
       if (message.infoSender._id !== currentUser.id) { // những client khác nhận được thôi
         // cập nhật lại danh sách chat, cập nhật lại tin nhắn mới nhất có thể có 

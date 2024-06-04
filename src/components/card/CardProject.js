@@ -81,8 +81,8 @@ export default function CardProject({ data, handleRemoveProject }) {
       })
       toast.success("Update project success")
     } catch (err) {
-      handleResetData();
       toast.error(err.response.data.messages)
+      handleResetData();
     }
     // cập nhật project xong thì bắt đầu mới chuyển về lại chế độ xem
     setToggleUpdate(false)

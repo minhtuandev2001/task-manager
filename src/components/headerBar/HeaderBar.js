@@ -58,7 +58,18 @@ export default function HeaderBar() {
       setNotifications(prevNotifi => [data, ...prevNotifi])
     })
     socket.on("CREATE PROJECT", (project, noti, chat) => {
-      console.log("check trong noti")
+      setNotifications(prevNotifi => [noti, ...prevNotifi])
+    })
+    socket.on("UPDATE PROJECT", (noti) => {
+      setNotifications(prevNotifi => [noti, ...prevNotifi])
+    })
+    socket.on("UPDATE STAR", noti => {
+      setNotifications(prevNotifi => [noti, ...prevNotifi])
+    })
+    socket.on("DONE PROJECT", noti => {
+      setNotifications(prevNotifi => [noti, ...prevNotifi])
+    })
+    socket.on("DELETE PROJECT", noti => {
       setNotifications(prevNotifi => [noti, ...prevNotifi])
     })
     socket.on("CREATE CHAT", (chat, noti) => {
