@@ -75,6 +75,15 @@ export default function HeaderBar() {
     socket.on("CREATE CHAT", (chat, noti) => {
       setNotifications(prevNotifi => [noti, ...prevNotifi])
     })
+    socket.on("CREATE TASK", (noti) => {
+      setNotifications(prevNotifi => [noti, ...prevNotifi])
+    })
+    socket.on("UPDATE TASK", (noti) => {
+      setNotifications(prevNotifi => [noti, ...prevNotifi])
+    })
+    socket.on("DELETE TASK", (noti) => {
+      setNotifications(prevNotifi => [noti, ...prevNotifi])
+    })
   }, [socket])
   return (
     <>

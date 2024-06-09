@@ -19,9 +19,11 @@ import { AuthContext } from "../../context/authContext"
 import { toast } from 'react-toastify';
 import lodash from "lodash"
 import AlertWarning from '../../components/alert/AlertWarning';
+import { useSocket } from '../../context/socketContext';
 
 const Task = () => {
   const { currentUser } = useContext(AuthContext)
+  const socket = useSocket();
   const [showModalTask, setShowModalTask] = useState(false);
   const [project, setProject] = useState(null)
   const [nameTask, setNameTask] = useState("")
@@ -201,8 +203,16 @@ const Task = () => {
     }
   }
   const handleRemoveTask = (id) => {
-    setTasks(prevTask => prevTask.filter((item) => item._id !== id))
-    console.log("check delete", id)
+    axios.delete(`${BASE_URL}/task/delete/${id}`, {
+      headers: {
+        "Authorization": `Bearer ${currentUser.token}`
+      }
+    }).then((res) => {
+      toast.success("Deleted task success")
+      setTasks(prevTask => prevTask.filter((item) => item._id !== id))
+    }).catch(((err) => {
+      toast.error(err.response?.data?.messages);
+    }))
   }
   // xử lý khi người dùng chuyển sang chế đốj update và thoát khỏi update 
   const handleCancel = () => {
@@ -414,6 +424,16 @@ const Task = () => {
     setSearchTask(e.target.value)
   }, 500)
   // kết thúc xử lý Input search task
+
+  // Nhận task
+  useEffect(() => {
+    socket.on("CREATE TASK", (noti) => {
+      // cập nhật lại task vừa tạo vào đúng trường
+      getTask()
+    })
+  }, [socket])
+  // kết thúc nhận task
+
   return (
     <>
       <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)]'>
