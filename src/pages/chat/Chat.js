@@ -360,8 +360,6 @@ export default function Chat() {
   }
 
   const handleCreateChat = () => {
-    console.log("check ", nameGroup)
-    console.log("check ", [userListAdd.map((item) => item.id)])
     axios.post(`${BASE_URL}/chat/create`, {
       chatName: nameGroup,
       isGroupChat: true,

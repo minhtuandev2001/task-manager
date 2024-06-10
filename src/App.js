@@ -13,6 +13,7 @@ import { AuthContext } from "./context/authContext"
 import Users from './pages/users/Users';
 import Chat from './pages/chat/Chat';
 import Meeting from './pages/meeting/Meeting';
+import SendMail from './pages/sendMail/SendMail';
 
 
 const ProtectedRoute = ({ children }) => {
@@ -36,6 +37,7 @@ function App() {
           <Route path='/chat' element={<Chat></Chat>}></Route>
           <Route path='/meeting' element={<Meeting></Meeting>}></Route>
           <Route path='/task' element={<Task></Task>}></Route>
+          <Route path='/sendMail' element={<SendMail></SendMail>}></Route>
           <Route path='/friends' element={<Users></Users>}></Route>
         </Route>
         <Route path='*' element={<div>404</div>}></Route>

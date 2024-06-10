@@ -6,6 +6,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@tinymce/tinymce-react": "^5.0.1",
     "@videosdk.live/react-sdk": "^0.1.91",
     "agora-rtc-sdk-ng": "^4.20.2",
     "agora-rtm-sdk": "^1.5.1",
