@@ -14,6 +14,7 @@ import Users from './pages/users/Users';
 import Chat from './pages/chat/Chat';
 import Meeting from './pages/meeting/Meeting';
 import SendMail from './pages/sendMail/SendMail';
+import Profile from './pages/profile/Profile';
 
 
 const ProtectedRoute = ({ children }) => {
@@ -39,6 +40,7 @@ function App() {
           <Route path='/task' element={<Task></Task>}></Route>
           <Route path='/sendMail' element={<SendMail></SendMail>}></Route>
           <Route path='/friends' element={<Users></Users>}></Route>
+          <Route path='/profile' element={<Profile></Profile>}></Route>
         </Route>
         <Route path='*' element={<div>404</div>}></Route>
       </Routes>

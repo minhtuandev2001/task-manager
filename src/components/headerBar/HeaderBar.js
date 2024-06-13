@@ -9,6 +9,7 @@ import { toast } from 'react-toastify'
 import noNoti from "../../asset/images/no-noti.png"
 import { useSocket } from '../../context/socketContext'
 import moment from 'moment'
+import { NavLink } from 'react-router-dom'
 
 export default function HeaderBar() {
   const socket = useSocket()
@@ -85,6 +86,7 @@ export default function HeaderBar() {
       setNotifications(prevNotifi => [noti, ...prevNotifi])
     })
   }, [socket])
+  const [showPopup, setShowPopup] = useState(false)
   return (
     <>
       <div className='flex items-center justify-between w-full px-4 h-14'>
@@ -98,8 +100,23 @@ export default function HeaderBar() {
             <IconBell></IconBell>
           </div>
           <img
-            className='w-10 h-10 rounded-full select-none'
+            onMouseMove={() => setShowPopup(true)}
+            onMouseLeave={() => setShowPopup(false)}
+            className='w-10 h-10 rounded-full select-none cursor-pointer'
             src={currentUser.avatar} alt="" />
+          {showPopup && <div
+            className='absolute top-[46px] right-[12px] rounded-sm transition-all cursor-pointer flex flex-col'
+            onMouseMove={() => setShowPopup(true)}
+            onMouseLeave={() => setShowPopup(false)}
+          >
+            <div className='w-[40px] h-[10px] self-end'></div>
+            <ul
+              className='w-[250px] h-auto min-h-[200px] p-3 bg-white shadow-md'>
+              <NavLink to={"/profile"}>
+                <li className='text-base p-2 hover:bg-gray-100 rounded-sm font-medium text-gray-900'>Profile</li>
+              </NavLink>
+            </ul>
+          </div>}
         </div>
       </div>
       <Portal
