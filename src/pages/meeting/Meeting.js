@@ -199,6 +199,11 @@ function Controls(props) {
   const { leave, toggleMic, toggleWebcam, toggleScreenShare, localScreenShareOn } = useMeeting();
   const { localMicOn } = useMeeting();
   const { localWebcamOn } = useMeeting();
+  useEffect(() => {
+    return () => {
+      leave();
+    }
+  }, [])
   return (
     <div className='flex items-center justify-center gap-2'>
       <button

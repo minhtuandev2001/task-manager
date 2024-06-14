@@ -40,7 +40,7 @@ function App() {
           <Route path='/task' element={<Task></Task>}></Route>
           <Route path='/sendMail' element={<SendMail></SendMail>}></Route>
           <Route path='/friends' element={<Users></Users>}></Route>
-          <Route path='/profile' element={<Profile></Profile>}></Route>
+          <Route path='/profile/:id' element={<Profile></Profile>}></Route>
         </Route>
         <Route path='*' element={<div>404</div>}></Route>
       </Routes>

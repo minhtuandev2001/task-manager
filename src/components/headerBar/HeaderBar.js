@@ -105,14 +105,14 @@ export default function HeaderBar() {
             className='w-10 h-10 rounded-full select-none cursor-pointer'
             src={currentUser.avatar} alt="" />
           {showPopup && <div
-            className='absolute top-[46px] right-[12px] rounded-sm transition-all cursor-pointer flex flex-col'
+            className='absolute top-[46px] right-[12px] rounded-sm transition-all cursor-pointer flex flex-col z-10'
             onMouseMove={() => setShowPopup(true)}
             onMouseLeave={() => setShowPopup(false)}
           >
             <div className='w-[40px] h-[10px] self-end'></div>
             <ul
               className='w-[250px] h-auto min-h-[200px] p-3 bg-white shadow-md'>
-              <NavLink to={"/profile"}>
+              <NavLink to={`/profile/${currentUser.id}`}>
                 <li className='text-base p-2 hover:bg-gray-100 rounded-sm font-medium text-gray-900'>Profile</li>
               </NavLink>
             </ul>
