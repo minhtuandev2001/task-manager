@@ -5,7 +5,9 @@ export default function CardUser({ data, statusFriend, handleButtonClick }) {
     <div
       className='bg-gray-100 p-1 w-full max-w-[200px] rounded-md'
     >
-      <img src={data.avatar} alt="" />
+      <div className='w-full h-full max-h-[200px]'>
+        <img className='w-full h-full object-cover' src={data.avatar} alt="" />
+      </div>
       <p className='text-base font-medium'>{data.username}</p>
       <div className='flex flex-col gap-2 mt-2'>
         {statusFriend === "friends" && <button

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import backgroundForm from "../../asset/images/backgroudForm.jpg"
 import Filed from '../../components/filed/Filed'
 import Input from '../../components/input/Input'
@@ -9,8 +9,17 @@ import { IconEyeClose, IconEyeOpen } from '../../components/icons'
 import Label from '../../components/label/Label'
 import { motion } from "framer-motion"
 import iconSuccess from "../../asset/images/iconSuccess.png"
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { BASE_URL } from '../../constans/url'
+import { toast } from 'react-toastify'
 
 export default function EnterOtp() {
+  const location = useLocation();
+  const [togglePassword, setTogglePassword] = useState(true);
+  const [togglePasswordCf, setTogglePasswordCf] = useState(true);
+  const [resetSuccess, setResetSuccess] = useState(false);
+  const [stateEmail, setStateEmail] = useState("");
   const formik = useFormik({
     initialValues: {
       password: "",
@@ -21,16 +30,24 @@ export default function EnterOtp() {
       passwordCf: Yup.string().oneOf([Yup.ref('password'), null], "Password must match").required()
     }),
     onSubmit: (values, { setSubmitting }) => {
-      console.log("check ", values);
+      setSubmitting(true);
       // call api
-      setResetSuccess(true)
-
+      axios.post(`${BASE_URL}/user/reset-password`, {
+        email: stateEmail,
+        password: values.password,
+      }).then((res) => {
+        setResetSuccess(true);
+      }).catch((err) => {
+        toast.error(err.response?.data.messages)
+      }).finally(() => {
+        setSubmitting(false);
+      })
     }
   })
+  useEffect(() => {
+    setStateEmail(location.state.email);
+  }, [location])
 
-  const [togglePassword, setTogglePassword] = useState(true);
-  const [togglePasswordCf, setTogglePasswordCf] = useState(true);
-  const [resetSuccess, setResetSuccess] = useState(false);
   return (
     <div className='flex items-center justify-center h-screen bg-center'
       style={{
@@ -101,7 +118,9 @@ export default function EnterOtp() {
               src={iconSuccess} alt="" />
             <h3 className='text-2xl font-semibold text-blue-600'>Congratulations!</h3>
             <p className='text-xs font-medium'>You successfully reset the password!</p>
-            <Button className="mt-3 font-semibold text-white button-default bg-button">Go to Home</Button>
+            <NavLink to={"/login"} className="w-full">
+              <Button className="mt-3 font-semibold text-white button-default bg-button">Go to Home</Button>
+            </NavLink>
           </motion.div>
         )}
     </div>

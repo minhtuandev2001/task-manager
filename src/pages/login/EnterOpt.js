@@ -6,32 +6,42 @@ import Button from '../../components/button/Button'
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { motion } from "framer-motion"
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { BASE_URL } from '../../constans/url'
+import { toast } from 'react-toastify'
 
 export default function EnterOtp() {
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
+      email: "",
       otp: ""
     },
     validationSchema: Yup.object({
-      otp: Yup.string().max(6).required()
+      email: Yup.string().email().required(),
+      otp: Yup.string().required()
     }),
     onSubmit: (values, { setSubmitting }) => {
-      console.log("check ", values);
-      console.log("check ", time);
-      stopTime()
       if (time <= 0) { // hết thời gian, gửi lại code
-        setTime(10)
-        startTime()
-        setSubmitting(false)
-        console.log("Gửi lại mã")
+        navigate("/forgot-password");
       } else {
-        console.log("đầu vào oke")
+        console.log("đầu vào oke");
         // call api nếu oke thì đi tiếp không thì setSubmitting(false) và gửi lại
+        axios.post(`${BASE_URL}/user/enter-otp`, {
+          email: values.email,
+          otp: values.otp,
+        }).then((res) => {
+          navigate("/new-password", { state: { email: values.email } });
+        }).catch((err) => {
+          toast.error(err.response?.data.messages)
+        }).finally(() => {
+          setSubmitting(false);
+        })
       }
-
     }
   })
-  const [time, setTime] = useState(10);
+  const [time, setTime] = useState(180);
   const timeRef = useRef(null);
   useEffect(() => {
     startTime()
@@ -69,7 +79,19 @@ export default function EnterOtp() {
         <Filed>
           <Input
             type='text'
+            name="email"
+            placeholder="Enter your email"
+            className="w-full h-12 p-3 border rounded-md border-graycustom bg-input focus:border-bluecustom"
+            {...formik.getFieldProps('email')}
+          ></Input>
+        </Filed>
+        {formik.touched.email && formik.errors.email && <span className='text-xs italic font-medium text-red-500'>*{formik.errors.email}</span>}
+        <div className='h-3'></div>
+        <Filed>
+          <Input
+            type='text'
             name="otp"
+            placeholder="Enter otp"
             className="w-full h-12 p-3 border rounded-md border-graycustom bg-input focus:border-bluecustom"
             {...formik.getFieldProps('otp')}
           ></Input>

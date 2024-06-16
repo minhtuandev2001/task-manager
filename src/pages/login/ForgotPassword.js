@@ -1,13 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import backgroundForm from "../../asset/images/backgroudForm.jpg"
 import Filed from '../../components/filed/Filed'
 import Input from '../../components/input/Input'
-import Button from '../../components/button/Button'
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { motion } from "framer-motion"
-
+import axios from 'axios';
+import { BASE_URL } from '../../constans/url';
+import { useNavigate } from 'react-router-dom';
 export default function ForgotPassword() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       email: ""
@@ -16,7 +19,17 @@ export default function ForgotPassword() {
       email: Yup.string().email().required()
     }),
     onSubmit: (values) => {
-      console.log("check ", values);
+      setIsSubmitting(true);
+      axios.post(`${BASE_URL}/user/forgot-password`, {
+        email: values.email,
+      }).then((res) => {
+        console.log("check ", res)
+        navigate("/enter-opt");
+      }).catch((err) => {
+        console.log("check ", err.response.data)
+      }).finally(() => {
+        setIsSubmitting(false);
+      })
     }
   })
   return (
@@ -42,7 +55,10 @@ export default function ForgotPassword() {
           ></Input>
         </Filed>
         {formik.touched.email && formik.errors.email && <span className='text-xs italic font-medium text-red-500'>*{formik.errors.email}</span>}
-        <Button className="mt-4 font-semibold text-white button-default bg-button">Send</Button>
+        <button type='submit' className="mt-4 font-semibold text-white button-default bg-button">
+          {isSubmitting &&
+            <div className='w-5 h-5 border-4 border-white border-r-4 border-r-transparent rounded-full animate-spin'></div>}
+          Send</button>
       </motion.form>
     </div>
   )
