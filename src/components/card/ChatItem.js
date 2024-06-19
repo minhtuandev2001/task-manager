@@ -20,7 +20,7 @@ export default function ChatItem({ data, handleSelectedChat, handleExitsChat }) 
           <div className='flex-col flex-1'>
             <div className='flex items-center justify-between w-full gap-2'>
               <span className='text-sm font-medium line-clamp-1'>{data.isGroupChat ? data.chatName : (data.infoUser?.username ? data.infoUser?.username : "user exits")}</span>
-              <span className='text-xs text-gray-400'>{moment(data?.latestMessage?.createdAt).fromNow()}</span>
+              <span className='text-xs text-gray-400 line-clamp-1'>{moment(data?.latestMessage?.createdAt).fromNow()}</span>
             </div>
             <p className={`line-clamp-1 text-sm h-5 font-semibold ${data.latestMessage ?
               data?.latestMessage?.usersRead.includes(currentUser.id) ? "text-gray-400" : "text-black"

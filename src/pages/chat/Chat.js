@@ -474,7 +474,7 @@ export default function Chat() {
                 )
               })}
             </div>
-            <div className='grid grid-cols-4 gap-2'>
+            <div className='grid phone:grid-cols-2  tablet:grid-cols-2 laptop:grid-cols-3 laptop2:grid-cols-4 gap-2'>
               {filesUpload !== null && Array(filesUpload.length).fill(null).map((item, index) => {
                 return (
                   <div key={index} className='flex items-center gap-2 p-2 bg-gray-200 rounded-md'>
@@ -494,28 +494,52 @@ export default function Chat() {
             <input type="text"
               onChange={(e) => setInputMessage(e.target.value)}
               value={inputMessage}
-              className="rounded-lg border border-[#D9D9D9] h-10 px-2 bg-[#F6F7F9] flex-1 focus:border-blue-500"
+              className="rounded-lg border border-[#D9D9D9] h-10 phone:h-8 px-2 bg-[#F6F7F9] flex-1 focus:border-blue-500"
             />
-            <label htmlFor='image' className='cursor-pointer w-10 h-10 rounded-md bg-[#F6F8FD] flex justify-center items-center hover:bg-slate-200 transition-all '><IconImage></IconImage></label>
+            <label htmlFor='image' className='cursor-pointer w-10 h-10 phone:h-8 phone:w-8 tablet:h-8 tablet:w-8 rounded-md bg-[#F6F8FD] flex justify-center items-center hover:bg-slate-200 transition-all '><IconImage></IconImage></label>
             <input
               hidden
               onChange={handleUploadImage}
               type="file" id="image" accept="image/png, image/jpeg" multiple />
-            <label htmlFor='files' className='cursor-pointer w-10 h-10 rounded-md bg-[#F6F8FD] flex justify-center items-center hover:bg-slate-200 transition-all '><IconFile></IconFile></label>
+            <label htmlFor='files' className='cursor-pointer w-10 h-10 phone:h-8 phone:w-8 tablet:h-8 tablet:w-8 rounded-md bg-[#F6F8FD] flex justify-center items-center hover:bg-slate-200 transition-all '><IconFile></IconFile></label>
             <input
               hidden
               onChange={handleUploadFile}
               type="file" id="files" multiple />
-            <button type="button" className='w-10 h-10 rounded-md bg-[#F6F8FD] flex justify-center items-center hover:bg-slate-200 transition-all '><IconSmile></IconSmile></button>
+            {/* <button type="button" className='w-10 h-10 rounded-md bg-[#F6F8FD] flex justify-center items-center hover:bg-slate-200 transition-all '><IconSmile></IconSmile></button> */}
             <button
-              type='submit' className='w-10 h-10 rounded-md bg-[#F6F8FD] flex justify-center items-center hover:bg-slate-200 transition-all '>
+              type='submit' className='w-10 h-10 phone:h-8 phone:w-8 tablet:h-8 tablet:w-8 rounded-md bg-[#F6F8FD] flex justify-center items-center hover:bg-slate-200 transition-all '>
               {loadingSendMessasge ? (
                 <div className='w-5 h-5 border-4 border-r-4 border-blue-500 rounded-full border-r-transparent animate-spin'></div>
               ) : (<IconSend></IconSend>)}
             </button>
           </form>
         </div>
-        <div className='w-full max-w-[350px] bg-white rounded-md p-4'>
+        <div className='w-full max-w-[350px] bg-white rounded-md p-4 
+        phone:hidden phone2:block
+        '>
+          <div className='flex items-center gap-3'>
+            <input type="text"
+              className="rounded-lg border border-[#D9D9D9] h-10 phone2:h8 px-2 bg-[#F6F7F9] w-full focus:border-blue-500"
+            />
+            <button
+              onClick={() => setShowModalCreateRoom(true)}
+              type='button' className='w-5'><IconPlus></IconPlus></button>
+          </div>
+          <div className='flex flex-col mt-3 gap-2 overflow-scroll max-h-[calc(100vh-56px-24px-52px-50px)] no-scrollbar'>
+            {loadingLoadUser && <div className='w-5 h-5 mx-auto mt-2 border-4 border-r-4 border-blue-600 rounded-full border-r-transparent animate-spin'></div>}
+            {chats.length > 0 ? chats.map((item) => {
+              return (<ChatItem key={item._id} data={item} handleSelectedChat={handleSelectedChat} handleExitsChat={handleExitsChat}></ChatItem>)
+            })
+              : (
+                null
+              )}
+          </div>
+        </div>
+        <div className='w-full max-w-[350px] min-h-[500px] bg-white rounded-md p-4 
+        phone:absolute phone:shadow-sm  phone:top-1/2  phone:right-1/2 border border-gray-600 phone:translate-x-1/2 phone:-translate-y-1/2
+        phone2:hidden
+        '>
           <div className='flex items-center gap-3'>
             <input type="text"
               className="rounded-lg border border-[#D9D9D9] h-10 px-2 bg-[#F6F7F9] w-full focus:border-blue-500"

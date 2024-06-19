@@ -456,10 +456,10 @@ const Task = () => {
             })}
           </div>
           <div className='flex gap-3'>
-            <Button
+            {/* <Button
               className='button-default bg-[#F6F7F9] w-10 h-10 text-white rounded-md font-medium mb-0'><IconList></IconList></Button>
             <Button
-              className='button-default bg-[#F6F7F9] w-10 h-10 text-white rounded-md font-medium mb-0'><IconCol></IconCol></Button>
+              className='button-default bg-[#F6F7F9] w-10 h-10 text-white rounded-md font-medium mb-0'><IconCol></IconCol></Button> */}
             <button
               type='button'
               ref={buttonFilterRef}
@@ -467,21 +467,22 @@ const Task = () => {
               className='button-default bg-[#F6F7F9] w-10 h-10 text-white rounded-md font-medium mb-0'><IconFilter></IconFilter></button>
           </div>
         </div>
-        <div className='flex items-center justify-between gap-2 mt-4'>
+        <div className='flex justify-between gap-2 mt-4 phone:flex-col'>
           {projectCurrent !== null ? <span className='text-xl font-semibold'>{projectCurrent.title}</span> : <span></span>}
-          <div className='flex items-center gap-2'>
+          <div className='flex items-center justify-end gap-2'>
             <Input
               onChange={handleSearchTask}
               placeholder="Search..."
-              className="w-full max-w-[252px] h-10 p-3 border rounded-md border-graycustom bg-input focus:border-bluecustom"
+              className="phone:h-8 w-full h-10 p-3 border rounded-md border-graycustom bg-input focus:border-bluecustom"
             ></Input>
             <Button
               onClick={() => setShowModalTask(true)}
-              className="button-default h-10 bg-button max-w-[100px] text-white font-medium mb-0"
+              className="button-default h-10 phone:h-8 bg-button max-w-[100px] text-white font-medium mb-0"
             ><span>+ new</span></Button>
           </div>
         </div>
-        <div className="grid gap-4 mt-4 project-content sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+        <div className="grid gap-4 mt-4 project-content phone:grid-cols-1 phone2:grid-cols-2 laptop:grid-cols-3 laptop2:grid-cols-4 
+        ">
           {tasks.length > 0 && tasks.map((item, index) => {
             return (<CardTask key={item._id} data={item} handleRemoveTask={handleRemoveTask}></CardTask>)
           })}
@@ -490,7 +491,7 @@ const Task = () => {
       <Portal
         visible={showModalTask}
         containerClassName="fixed inset-0 z-[999] flex items-center justify-center"
-        contentClassName="z-50 w-full max-w-[588px] overflow-y-scroll no-scrollbar max-h-[100vh] scroll-"
+        contentClassName="z-50 w-full max-w-[588px] overflow-y-scroll no-scrollbar max-h-[100vh] phone:max-w-[370px] phone2:max-w-[588px]"
         onClose={() => setShowAlertCancelCreate(true)}
       >
         <motion.div
@@ -510,7 +511,7 @@ const Task = () => {
               <div className='flex flex-col w-full'>
                 <input type="text"
                   onChange={(e) => setNameTask(e.target.value)}
-                  className='w-full max-w-[380px] p-2 text-base font-semibold border rounded-md border-graycustom'
+                  className='w-full phone:max-w-[250px] phone2:max-w-[380px] p-2 text-base font-semibold border rounded-md border-graycustom'
                   defaultValue={nameTask}
                 />
                 {nameTask.length <= 0 && <span className='text-xs italic font-medium text-red-500'>* You must provide a title</span>}
@@ -541,7 +542,7 @@ const Task = () => {
             })}
           </div>
           <DropdownChooseProject project={project} handleChooseProject={handleChooseProject} ></DropdownChooseProject>
-          <div className='grid grid-cols-2 gap-4 mb-3'>
+          <div className='grid gap-4 mb-3 phone:grid-cols-1 phone2:grid-cols-2'>
             <div className="">
               <p className='mb-3 text-base font-medium'>Due Date</p>
               <InputRangeDate stateDate={stateDate} handleSelectDate={handleSelectDate} toogleChoose={project} dateLimit={dateLimit}></InputRangeDate>
@@ -664,7 +665,7 @@ const Task = () => {
         contentClassName="w-full h-full"
         onClose={() => setShowModalFilterProject(false)}
       >
-        <div className='relative px-6 py-3 bg-white rounded-md shadow-md w-[430px] -translate-x-full mt-2'
+        <div className='absolute px-6 py-3 bg-white rounded-md shadow-md w-[430px] phone:w-[350px] laptop:w-[430px] -translate-x-full mt-2'
           style={{
             left: coordsModalFilter.left + coordsModalFilter.width,
             top: coordsModalFilter.top + coordsModalFilter.height

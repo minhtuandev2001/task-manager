@@ -19,7 +19,9 @@ const InputRangeDate = ({ stateDate, handleSelectDate, toogleChoose = true, date
       <div
         ref={inputDateRef}
         onClick={() => toogleChoose ? clickDatePicker() : {}}
-        className='flex items-center border border-graycustom h-10 rounded-md justify-between px-[10px] cursor-pointer'>
+        className='flex items-center border border-graycustom h-10 rounded-md justify-between px-[10px] cursor-pointer w-full
+        phone:max-w-[250px]
+        '>
         <span className='text-sm font-medium text-[#787486] tracking-wider'>{
           (stateDate[0].startDate.getFullYear() === stateDate[0].endDate.getFullYear()) ?
             // cung nam

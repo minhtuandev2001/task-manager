@@ -39,7 +39,7 @@ const ModalCreateChat = ({
       <Portal
         visible={showSearchPortal}
         containerClassName="fixed inset-0 z-[9999] flex items-center justify-center"
-        contentClassName="z-50 w-full max-w-[488px]"
+        contentClassName="z-50 w-full max-w-[488px] phone:max-w-[350px] phone2:max-w-[488px]"
         onClose={() => setShowSearchPortal(false)}
         classOverlay="bg-opacity-20"
       >

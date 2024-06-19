@@ -18,6 +18,16 @@ module.exports = {
         "bluecustom": "#2384FF"
       }
     },
+    screens: {
+      "phone": "320px",
+      "phone1.5": "448px",
+      "phone2": "640px",
+      "tablet": "768px",
+      "tablet2": "996px",
+      "laptop": "1024px",
+      "laptop2": "1280px",
+      "laptop3": "1440px"
+    }
   },
   plugins: [],
 }

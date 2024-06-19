@@ -83,8 +83,8 @@ export default function Users() {
   }, [friendAction, socket])
   return (
     <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)]'>
-      <div className="flex items-center justify-between">
-        <div className='flex gap-8'>
+      <div className="flex items-center justify-between phone:flex-col phone2:flex-row">
+        <div className='flex w-full justify-between gap-3 phone:mb-3 phone:justify-start'>
           {friendActionList.map((item) => {
             return (
               <div key={item.id}
@@ -101,18 +101,18 @@ export default function Users() {
             )
           })}
         </div>
-        <Input
+        <input type="text"
           onChange={handleChangeInput}
           placeholder="search..."
-          className="border border-graycustom p-2 rounded-md h-10 w-full max-w-[250px]"
-        ></Input>
+          className="border border-graycustom p-2 rounded-md h-10 w-full phone:h-8 phone2:max-w-[250px] tablet:max-w-[200px] laptop:max-w-[300px]:"
+        />
       </div>
       {/* danh sach user */}
       {loading ? (
         <div className='w-5 h-5 border-4 border-[#0866ff] border-r-4 border-r-transparent rounded-full animate-spin'></div>
       )
         : (
-          <div className='grid grid-cols-7 gap-3 mt-3'>
+          <div className='grid phone:grid-cols-2 phone1.5:grid-cols-3 laptop:grid-cols-4 laptop2:grid-cols-5 laptop3:grid-cols-7 gap-3 mt-3'>
             {friendsList.length > 0 && friendsList.map((item, index) => {
               return (
                 <CardUser

@@ -32,7 +32,7 @@ export default function Login() {
   const [togglePassword, setTogglePassword] = useState(true);
   useEffect(() => {
     if (currentUser) {
-      navigate("/project")
+      navigate("/")
     }
   }, [currentUser, navigate])
   return (

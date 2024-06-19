@@ -220,21 +220,23 @@ export default function Project() {
             onChange={handleSearchProject}
             type='text'
             name='search'
-            className='w-full h-10 p-3 max-w-[246px] border rounded-md border-graycustom bg-input focus:border-bluecustom'
+            className='w-full h-10 phone:h-8 phone:min-w-[150px] p-3 max-w-[246px] border rounded-md border-graycustom bg-input focus:border-bluecustom'
             placeholder="Search"
           ></Input>
           <Button
             onClick={() => setShowModalCreateProject(true)}
-            className="button-default h-10 bg-button max-w-[110px] text-white font-medium"
+            className="button-default h-10 phone:h-8  bg-button max-w-[110px] text-white font-medium"
           ><span>+ Create</span></Button>
           <Button
             onClick={() => setShowModalJoinProject(true)}
-            className="button-default h-10 bg-button max-w-[110px] text-white font-medium"
+            className="button-default h-10 phone:h-8  bg-button max-w-[110px] text-white font-medium"
           ><span>Join</span></Button>
         </div>
         {loading ? (<div className='w-10 h-10 mx-auto my-2 border-4 border-r-4 border-blue-500 rounded-full border-r-transparent animate-spin'></div>) :
           (projectList.length > 0 ?
-            <div className="grid gap-4 project-content sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+            <div className="grid gap-4 project-content phone:grid-cols-1
+            phone2:grid-cols-2 laptop:grid-cols-3 laptop2:grid-cols-4 laptop3:grid-cols-5
+            ">
               {projectList.map((item, index) => <CardProject key={item._id} data={item} handleRemoveProject={handleRemoveProject}></CardProject>)}
             </div> :
             <div className='flex justify-center items-center w-full min-h-[600px] '>
@@ -275,7 +277,7 @@ export default function Project() {
       <Portal
         visible={showModalCreateProject}
         containerClassName="fixed inset-0 z-[999] flex items-center justify-center"
-        contentClassName="z-50 w-full max-w-[588px]"
+        contentClassName="z-50 w-full max-w-[588px] phone:max-w-[370px] phone2:max-w-[588px]"
         onClose={() => setShowAlertCancelCreate(true)}
       >
         <motion.div
@@ -295,7 +297,7 @@ export default function Project() {
               <div className='flex flex-col w-full'>
                 <input type="text"
                   onChange={(e) => setNameProject(e.target.value)}
-                  className='w-full max-w-[380px] p-2 text-base font-semibold border rounded-md border-graycustom'
+                  className='w-full phone:max-w-[250px] phone2:max-w-[380px] p-2 text-base font-semibold border rounded-md border-graycustom'
                   placeholder='Enter your name project'
                   value={nameProject}
                 />
@@ -315,7 +317,7 @@ export default function Project() {
                 className={`button-default w-auto bg-${item.id} text-sm text-${item.id} h-auto px-4 py-[6px] rounded-full font-medium self-start`}>{item.title}
               </Button>)
           })}
-          <div className='grid grid-cols-2 gap-8 mb-3'>
+          <div className='grid  gap-8 mb-3 '>
             <div className="">
               <p className='mb-3 text-base font-medium'>Due Date</p>
               <InputRangeDate stateDate={stateDate} handleSelectDate={handleSelectDate}></InputRangeDate>

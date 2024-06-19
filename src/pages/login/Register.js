@@ -35,7 +35,7 @@ export default function Register() {
         .then((res) => {
           setCurrentUser(res.data.data);
           toast.success("Register Success")
-          navigate("/project")
+          navigate("/")
         })
         .catch((err) => {
           toast.error(err.response.data.messages)

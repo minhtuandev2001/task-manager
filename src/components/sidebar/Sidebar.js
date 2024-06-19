@@ -11,7 +11,7 @@ import { useSocket } from '../../context/socketContext';
 const action = [
   {
     title: "My Project",
-    to: "/project",
+    to: "/",
     icon: <IconProject />,
     iconActive: <IconProject selected={true} />,
   },
@@ -103,12 +103,21 @@ export default function Sidebar() {
   }, [location.pathname])
 
   return (
-    <div className='w-full max-w-[300px] h-screen py-5 px-8 flex flex-col border-r border-r-[#c7c8c9] sticky top-0 '>
+    <div className='w-full max-w-[300px] 
+    phone:hidden
+    tablet:block
+    tablet:max-w-[230px]
+    tablet:px-4
+    tablet:h-svh
+    laptop:max-w-[250px]
+    laptop:px-8
+    laptop2:max-w-[300px]
+    h-screen py-5 px-8 border-r border-r-[#c7c8c9] sticky top-0'>
       <div className="flex items-center gap-6 sider-header">
         <IconLogo></IconLogo>
-        <p className='text-2xl font-bold text-[#2A304E]'>Task<span className='text-[#2384FF]'>Work</span></p>
+        <p className='text-2xl font-bold text-[#2A304E]'>Task<span className='text-[#27364b]'>Work</span></p>
       </div>
-      <div className="sider-content mt-14">
+      <div className="sider-content mt-14 tablet:mt-6 h-[calc(100%-20px-56px-56px-56px)]">
         {action.map((item, index) => {
           return (
             <NavLink key={item.title} to={item.to}>

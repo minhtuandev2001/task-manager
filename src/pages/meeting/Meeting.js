@@ -263,7 +263,7 @@ function ChatView(props) {
   };
   return (
     <>
-      <div className='w-full h-[calc(100vh-56px-24px-24px-24px-40px-12px)] flex flex-col gap-1 overflow-scroll no-scrollbar pt-3'>
+      <div className='w-full h-[calc(100vh-56px-24px-24px-24px-40px-12px)] min-w-[200px] flex flex-col gap-1 overflow-scroll no-scrollbar pt-3'>
         {messages.map((message, index) => {
           return (
             <div key={index} className='p-2 bg-gray-100 rounded-md'>

@@ -17,12 +17,14 @@ export default function HeaderBar() {
   const bellRef = useRef(null)
   const loadNotiRef = useRef({})
   const [showModalNotification, setShowModalNotification] = useState(false)
+
   const [coords, setCoords] = useState({
     top: 0,
     left: 0
   })
   const [notificatios, setNotifications] = useState([])
   const handleShowNotification = () => {
+    console.log(bellRef.current.getBoundingClientRect())
     setCoords(bellRef.current.getBoundingClientRect())
     setShowModalNotification(true)
     loadNotiRef.current()
@@ -90,7 +92,7 @@ export default function HeaderBar() {
   return (
     <>
       <div className='flex items-center justify-between w-full px-4 h-14'>
-        <p className='text-2xl font-semibold'>Hello, {currentUser.name}!</p>
+        <p className='text-2xl font-semibold phone:text-xl'>Hello, {currentUser.name}!</p>
         <div className="flex items-center gap-4 nav-info">
           <div
             ref={bellRef}
@@ -137,14 +139,14 @@ export default function HeaderBar() {
             opacity: [1, 0]
           }}
           transition={{ duration: 0.2 }}
-          className='relative bg-white w-full max-w-[400px] rounded-md p-3 shadow-md mt-2'
+          className='absolute bg-white w-full max-w-[400px] phone:max-w-[300px] right-[calc(32px+40px)] rounded-md p-3 shadow-md mt-2'
           style={{
             top: coords.top + coords.height,
-            left: coords.left - 400 + coords.width
           }}
         >
           <p className='text-base font-medium'>Notification</p>
-          <div className='w-full h-[400px] max-h-[400px] mt-2 overflow-scroll no-scrollbar'>
+          <div
+            className='w-full h-[400px] max-h-[400px] mt-2 overflow-scroll no-scrollbar'>
             {notificatios.length > 0 ? notificatios.map((item, index) => {
               return (
                 <div key={index} className='p-2 transition-all rounded-md cursor-pointer hover:bg-gray-100'>

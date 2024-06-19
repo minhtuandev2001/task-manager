@@ -434,17 +434,17 @@ const CardTask = ({ data, handleRemoveTask }) => {
               <IconProject></IconProject>
               <span className='text-sm font-medium text-[#717279] line-clamp-1'>{project?.title}</span>
             </div>
-            <div className='flex items-center gap-2'>
+            {/* <div className='flex items-center gap-2'>
               <div className='w-full rounded-full bg-[#D9D9D9] h-2'>
               </div>
               <span className='text-sm font-medium text-[#717279]'>80%</span>
-            </div>
+            </div> */}
           </div>
         </div>
         <Portal
           visible={showModalTask}
           containerClassName="fixed inset-0 z-[999] flex items-center justify-center"
-          contentClassName="z-50 w-full max-w-[588px] overflow-y-scroll no-scrollbar max-h-[100vh] scroll-"
+          contentClassName="z-50 w-full max-w-[588px] phone:max-w-[380px] phone2:max-w-[588px] overflow-y-scroll no-scrollbar max-h-[100vh]"
           onClose={() => toggleUpdate ? setShowAlertCancelUpdate(true) : setShowModalTask(false)}
         >
           <motion.div
@@ -464,7 +464,7 @@ const CardTask = ({ data, handleRemoveTask }) => {
                 {toggleUpdate ? (
                   <input type="text"
                     onChange={(e) => setNameTask(e.target.value)}
-                    className='w-full max-w-[380px] p-2 text-base font-semibold border rounded-md border-graycustom'
+                    className='w-full  phone:max-w-[250px] phone2:max-w-[380px] p-2 text-base font-semibold border rounded-md border-graycustom'
                     defaultValue={nameTask}
                   />
                 ) : (
@@ -509,7 +509,7 @@ const CardTask = ({ data, handleRemoveTask }) => {
               })}
             </div>
             <DropdownChooseProject project={project} handleChooseProject={handleChooseProject} toogleChoose={toggleUpdate}></DropdownChooseProject>
-            <div className='grid grid-cols-2 gap-4 mb-3'>
+            <div className='grid gap-4 mb-3 phone:grid-cols-1 phone2:grid-cols-2'>
               <div className="">
                 <p className='mb-3 text-base font-medium'>Due Date</p>
                 <InputRangeDate stateDate={stateDate} handleSelectDate={handleSelectDate} dateLimit={dateLimit} toogleChoose={toggleUpdate}></InputRangeDate>

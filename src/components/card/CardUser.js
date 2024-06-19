@@ -3,12 +3,12 @@ import React from 'react'
 export default function CardUser({ data, statusFriend, handleButtonClick }) {
   return (
     <div
-      className='bg-gray-100 p-1 w-full max-w-[200px] rounded-md'
+      className='bg-gray-100 p-1 w-full rounded-md'
     >
-      <div className='w-full h-full max-h-[200px]'>
+      <div className='w-full h-[200px]'>
         <img className='w-full h-full object-cover' src={data.avatar} alt="" />
       </div>
-      <p className='text-base font-medium'>{data.username}</p>
+      <p className='text-base font-medium line-clamp-1'>{data.username}</p>
       <div className='flex flex-col gap-2 mt-2'>
         {statusFriend === "friends" && <button
           onClick={() => {

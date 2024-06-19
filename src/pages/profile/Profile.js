@@ -110,7 +110,7 @@ export default function Profile() {
           <p className='text-base font-semibold text-center text-white mt-3'>{dataUser?.username}</p>
         </div>
       </div>
-      <div className='flex justify-around mt-11'>
+      <div className='flex justify-around mt-11 phone:flex-col phone:items-center tablet2:flex-row tablet2:justify-around'>
         <div className=''>
           <div className='w-[250px] h-[250px] rounded-full border-[5px] border-gray-200 overflow-hidden relative'>
             <img className='w-full h-full object-cover' src={dataUser?.avatar} alt="" />
@@ -125,8 +125,8 @@ export default function Profile() {
           </div>
           <p className='text-base font-semibold text-center text-black mt-3'>{dataUser?.username}</p>
         </div>
-        <div className='flex gap-y-6 gap-x-11'>
-          <div className='w-[400px]'>
+        <div className='flex gap-y-6 gap-x-11 phone:flex-col phone:p-5 w-full phone2:flex-row'>
+          <div className='phone:w-auto phone2:w-full tablet2:w-[400px]'>
             <div className='h-[100px]'>
               <p className='text-base font-semibold mb-3'>User name</p>
               {isUpdate ?
@@ -152,7 +152,7 @@ export default function Profile() {
               }
             </div>
           </div>
-          <div className='flex flex-col w-[400px]'>
+          <div className='flex flex-col phone2:w-full tablet2:w-[400px]'>
             <div className='h-[100px]'>
               <p className='text-base font-semibold mb-3'>Email</p>
               {isUpdate ? <><input type="text"
@@ -176,29 +176,29 @@ export default function Profile() {
                 : <p className='text-base font-medium'>{dataUser?.address}</p>
               }
             </div>
-            {dataUser?._id === currentUser.id &&
-              <div className='mt-auto self-end flex gap-3'>
-                {isUpdate ?
-                  <>
-                    <button
-                      onClick={handleCancel}
-                      className='w-[100px] button-default h-10 bg-gray-200 max-w-[100px] text-red-500 font-medium mb-0'
-                    >Cancel</button>
-                    <button
-                      onClick={handleUpdate}
-                      className='w-[100px] button-default h-10 bg-button max-w-[100px] text-white font-medium mb-0'
-                    >{isSubmitting && <div className='w-5 h-5 rounded-full border-4 border-white border-r-4 border-r-transparent animate-spin'></div>}Save</button>
-                  </> :
-                  <button
-                    onClick={toggleUpdate}
-                    className='w-[100px] button-default h-10 bg-button max-w-[100px] text-white font-medium mb-0'
-                  >Update</button>
-                }
-              </div>
-            }
           </div>
         </div>
       </div>
+      {dataUser?._id === currentUser.id &&
+        <div className='mt-auto float-right flex gap-3'>
+          {isUpdate ?
+            <>
+              <button
+                onClick={handleCancel}
+                className='w-[100px] button-default h-10 bg-gray-200 max-w-[100px] text-red-500 font-medium mb-0'
+              >Cancel</button>
+              <button
+                onClick={handleUpdate}
+                className='w-[100px] button-default h-10 bg-button max-w-[100px] text-white font-medium mb-0'
+              >{isSubmitting && <div className='w-5 h-5 rounded-full border-4 border-white border-r-4 border-r-transparent animate-spin'></div>}Save</button>
+            </> :
+            <button
+              onClick={toggleUpdate}
+              className='w-[100px] button-default h-10 bg-button max-w-[100px] text-white font-medium mb-0'
+            >Update</button>
+          }
+        </div>
+      }
     </div>
   )
 }

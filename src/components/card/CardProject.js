@@ -217,19 +217,19 @@ export default function CardProject({ data, handleRemoveProject }) {
         <div className='flex gap-4 mt-auto'>
           <Button
             onClick={handleDoneProject}
-            className='button-default bg-[#00C271] text-white rounded-md font-medium mb-0'>Done</Button>
+            className='button-default  phone:h-10 bg-[#00C271] text-white rounded-md font-medium mb-0'>Done</Button>
           <Button
             onClick={() => setShowAlertWarningDelete(true)}
-            className='button-default bg-[#FFF0F0] w-full max-w-12 h-12 text-white rounded-md font-medium mb-0'><IconDelete></IconDelete></Button>
+            className='button-default phone:h-10 phone:max-w-10 bg-[#FFF0F0] w-full max-w-12 h-12 text-white rounded-md font-medium mb-0'><IconDelete></IconDelete></Button>
           <Button
             onClick={() => setShowProject(true)}
-            className='button-default bg-[#F6F8FD] w-full max-w-12 h-12 text-white rounded-md font-medium mb-0'><IconEdit></IconEdit></Button>
+            className='button-default phone:h-10 phone:max-w-10 bg-[#F6F8FD] w-full max-w-12 h-12 text-white rounded-md font-medium mb-0'><IconEdit></IconEdit></Button>
         </div>
       </div>
       <Portal
         visible={showProject}
         containerClassName="fixed inset-0 z-[999] flex items-center justify-center"
-        contentClassName="z-50 w-full max-w-[588px]"
+        contentClassName="z-50 w-full max-w-[588px] phone:max-w-[370px] phone2:max-w-[588px]"
         onClose={() => toggleUpdate ? setShowAlertCancelUpdate(true) : setShowProject(false)}
       >
         <motion.div
@@ -291,7 +291,7 @@ export default function CardProject({ data, handleRemoveProject }) {
                 className={`button-default w-auto bg-${item.id} text-sm text-${item.id} h-auto px-4 py-[6px] rounded-full font-medium self-start`}>{item.title}
               </Button>)
           })}
-          <div className='grid grid-cols-2 gap-8 mb-3'>
+          <div className='grid gap-8 mb-3'>
             <div className="">
               <p className='mb-3 text-base font-medium'>Due Date</p>
               <InputRangeDate stateDate={stateDate} handleSelectDate={handleSelectDate} toogleChoose={toggleUpdate}></InputRangeDate>
