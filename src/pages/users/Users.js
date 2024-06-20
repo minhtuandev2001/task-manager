@@ -82,7 +82,7 @@ export default function Users() {
     }
   }, [friendAction, socket])
   return (
-    <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)]'>
+    <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)] dark:text-white dark:bg-bgDark'>
       <div className="flex items-center justify-between phone:flex-col phone2:flex-row">
         <div className='flex w-full justify-between gap-3 phone:mb-3 phone:justify-start'>
           {friendActionList.map((item) => {
@@ -91,12 +91,12 @@ export default function Users() {
                 className='cursor-pointer select-none'
                 onClick={() => handleFriendsAction(item.id)}
               >
-                <span className={`mb-2 text-base font-medium ${item.id === friendAction ? "text-black" : "text-[#717279]"}`}>{item.title}</span>
+                <span className={`mb-2 text-base font-medium ${item.id === friendAction ? "text-black dark:text-white" : "text-[#717279]"}`}>{item.title}</span>
                 {item.id === friendAction &&
                   <motion.div
                     layoutId='friendsAction'
                     transition={{ duration: 0.2 }}
-                    className='w-full h-[2px] bg-black'></motion.div>}
+                    className='w-full h-[2px] bg-black dark:bg-white'></motion.div>}
               </div>
             )
           })}

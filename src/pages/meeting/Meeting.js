@@ -20,7 +20,7 @@ function JoinScreen({ getMeetingAndToken }) {
     await getMeetingAndToken(meetingId);
   };
   return (
-    <div className="bg-white flex items-center justify-center w-full h-[calc(100vh-56px-24px)] pt-3 px-3 rounded-md">
+    <div className="bg-white flex items-center justify-center w-full h-[calc(100vh-56px-24px)] pt-3 px-3 rounded-md dark:text-white dark:bg-bgDark">
       <div className='w-full max-w-[436px] mx-auto'>
         <div className='flex flex-col gap-2 mt-3'>
           <Label htmlFor='keyMeeting' className="font-medium">Key meeting</Label>
@@ -30,7 +30,7 @@ function JoinScreen({ getMeetingAndToken }) {
             }}
             type='text'
             name="keyMeeting"
-            className='w-full h-12 p-3 border rounded-md border-graycustom bg-input focus:border-bluecustom'
+            className='w-full h-12 p-3 border rounded-md border-graycustom bg-input focus:border-bluecustom dark:bg-bgDark/70'
             placeholder="Enter key..."
           ></Input>
         </div>
@@ -106,7 +106,7 @@ function ParticipantView(props) {
           }}
         />
       ) : (
-        <div className='bg-[#f6f7f9] :dark:bg-[#191921] rounded-md w-full h-full flex justify-center items-center'><div className='flex items-center justify-center text-base font-bold rounded-full w-14 h-14 bg-slate-300'>{displayName.charAt(0)}</div></div>
+        <div className='bg-[#f6f7f9] dark:text-white dark:bg-bgDarkItem rounded-md w-full h-full flex justify-center items-center'><div className='flex items-center justify-center text-base font-bold rounded-full w-14 h-14 bg-slate-300'>{displayName.charAt(0)}</div></div>
       )}
     </div>
   );
@@ -137,7 +137,7 @@ function ParticipantViewHigh(props) {
   return (
     presenterId ? (
       <div
-        className='relative w-full h-full overflow-hidden bg-[#f6f7f9] cursor-pointer rounded-md'>
+        className='relative w-full h-full overflow-hidden bg-[#f6f7f9] cursor-pointer rounded-md '>
         <ReactPlayer
           //
           playsinline // extremely crucial prop
@@ -162,7 +162,7 @@ function ParticipantViewHigh(props) {
           onClick={() => props.handleSelectedStream("")}
           className='relative w-full h-full overflow-hidden bg-[#f6f7f9] cursor-pointer rounded-md'>
           <div className='absolute bottom-0 z-10 flex items-center justify-between w-full px-2 mb-1 transition-all cursor-pointer'>
-            <span className={`text-base font-semibold bg-none ${webcamOn ? "text-white" : "text-black"}`}>{displayName}</span>
+            <span className={`text-base font-semibold bg-none ${webcamOn ? "text-white dark:text-black" : "text-black dark:text-white"}`}>{displayName}</span>
             {micOn ? <IconMicOn className='flex items-center justify-center w-8 h-8 p-2 bg-black bg-opacity-50 rounded-full' selected={true}></IconMicOn> : <IconMicOff className='flex items-center justify-center w-8 h-8 p-2 bg-black bg-opacity-50 rounded-full' selected={true}></IconMicOff>}
           </div>
           {webcamOn ? (
@@ -188,7 +188,7 @@ function ParticipantViewHigh(props) {
           )}
         </div>)
         : (
-          <div className='relative w-full h-full overflow-hidden bg-[#f6f7f9] rounded-md'></div>
+          <div className='relative w-full h-full overflow-hidden bg-[#f6f7f9] rounded-md dark:bg-bgDarkItem'></div>
         )
 
     )
@@ -208,27 +208,27 @@ function Controls(props) {
     <div className='flex items-center justify-center gap-2'>
       <button
         onClick={() => toggleWebcam()}
-        type='button' className={`flex items-center justify-center h-10 w-14 rounded-[4px] ${localWebcamOn ? "bg-[#F6F7F9]" : "bg-[#ED3159]"}`}>
+        type='button' className={`flex items-center justify-center h-10 w-14 rounded-[4px] ${localWebcamOn ? "bg-[#F6F7F9] dark:bg-bgDarkItem/70" : "bg-[#ED3159]"}`}>
         {localWebcamOn ? <IconCamOn></IconCamOn> : <IconCamOff selected={true}></IconCamOff>}
       </button>
       <button
         onClick={() => toggleMic()}
-        type='button' className={`flex items-center justify-center h-10 w-14 rounded-[4px] ${localMicOn ? "bg-[#F6F7F9]" : "bg-[#ED3159]"}`}>
+        type='button' className={`flex items-center justify-center h-10 w-14 rounded-[4px] ${localMicOn ? "bg-[#F6F7F9] dark:bg-bgDarkItem/70" : "bg-[#ED3159]"}`}>
         {localMicOn ? <IconMicOn></IconMicOn> : <IconMicOff selected={true}></IconMicOff>}
       </button>
       <button
         onClick={() => toggleScreenShare()}
-        type='button' className={`flex items-center justify-center h-10 w-14 rounded-[4px] ${localScreenShareOn ? "bg-[#2384ff]" : "bg-[#F6F7F9]"}`}>
+        type='button' className={`flex items-center justify-center h-10 w-14 rounded-[4px] ${localScreenShareOn ? "bg-[#2384ff]" : "bg-[#F6F7F9] dark:bg-bgDarkItem/70"}`}>
         <IconMonitor selected={localScreenShareOn}></IconMonitor>
       </button>
       <button
         onClick={props.handleSelectedChat}
-        type='button' className={`flex items-center justify-center h-10 w-14 rounded-[4px] ${props.isChat ? "bg-[#2384ff]" : "bg-[#F6F7F9]"}`}>
+        type='button' className={`flex items-center justify-center h-10 w-14 rounded-[4px] ${props.isChat ? "bg-[#2384ff]" : "bg-[#F6F7F9] dark:bg-bgDarkItem/70"}`}>
         <IconMessage selected={props.isChat}></IconMessage>
       </button>
       <button
         onClick={props.handleSelectedListUser}
-        type='button' className={`flex items-center justify-center h-10 w-14 rounded-[4px] ${props.isListViewUser ? "bg-[#2384ff]" : "bg-[#F6F7F9]"}`}>
+        type='button' className={`flex items-center justify-center h-10 w-14 rounded-[4px] ${props.isListViewUser ? "bg-[#2384ff]" : "bg-[#F6F7F9] dark:bg-bgDarkItem/70"}`}>
         <IconUsers selected={props.isListViewUser}></IconUsers>
       </button>
       <button
@@ -245,8 +245,8 @@ function UserItem(props) {
     useParticipant(props.participantId);
   return <div
     onClick={() => props.handleSelectedStream(props.participantId)}
-    className='flex w-full p-2 bg-[#f6f7f9] bg-opacity-50 rounded-md items-center justify-between gap-2 cursor-pointer'>
-    <div className='w-10 h-10 rounded-md flex justify-center items-center bg-[#e9e9e9] font-medium'>{displayName.charAt(0)}</div>
+    className='flex w-full p-2 bg-[#f6f7f9] bg-opacity-50 rounded-md items-center justify-between gap-2 cursor-pointer dark:bg-bgDark'>
+    <div className='w-10 h-10 rounded-md flex justify-center items-center bg-[#e9e9e9] dark:bg-[#e9e9e9]/70 font-medium'>{displayName.charAt(0)}</div>
     <p className='flex-1 font-semibold'>{displayName}</p>
     {webcamOn ? <IconCamOn className='flex items-center justify-center w-7 h-7 '></IconCamOn> : <IconCamOff className='flex items-center justify-center w-7 h-7 '></IconCamOff>}
     {micOn ? <IconMicOn className='flex items-center justify-center w-7 h-7 '></IconMicOn> : <IconMicOff className='flex items-center justify-center w-7 h-7 '></IconMicOff>}
@@ -263,10 +263,10 @@ function ChatView(props) {
   };
   return (
     <>
-      <div className='w-full h-[calc(100vh-56px-24px-24px-24px-40px-12px)] min-w-[200px] flex flex-col gap-1 overflow-scroll no-scrollbar pt-3'>
+      <div className='w-full h-[calc(100vh-56px-24px-24px-24px-40px-12px)] min-w-[200px] flex flex-col gap-1 overflow-scroll no-scrollbar pt-3 '>
         {messages.map((message, index) => {
           return (
-            <div key={index} className='p-2 bg-gray-100 rounded-md'>
+            <div key={index} className='p-2 bg-gray-100 rounded-md dark:bg-bgDark'>
               <p className='text-sm font-semibold'>{message.senderName}</p>
               <p className='mt-2 text-sm'>{message.message}
               </p></div>
@@ -284,7 +284,7 @@ function ChatView(props) {
           type="text" />
         <div
           onClick={handleSendMessage}
-          className='h-10 min-w-10 flex justify-center items-center rounded-md bg-[#f6f7f9]'>
+          className='h-10 min-w-10 flex justify-center items-center rounded-md bg-[#f6f7f9] dark:bg-[#f6f7f9]/70'>
           <IconSend></IconSend>
         </div>
       </div>
@@ -328,7 +328,7 @@ function MeetingView(props) {
       <h3 className='absolute top-[12px] left-[12px] z-10 text-base  text-blue-600 font-semibold'>Meeting Id: {props.meetingId}</h3>
       {joined && joined === "JOINED" ? (
         <div className="flex w-full h-[calc(100vh-56px-24px)] gap-3">
-          <div className='flex flex-col w-full gap-2 px-3 pt-3 pb-2 bg-white rounded-md'>
+          <div className='flex flex-col w-full gap-2 px-3 pt-3 pb-2 bg-white rounded-md dark:text-white dark:bg-bgDark'>
             <div className='flex-1'>
               <ParticipantViewHigh streamId={streamId} handleSelectedStream={handleSelectedStream}></ParticipantViewHigh>
             </div>
@@ -349,7 +349,7 @@ function MeetingView(props) {
                 x: [-50, 0]
               }}
               transition={{ type: "tween", duration: 0.2 }}
-              className='bg-white pt-3 px-3 rounded-md w-full max-w-[350px] transition-all'>
+              className='bg-white pt-3 px-3 rounded-md w-full max-w-[350px] transition-all dark:text-white dark:bg-bgDark'>
               <span className='flex justify-between mb-2 text-base font-semibold'>Member <IconLogout
                 onClick={handleSelectedListUser}
                 className='w-5'></IconLogout></span>
@@ -367,7 +367,7 @@ function MeetingView(props) {
             animate={{
               x: [-50, 0]
             }}
-            transition={{ type: "tween", duration: 0.2 }} className='bg-white pt-3 px-3 rounded-md w-full max-w-[350px]'>
+            transition={{ type: "tween", duration: 0.2 }} className='bg-white pt-3 px-3 rounded-md w-full max-w-[350px] dark:text-white dark:bg-bgDarkItem/70'>
             <span className='flex justify-between mb-2 text-base font-semibold transition-all'>Chat <IconLogout
               onClick={handleSelectedChat}
               className='w-5'></IconLogout></span>
@@ -402,7 +402,7 @@ export default function Meeting() {
     setMeetingId(null);
   };
   return (
-    <div className='rounded-md min-h-[calc(100vh-56px-24px)]'>
+    <div className='rounded-md min-h-[calc(100vh-56px-24px)] '>
       {authToken && meetingId ? (
         <MeetingProvider
           config={{

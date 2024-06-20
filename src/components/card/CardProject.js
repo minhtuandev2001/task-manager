@@ -175,9 +175,9 @@ export default function CardProject({ data, handleRemoveProject }) {
   }
   return (
     <>
-      <div className="flex flex-col gap-3 p-6 rounded-md shadow-md cursor-pointer card-project">
+      <div className="flex flex-col gap-3 p-6 rounded-md shadow-md cursor-pointer card-project dark:bg-bgDarkItem">
         <div className='flex justify-between gap-2'>
-          <h2 className='text-base font-semibold line-clamp-1'>{nameProject}</h2>
+          <h2 className='text-base font-semibold line-clamp-1 dark:text-white'>{nameProject}</h2>
           <button type='button'
             className='w-full max-w-[20px]'
             onClick={handleStarProject}>
@@ -220,10 +220,10 @@ export default function CardProject({ data, handleRemoveProject }) {
             className='button-default  phone:h-10 bg-[#00C271] text-white rounded-md font-medium mb-0'>Done</Button>
           <Button
             onClick={() => setShowAlertWarningDelete(true)}
-            className='button-default phone:h-10 phone:max-w-10 bg-[#FFF0F0] w-full max-w-12 h-12 text-white rounded-md font-medium mb-0'><IconDelete></IconDelete></Button>
+            className='button-default phone:h-10 phone:max-w-10 bg-[#FFF0F0] dark:bg-[#FFF0F0]/80 w-full max-w-12 h-12 text-white rounded-md font-medium mb-0'><IconDelete></IconDelete></Button>
           <Button
             onClick={() => setShowProject(true)}
-            className='button-default phone:h-10 phone:max-w-10 bg-[#F6F8FD] w-full max-w-12 h-12 text-white rounded-md font-medium mb-0'><IconEdit></IconEdit></Button>
+            className='button-default phone:h-10 phone:max-w-10 bg-[#F6F8FD] dark:bg-[#F6F8FD]/80  w-full max-w-12 h-12 text-white rounded-md font-medium mb-0'><IconEdit></IconEdit></Button>
         </div>
       </div>
       <Portal
@@ -243,7 +243,7 @@ export default function CardProject({ data, handleRemoveProject }) {
             scale: [1, 0.9]
           }}
           transition={{ duration: 0.2 }}
-          className='w-full p-6 bg-white rounded-md'>
+          className='w-full p-6 bg-white rounded-md dark:text-white dark:bg-bgDarkItem'>
           <div className='flex items-start justify-between w-full mb-2'>
             <div className='flex items-center flex-1 gap-2'>
               {toggleUpdate ? (

@@ -436,7 +436,7 @@ const Task = () => {
 
   return (
     <>
-      <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)]'>
+      <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)] dark:bg-bgDark'>
         <div className="flex items-start justify-between">
           <div className='flex gap-8'>
             {statusList.map((item) => {
@@ -445,12 +445,12 @@ const Task = () => {
                   className='cursor-pointer select-none'
                   onClick={() => handleStatusAction(item.id)}
                 >
-                  <span className={`mb-2 text-base font-medium ${item.id === statusAction ? "text-black" : "text-[#717279]"}`}>{item.title}</span>
+                  <span className={`mb-2 text-base font-medium ${item.id === statusAction ? "text-black dark:text-white" : "text-[#717279]"}`}>{item.title}</span>
                   {item.id === statusAction &&
                     <motion.div
                       layoutId='statusAction'
                       transition={{ duration: 0.2 }}
-                      className='w-full h-[2px] bg-black'></motion.div>}
+                      className='w-full h-[2px] bg-black dark:bg-white'></motion.div>}
                 </div>
               )
             })}
@@ -464,20 +464,20 @@ const Task = () => {
               type='button'
               ref={buttonFilterRef}
               onClick={clickButtonFilter}
-              className='button-default bg-[#F6F7F9] w-10 h-10 text-white rounded-md font-medium mb-0'><IconFilter></IconFilter></button>
+              className='button-default bg-[#F6F7F9] w-10 h-10 text-white rounded-md font-medium mb-0 dark:bg-bgDarkItem/70'><IconFilter></IconFilter></button>
           </div>
         </div>
         <div className='flex justify-between gap-2 mt-4 phone:flex-col'>
-          {projectCurrent !== null ? <span className='text-xl font-semibold'>{projectCurrent.title}</span> : <span></span>}
+          {projectCurrent !== null ? <span className='text-xl font-semibold dark:text-white'>{projectCurrent.title}</span> : <span></span>}
           <div className='flex items-center justify-end gap-2'>
             <Input
               onChange={handleSearchTask}
               placeholder="Search..."
-              className="phone:h-8 w-full h-10 p-3 border rounded-md border-graycustom bg-input focus:border-bluecustom"
+              className="phone:h-8 tablet:h-10 w-full h-10 p-3 border rounded-md border-graycustom bg-input focus:border-bluecustom dark:bg-bgDarkItem"
             ></Input>
             <Button
               onClick={() => setShowModalTask(true)}
-              className="button-default h-10 phone:h-8 bg-button max-w-[100px] text-white font-medium mb-0"
+              className="button-default h-10 phone:h-8 tablet:h-10 bg-button max-w-[100px] text-white font-medium mb-0"
             ><span>+ new</span></Button>
           </div>
         </div>
@@ -505,7 +505,7 @@ const Task = () => {
             scale: [1, 0.5]
           }}
           transition={{ duration: 0.2 }}
-          className='w-full p-6 bg-white rounded-md'>
+          className='w-full p-6 bg-white rounded-md dark:text-white dark:bg-bgDarkItem'>
           <div className='flex items-start justify-between w-full mb-2'>
             <div className='flex items-center flex-1 gap-2'>
               <div className='flex flex-col w-full'>
@@ -665,7 +665,7 @@ const Task = () => {
         contentClassName="w-full h-full"
         onClose={() => setShowModalFilterProject(false)}
       >
-        <div className='absolute px-6 py-3 bg-white rounded-md shadow-md w-[430px] phone:w-[350px] laptop:w-[430px] -translate-x-full mt-2'
+        <div className='absolute px-6 py-3 bg-white rounded-md shadow-md w-[430px] phone:w-[350px] laptop:w-[430px] -translate-x-full mt-2 dark:text-white dark:bg-bgDarkItem'
           style={{
             left: coordsModalFilter.left + coordsModalFilter.width,
             top: coordsModalFilter.top + coordsModalFilter.height
@@ -678,7 +678,7 @@ const Task = () => {
           <Input
             onChange={handleSearchProject}
             placeholder="Enter name project"
-            className="w-full h-10 p-3 my-3 border rounded-md border-graycustom bg-input focus:border-bluecustom"></Input>
+            className="w-full h-10 p-3 my-3 border rounded-md border-graycustom bg-input focus:border-bluecustom dark:bg-bgDarkItem"></Input>
           <div className='flex flex-col items-start gap-1 h-full overflow-y-scroll no-scrollbar min-h-[200px] max-h-[300px]'>
             {projectList.length > 0 && projectList.map((item) => {
               return (

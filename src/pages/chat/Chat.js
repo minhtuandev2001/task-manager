@@ -404,7 +404,7 @@ export default function Chat() {
   return (
     <div className='min-h-[calc(100vh-56px-24px)]'>
       <div className='flex gap-3'>
-        <div className='flex-1 bg-white rounded-md'>
+        <div className='flex-1 bg-white rounded-md dark:text-white dark:bg-bgDarkItem'>
           <div className="px-4 py-2 shadow-sm">
             <div className='flex items-center gap-3 min-h-9'>
               {selectedChat && (
@@ -430,9 +430,9 @@ export default function Chat() {
                           <p className='text-sm font-semibold'>{currentUser.id === item.infoSender._id ? "" : item.infoSender?.username}</p>
                         )}
                         {item?.content &&
-                          <p className={`max-w-[350px] p-2 rounded-md text-base mt-1 ${currentUser.id === item.infoSender._id ? "bg-blue-500 text-white self-end" : "bg-gray-100 self-start"}`}>{item?.content}</p>}
+                          <p className={`max-w-[350px] p-2 rounded-md text-base mt-1 ${currentUser.id === item.infoSender._id ? "bg-blue-500 text-white self-end" : "bg-gray-100 self-start dark:text-white dark:bg-bgDark/50"}`}>{item?.content}</p>}
                         {item?.images &&
-                          <div className='max-w-[350px] p-2 rounded-md flex gap-1'>
+                          <div className='max-w-[350px] py-1 rounded-md flex gap-1'>
                             {item?.images.map((item) => {
                               return (
                                 <img key={item} className='max-w-[100px h-[100px] object-cover' src={item} alt="" />
@@ -443,7 +443,7 @@ export default function Chat() {
                           {item?.files.length > 0 && item?.files.map((item, index) => {
                             return (
                               <div
-                                key={item.id} className='flex items-center justify-between p-2 bg-gray-200 rounded-md'>
+                                key={item.id} className='flex items-center justify-between p-2 bg-gray-200 rounded-md dark:text-white dark:bg-bgDark'>
                                 <a href={item.link_view} target='_blank' rel="noreferrer" className='flex items-center gap-2 w-[calc(100%-25px)]'>
                                   <div className='min-w-[22px] min-h-[29px]'>
                                     <ThumbnailFile fileExtension={item.nameFile.split(".")[1]}></ThumbnailFile>
@@ -477,7 +477,7 @@ export default function Chat() {
             <div className='grid phone:grid-cols-2  tablet:grid-cols-2 laptop:grid-cols-3 laptop2:grid-cols-4 gap-2'>
               {filesUpload !== null && Array(filesUpload.length).fill(null).map((item, index) => {
                 return (
-                  <div key={index} className='flex items-center gap-2 p-2 bg-gray-200 rounded-md'>
+                  <div key={index} className='flex items-center gap-2 p-2 bg-gray-200 rounded-md dark:text-white dark:bg-bgDark'>
                     <div className='min-w-[22px] min-h-[29px]'>
                       <ThumbnailFile fileExtension={filesUpload[index].name.split(".")[1]}></ThumbnailFile>
                     </div>
@@ -494,21 +494,22 @@ export default function Chat() {
             <input type="text"
               onChange={(e) => setInputMessage(e.target.value)}
               value={inputMessage}
-              className="rounded-lg border border-[#D9D9D9] h-10 phone:h-8 px-2 bg-[#F6F7F9] flex-1 focus:border-blue-500"
+              placeholder='Enter message...'
+              className="rounded-lg border border-[#D9D9D9] h-10 phone:h-8 tablet2:h-10 px-2 bg-[#F6F7F9] dark:bg-bgDarkItem/50 flex-1 focus:border-blue-500"
             />
-            <label htmlFor='image' className='cursor-pointer w-10 h-10 phone:h-8 phone:w-8 tablet:h-8 tablet:w-8 rounded-md bg-[#F6F8FD] flex justify-center items-center hover:bg-slate-200 transition-all '><IconImage></IconImage></label>
+            <label htmlFor='image' className='cursor-pointer w-10 h-10 phone:h-8 phone:w-8 tablet:h-10 tablet:w-10 rounded-md bg-[#F6F8FD] flex justify-center items-center hover:bg-slate-200 transition-all dark:text-white dark:bg-bgDark/70'><IconImage></IconImage></label>
             <input
               hidden
               onChange={handleUploadImage}
               type="file" id="image" accept="image/png, image/jpeg" multiple />
-            <label htmlFor='files' className='cursor-pointer w-10 h-10 phone:h-8 phone:w-8 tablet:h-8 tablet:w-8 rounded-md bg-[#F6F8FD] flex justify-center items-center hover:bg-slate-200 transition-all '><IconFile></IconFile></label>
+            <label htmlFor='files' className='cursor-pointer w-10 h-10 phone:h-8 phone:w-8 tablet:h-10 tablet:w-10 rounded-md bg-[#F6F8FD] flex justify-center items-center hover:bg-slate-200 transition-all dark:text-white dark:bg-bgDark/70'><IconFile></IconFile></label>
             <input
               hidden
               onChange={handleUploadFile}
               type="file" id="files" multiple />
             {/* <button type="button" className='w-10 h-10 rounded-md bg-[#F6F8FD] flex justify-center items-center hover:bg-slate-200 transition-all '><IconSmile></IconSmile></button> */}
             <button
-              type='submit' className='w-10 h-10 phone:h-8 phone:w-8 tablet:h-8 tablet:w-8 rounded-md bg-[#F6F8FD] flex justify-center items-center hover:bg-slate-200 transition-all '>
+              type='submit' className='w-10 h-10 phone:h-8 phone:w-8 tablet:h-10 tablet:w-10 rounded-md bg-[#F6F8FD] dark:text-white dark:bg-bgDark/70 flex justify-center items-center hover:bg-slate-200 transition-all '>
               {loadingSendMessasge ? (
                 <div className='w-5 h-5 border-4 border-r-4 border-blue-500 rounded-full border-r-transparent animate-spin'></div>
               ) : (<IconSend></IconSend>)}
@@ -516,11 +517,12 @@ export default function Chat() {
           </form>
         </div>
         <div className='w-full max-w-[350px] bg-white rounded-md p-4 
-        phone:hidden phone2:block
+        phone:hidden phone2:block dark:text-white dark:bg-bgDark/70
         '>
           <div className='flex items-center gap-3'>
             <input type="text"
-              className="rounded-lg border border-[#D9D9D9] h-10 phone2:h8 px-2 bg-[#F6F7F9] w-full focus:border-blue-500"
+              placeholder='Enter name...'
+              className="rounded-lg border border-[#D9D9D9] h-10 phone2:h8 px-2 bg-[#F6F7F9] w-full focus:border-blue-500 dark:bg-bgDark/70"
             />
             <button
               onClick={() => setShowModalCreateRoom(true)}

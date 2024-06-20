@@ -55,12 +55,13 @@ export default function SendMail() {
     }
   }
   return (
-    <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)]'>
+    <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)] dark:text-white dark:bg-bgDark'>
       <div className='mb-3'>
         <p className='text-base font-semibold mb-3'>Subject</p>
         <input type="text" name='subject'
           onChange={(e) => setSubject(e.target.value)}
-          className='w-full h-10 p-3 mt-1 border rounded-md border-graycustom bg-input focus:border-bluecustom' />
+          placeholder='Enter subject...'
+          className='w-full h-10 p-3 mt-1 border rounded-md border-graycustom bg-input focus:border-bluecustom  dark:bg-bgDarkItem' />
         {subject.length === 0 && <span className='text-sm italic text-red-500 font-medium'>*you must provide subject</span>}
       </div>
       <p className='text-base font-semibold mb-3'>Content Email</p>

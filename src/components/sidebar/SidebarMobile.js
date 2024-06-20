@@ -48,7 +48,7 @@ const action = [
   },
 ];
 
-export default function Sidebar() {
+export default function SidebarMobile() {
   const navigate = useNavigate();
   let location = useLocation();
   const { currentUser, setCurrentUser } = useContext(AuthContext);
@@ -111,7 +111,6 @@ export default function Sidebar() {
     <div className='w-full max-w-[300px] 
     bg-white
     dark:bg-bgDark
-    phone:hidden
     tablet:block
     tablet:max-w-[230px]
     tablet:px-4

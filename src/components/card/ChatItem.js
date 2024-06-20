@@ -10,7 +10,7 @@ export default function ChatItem({ data, handleSelectedChat, handleExitsChat }) 
   const [showAlertWarningExits, setShowAlertWarningExits] = useState(false)
   return (
     <>
-      <div className='flex gap-2 p-[6px] items-center cursor-pointer hover:bg-gray-100 rounded-md transition-all justify-between'>
+      <div className='flex gap-2 p-[6px] items-center cursor-pointer hover:bg-gray-100 rounded-md transition-all justify-between dark:text-white dark:hover:bg-gray-100/20'>
         <div
           className='flex items-center justify-between w-full gap-2'
           onClick={() => handleSelectedChat(data)}>

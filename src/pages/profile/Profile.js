@@ -100,18 +100,19 @@ export default function Profile() {
     }
   }
   return (
-    <div className='bg-white rounded-md min-h-[calc(100vh-56px-24px)]'>
-      <div className='w-full h-[470px] rounded-md overflow-hidden relative'>
+    <div className='bg-white rounded-md min-h-[calc(100vh-56px-24px)] dark:text-white dark:bg-bgDark dark:p-1'>
+      <div className='w-full h-[450px] rounded-md overflow-hidden relative'>
         <img className='w-full h-full object-cover' src={banner} alt="" />
         <div className=' absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]'>
           <div className='w-[150px] h-[150px] rounded-full border-[5px] border-white overflow-hidden'>
             <img className='w-full h-full object-cover' src={dataUser?.avatar} alt="" />
           </div>
-          <p className='text-base font-semibold text-center text-white mt-3'>{dataUser?.username}</p>
+          <p className='text-base font-semibold text-center text-white mt-3 '>{dataUser?.username}</p>
         </div>
       </div>
-      <div className='flex justify-around mt-11 phone:flex-col phone:items-center tablet2:flex-row tablet2:justify-around'>
-        <div className=''>
+      <div className='flex mt-11 phone:flex-col phone:items-center tablet2:flex-row tablet2:justify-around tablet2:gap-10
+      '>
+        <div className='tablet2:ml-[100px]'>
           <div className='w-[250px] h-[250px] rounded-full border-[5px] border-gray-200 overflow-hidden relative'>
             <img className='w-full h-full object-cover' src={dataUser?.avatar} alt="" />
             {dataUser?._id === currentUser.id &&
@@ -123,10 +124,10 @@ export default function Profile() {
               onChange={handleChangeAvatar}
               id='avatar' hidden type="file" accept="image/png, image/jpeg" />
           </div>
-          <p className='text-base font-semibold text-center text-black mt-3'>{dataUser?.username}</p>
+          <p className='text-base font-semibold text-center text-black mt-3 dark:text-white '>{dataUser?.username}</p>
         </div>
         <div className='flex gap-y-6 gap-x-11 phone:flex-col phone:p-5 w-full phone2:flex-row'>
-          <div className='phone:w-auto phone2:w-full tablet2:w-[400px]'>
+          <div className='phone:w-auto phone2:w-full tablet2:w-[300px]'>
             <div className='h-[100px]'>
               <p className='text-base font-semibold mb-3'>User name</p>
               {isUpdate ?
@@ -134,7 +135,7 @@ export default function Profile() {
                   defaultValue={userName}
                   name='subject'
                   onChange={(e) => setUserName(e.target.value)}
-                  className='w-full h-10 p-3 mt-1 border rounded-md border-graycustom bg-input focus:border-bluecustom' />
+                  className='w-full h-10 p-3 mt-1 border rounded-md border-graycustom bg-input focus:border-bluecustom dark:bg-bgDark' />
                   {userName.length === 0 && <span className='text-sm italic text-red-500 font-medium'>*you must provide phone</span>}
                 </> : <p className='text-base font-medium'>{dataUser?.username}</p>
               }
@@ -146,13 +147,13 @@ export default function Profile() {
                   defaultValue={phone}
                   name='subject'
                   onChange={(e) => setPhone(e.target.value)}
-                  className='w-full h-10 p-3 mt-1 border rounded-md border-graycustom bg-input focus:border-bluecustom' />
+                  className='w-full h-10 p-3 mt-1 border rounded-md border-graycustom bg-input focus:border-bluecustom dark:bg-bgDark' />
                   {phone.length === 0 && <span className='text-sm italic text-red-500 font-medium'>*you must provide phone</span>}
                 </> : <p className='text-base font-medium'>{dataUser?.phone}</p>
               }
             </div>
           </div>
-          <div className='flex flex-col phone2:w-full tablet2:w-[400px]'>
+          <div className='flex flex-col phone2:w-full tablet2:w-[300px]'>
             <div className='h-[100px]'>
               <p className='text-base font-semibold mb-3'>Email</p>
               {isUpdate ? <><input type="text"
@@ -160,7 +161,7 @@ export default function Profile() {
                 disabled
                 name='subject'
                 onChange={(e) => setEmail(e.target.value)}
-                className='w-full h-10 p-3 mt-1 border rounded-md border-graycustom bg-input focus:border-bluecustom' />
+                className='w-full h-10 p-3 mt-1 border rounded-md border-graycustom bg-input focus:border-bluecustom dark:bg-bgDark' />
                 {email.length === 0 && <span className='text-sm italic text-red-500 font-medium'>*you must provide email</span>}</>
                 : <p className='text-base font-medium'>{dataUser?.email}</p>
               }
@@ -171,7 +172,7 @@ export default function Profile() {
                 defaultValue={address}
                 name='subject'
                 onChange={(e) => setAddress(e.target.value)}
-                className='w-full h-10 p-3 mt-1 border rounded-md border-graycustom bg-input focus:border-bluecustom' />
+                className='w-full h-10 p-3 mt-1 border rounded-md border-graycustom bg-input focus:border-bluecustom dark:bg-bgDark' />
                 {address.length === 0 && <span className='text-sm italic text-red-500 font-medium'>*you must provide subject</span>}</>
                 : <p className='text-base font-medium'>{dataUser?.address}</p>
               }
@@ -180,7 +181,7 @@ export default function Profile() {
         </div>
       </div>
       {dataUser?._id === currentUser.id &&
-        <div className='mt-auto float-right flex gap-3'>
+        <div className='flex gap-3 phone:justify-center tablet:justify-end'>
           {isUpdate ?
             <>
               <button

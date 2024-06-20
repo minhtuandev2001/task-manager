@@ -1,6 +1,7 @@
 import { AnimatePresence } from 'framer-motion';
 import React, { useEffect } from 'react'
 import { createPortal } from "react-dom"
+import { useDarkMode } from '../../context/darkModeContext';
 
 function portalWrapper() {
   const element = document.createElement('div');
@@ -21,6 +22,7 @@ export default function Portal({
   contentStyle = {},
   classOverlay = ''
 }) {
+  const { darkMode, setDarkMode } = useDarkMode();
   useEffect(() => {
     document.body.appendChild(portalWrapperEle);
   }, [])
@@ -28,7 +30,7 @@ export default function Portal({
     <AnimatePresence>
       {visible ?
         (<div
-          className={`${containerClassName} ${visible ? "" : "opacity-0 invisible"}`}
+          className={`${containerClassName} ${visible ? "" : "opacity-0 invisible"} ${darkMode ? 'dark' : 'light'}`}
           style={containerStyle}
         >
           {overlay && <div className={`absolute inset-0 bg-black bg-opacity-50 overlay ${classOverlay}`} onClick={onClose}></div>}

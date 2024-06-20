@@ -42,12 +42,12 @@ export default function ShowModalSearchProject({ showDropdow, setShowDropdown, h
       onClose={() => setShowDropdown(false)}
       classOverlay="bg-opacity-10"
     >
-      <div className='w-full h-full px-6 py-3 bg-white rounded-md shadow-md'>
+      <div className='w-full h-full px-6 py-3 bg-white rounded-md shadow-md dark:text-white dark:bg-bgDarkItem'>
         <Label className="text-base font-medium" >Choose Project</Label>
         <Input
           onChange={handleChangeInput}
           placeholder="Enter name project"
-          className="w-full h-10 p-3 my-3 border rounded-md border-graycustom bg-input focus:border-bluecustom"></Input>
+          className="w-full h-10 p-3 my-3 border rounded-md border-graycustom bg-input focus:border-bluecustom dark:bg-bgDarkItem"></Input>
         <div className='flex flex-col items-start gap-1 h-full overflow-y-scroll no-scrollbar max-h-[300px]'>
           {projectList.length > 0 && projectList.map((item) => {
             return (

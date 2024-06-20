@@ -12,6 +12,8 @@ module.exports = {
         "input": "#F6F7F9",
         "button": "#2384FF",
         "icon": "#F6F8FD",
+        "bgDark": "#191b1f",
+        "bgDarkItem": "#32363a",
       },
       borderColor: {
         "graycustom": "#A8ABBD",
@@ -30,5 +32,6 @@ module.exports = {
     }
   },
   plugins: [],
+  darkMode: "class"
 }
 

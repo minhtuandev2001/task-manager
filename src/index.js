@@ -8,6 +8,8 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { SocketProvider } from './context/socketContext';
 import { MessageProvider } from './context/messageNotiContext';
+import { SideBarProvider } from './context/sideBarContext';
+import { DarkModeProvider } from './context/darkModeContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -16,7 +18,11 @@ root.render(
     <AuthoProvider>
       <SocketProvider>
         <MessageProvider>
-          <App />
+          <DarkModeProvider>
+            <SideBarProvider>
+              <App />
+            </SideBarProvider>
+          </DarkModeProvider>
         </MessageProvider>
       </SocketProvider>
     </AuthoProvider>

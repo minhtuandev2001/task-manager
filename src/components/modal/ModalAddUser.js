@@ -35,7 +35,7 @@ const ModalAddUser = ({ nameItemList, showSearchPortal, setShowSearchPortal, use
         onClose={() => setShowSearchPortal(false)}
         classOverlay="bg-opacity-20"
       >
-        <div className='p-6 bg-white rounded-md shadow-md'>
+        <div className='p-6 bg-white rounded-md shadow-md dark:text-white dark:bg-bgDarkItem'>
           <div className='flex items-center justify-between'>
             <span className='text-base font-medium'>Add user</span>
             <Button onClick={() => setShowSearchPortal(false)}><span className='text-base font-medium text-blue-500'>Cancel</span></Button>
@@ -44,7 +44,7 @@ const ModalAddUser = ({ nameItemList, showSearchPortal, setShowSearchPortal, use
             onChange={handleChangeInput}
             type='text'
             name="search"
-            className='w-full h-10 p-3 mt-3 border rounded-md border-graycustom bg-input focus:border-bluecustom'
+            className='w-full h-10 p-3 mt-3 border rounded-md border-graycustom bg-input focus:border-bluecustom dark:bg-bgDarkItem/50'
             placeholder="search..."
           ></Input>
           <div className="flex flex-wrap gap-2 mt-3">

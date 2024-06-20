@@ -378,7 +378,7 @@ const CardTask = ({ data, handleRemoveTask }) => {
   return (
     statusTaskTemp === data.status ?
       <>
-        <div className="flex flex-col gap-3 p-4 py-3 mb-3 rounded-md shadow-md card-project">
+        <div className="flex flex-col gap-3 p-4 py-3 mb-3 rounded-md shadow-md card-project dark:text-white dark:bg-bgDarkItem">
           <div className='flex gap-2 justify-between'>
             <h2 className='text-base font-semibold line-clamp-1'>{nameTask}</h2>
             <button type='button'
@@ -458,7 +458,7 @@ const CardTask = ({ data, handleRemoveTask }) => {
               scale: [1, 0.9]
             }}
             transition={{ duration: 0.2 }}
-            className='w-full p-6 bg-white rounded-md'>
+            className='w-full p-6 bg-white rounded-md dark:text-white dark:bg-bgDarkItem'>
             <div className='flex items-start justify-between w-full mb-2'>
               <div className='flex items-center flex-1 gap-2'>
                 {toggleUpdate ? (

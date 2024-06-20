@@ -214,22 +214,22 @@ export default function Project() {
   // kết thúc nhận project từ socket
   return (
     <>
-      <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)]'>
+      <div className='bg-white rounded-md pt-6 px-4 min-h-[calc(100vh-56px-24px)] dark:bg-bgDark'>
         <div className="flex justify-end gap-2 box-search">
           <Input
             onChange={handleSearchProject}
             type='text'
             name='search'
-            className='w-full h-10 phone:h-8 phone:min-w-[150px] p-3 max-w-[246px] border rounded-md border-graycustom bg-input focus:border-bluecustom'
+            className='w-full h-10 phone:h-8 phone:min-w-[150px] tablet:h-10 p-3 max-w-[246px] border rounded-md border-graycustom bg-input focus:border-bluecustom dark:bg-gray-100/50 dark:placeholder-white'
             placeholder="Search"
           ></Input>
           <Button
             onClick={() => setShowModalCreateProject(true)}
-            className="button-default h-10 phone:h-8  bg-button max-w-[110px] text-white font-medium"
+            className="button-default h-10 phone:h-8 tablet:h-10  bg-button max-w-[110px] text-white font-medium"
           ><span>+ Create</span></Button>
           <Button
             onClick={() => setShowModalJoinProject(true)}
-            className="button-default h-10 phone:h-8  bg-button max-w-[110px] text-white font-medium"
+            className="button-default h-10 phone:h-8 tablet:h-10 bg-button max-w-[110px] text-white font-medium"
           ><span>Join</span></Button>
         </div>
         {loading ? (<div className='w-10 h-10 mx-auto my-2 border-4 border-r-4 border-blue-500 rounded-full border-r-transparent animate-spin'></div>) :
@@ -261,12 +261,12 @@ export default function Project() {
             scale: [1, 0.5]
           }}
           transition={{ duration: 0.2 }}
-          className='px-6 py-4 bg-white rounded-md'>
+          className='px-6 py-4 bg-white rounded-md dark:text-white dark:bg-bgDarkItem'>
           <Label className="text-base font-medium" >Key project</Label>
           <Input
             onChange={(e) => setValueInputKeyProject(e.target.value)}
             placeholder="Enter key project"
-            className="w-full h-12 p-3 mt-4 border rounded-md border-graycustom bg-input focus:border-bluecustom"></Input>
+            className="w-full h-12 p-3 mt-4 border rounded-md border-graycustom bg-input focus:border-bluecustom dark:bg-bgDarkItem/50"></Input>
           <Button
             onClick={handleJoinProject}
             className="font-medium text-white button-default bg-button mt-7">
@@ -291,7 +291,7 @@ export default function Project() {
             scale: [1, 0.5]
           }}
           transition={{ duration: 0.2 }}
-          className='w-full p-6 bg-white rounded-md'>
+          className='w-full p-6 bg-white rounded-md dark:text-white dark:bg-bgDarkItem'>
           <div className='flex items-start justify-between w-full mb-2'>
             <div className='flex items-center flex-1 gap-2'>
               <div className='flex flex-col w-full'>

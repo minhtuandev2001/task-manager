@@ -1,14 +1,17 @@
 import React from 'react'
+import { NavLink } from 'react-router-dom'
 
 export default function CardUser({ data, statusFriend, handleButtonClick }) {
   return (
     <div
-      className='bg-gray-100 p-1 w-full rounded-md'
+      className='bg-gray-100 p-1 w-full rounded-md dark:text-white dark:bg-bgDarkItem'
     >
       <div className='w-full h-[200px]'>
         <img className='w-full h-full object-cover' src={data.avatar} alt="" />
       </div>
-      <p className='text-base font-medium line-clamp-1'>{data.username}</p>
+      <NavLink to={`/profile/${data._id}`}>
+        <p className='text-base font-medium line-clamp-1 cursor-pointer'>{data.username}</p>
+      </NavLink>
       <div className='flex flex-col gap-2 mt-2'>
         {statusFriend === "friends" && <button
           onClick={() => {

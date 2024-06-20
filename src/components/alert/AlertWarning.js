@@ -10,7 +10,7 @@ export default function AlertWarning({ toggleShow = false, messages = "", handle
     >
       <div
         transition={{ type: "spring", duration: 0.15 }}
-        className='flex flex-col items-center w-full h-full gap-3 p-6 bg-white rounded-md'>
+        className='flex flex-col items-center w-full h-full gap-3 p-6 bg-white rounded-md dark:text-white dark:bg-bgDarkItem'>
         {children}
         <p className='text-base font-semibold text-center'>{messages}</p>
         <div className='flex items-center justify-between w-full mt-3'>
